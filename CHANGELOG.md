@@ -278,7 +278,7 @@ _Warnings might appear while doing an npm install - they do not affect the UI or
 ### Bug fixing
 
 - Rewrote the ISSUE_TEMPLATE
-- Deleted the copyright comments from all files, we only need to keep them inside our index.js and index.html
+- Deleted the copyright comments from all files, we only need to keep them inside our Nuevo.js and index.html
 - Added script that adds copyrights to the built app
 - Renamed all the files from `.jsx` to `.js`
 - Changed the `withStyles` function from Material-UI with the `makeStyles` function (integration with other frameworks should now be easy)
@@ -384,7 +384,7 @@ ajv                        6.9.1   →   6.10.0
 ### Major components changes
 
 - Changes caused by running [the prettier command](https://prettier.io/docs/en/install.html) for _.jsx_, _.js_, _.html_ and _.css_ files
-- **src/index.js**
+- **src/Nuevo.js**
 - **src/components/CustomTabs/CustomTabs.jsx**
 - **src/components/Header/Header.jsx**
 - **src/components/Sidebar/Sidebar.jsx**
@@ -546,7 +546,7 @@ ajv                        6.9.1   →   6.10.0
 ### Bug Fixing
 
 - Changed import from `material-ui` to `@material-ui/core`
-- Droped `src/components/index.js`, and changed all the imports to separate ones
+- Droped `src/components/Nuevo.js`, and changed all the imports to separate ones
 - Renamed `ItemGrid` to `GridItem`
 
 ### Major style changes

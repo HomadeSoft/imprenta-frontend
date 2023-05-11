@@ -108,13 +108,13 @@ material-dashboard-react
     │   │       ├── base
     │   │       ├── components
     │   │       ├── functions
-    │   │       ├── index.js
+    │   │       ├── Nuevo.js
     │   │       └── theme-rtl.js
     │   │   └── theme-dark
     │   │       ├── base
     │   │       ├── components
     │   │       ├── functions
-    │   │       ├── index.js
+    │   │       ├── Nuevo.js
     │   │       └── theme-rtl.js
     │   ├── components
     │   │   ├── MDAlert
@@ -150,7 +150,7 @@ material-dashboard-react
     │   │   ├── rtl
     │   │   └── tables
     │   ├── App.js
-    │   ├── index.js
+    │   ├── Nuevo.js
     │   └── routes.js
     ├── .eslintrc.json
     ├── .prettierrc.json

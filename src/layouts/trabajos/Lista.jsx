@@ -1,17 +1,7 @@
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DataTable from "examples/Tables/DataTable";
 
 // Dashboard components
-import projectsTableData from "layouts/trabajosPendientes/data/projectsTableData";
 import {useEffect, useState} from "react";
 import DataService from "../../services/DataService";
 import InfoIcon from "@mui/icons-material/Info";
@@ -46,10 +36,7 @@ const RowFormatter = (row) => ({
 })
 
 
-function Dashboard() {
-  const { columns: pColumns, rows: pRows } = projectsTableData();
-
-
+function Lista() {
   // ACA HACER EL USEEFFECT
 
   const [rows, setRows] = useState([])
@@ -65,7 +52,7 @@ function Dashboard() {
   }, [])
 
   return (
-    <Wrapper title={"Trabajos Pendientes"}>
+    <Wrapper title={"Todos los Trabajos"}>
       <DataTable
         table={{ columns: TableColumns, rows: rows }}
         isSorted={false}
@@ -78,4 +65,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Lista;

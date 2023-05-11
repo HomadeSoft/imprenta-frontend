@@ -1,22 +1,22 @@
 /**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
+ =========================================================
+ * Material Dashboard 2 React - v2.1.0
+ =========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+ * Product Page: https://www.creative-tim.com/product/material-dashboard-react
+ * Copyright 2022 Creative Tim (https://www.creative-tim.com)
 
-Coded by www.creative-tim.com
+ Coded by www.creative-tim.com
 
  =========================================================
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
 
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import {useLocation, Link} from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -53,10 +53,10 @@ import {
   setOpenConfigurator,
 } from "context";
 
-function DashboardNavbar({ absolute, light, isMini }) {
+function DashboardNavbar({absolute, light, isMini}) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+  const {miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode} = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -76,7 +76,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     /**
      The event listener that's calling the handleTransparentNavbar function when
      scrolling the window.
-    */
+     */
     window.addEventListener("scroll", handleTransparentNavbar);
 
     // Call the handleTransparentNavbar function to set the state with the initial value.
@@ -91,27 +91,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
 
-  // Render the notifications menu
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{ mt: 2 }}
-    >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
-    </Menu>
-  );
-
   // Styles for the navbar icons
-  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
+  const iconsStyle = ({palette: {dark, white, text}, functions: {rgba}}) => ({
     color: () => {
       let colorValue = light || darkMode ? white.main : dark.main;
 
@@ -134,9 +115,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            {/*<MDBox pr={1}>*/}
-            {/*  <MDInput label="Search here" />*/}
-            {/*</MDBox>*/}
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in/basic">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
@@ -154,7 +132,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
               </IconButton>
-              {renderMenu()}
             </MDBox>
           </MDBox>
         )}

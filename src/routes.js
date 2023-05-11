@@ -37,14 +37,14 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import TrabajosPendientes from "layouts/trabajosPendientes";
+import TrabajosPendientes from "layouts/trabajos/Pendientes";
 import Tables from "layouts/tables";
 import Precios from "layouts/precios";
 import Billing from "layouts/billing";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import Cliente from "layouts/detallesCliente";
-import NuevoTrabajo from "layouts/nuevoTrabajo";
+import NuevoTrabajo from "layouts/trabajos/Nuevo";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -52,20 +52,30 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Clientes from "./layouts/clientes";
+import Detalle from "./layouts/trabajos/Detalle";
+import Lista from "./layouts/trabajos/Lista";
 
 const routes = [
   {
     type: "collapse",
     name: "Trabajos Pendientes",
-    key: "trabajos Pendientes",
+    key: "pendientes-trabajos",
     icon: <AccessTimeIcon fontSize="small" />,
     route: "/",
     component: <TrabajosPendientes />,
   },
   {
     type: "collapse",
+    name: "Todos los Trabajos",
+    key: "todos-trabajos",
+    icon: <AccessTimeIcon fontSize="small" />,
+    route: "/todos",
+    component: <Lista />,
+  },
+  {
+    type: "collapse",
     name: "Nuevo Trabajo",
-    key: "nuevoTrabajo",
+    key: "nuevo-trabajo",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/nuevoTrabajo",
     component: <NuevoTrabajo />,
@@ -91,12 +101,24 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Trabajo",
+    key: "trabajo",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/trabajo/:id",
+    // show: false,
+    component: <Detalle />,
+  },
+  {
+    type: "collapse",
     name: "Cliente",
     key: "cliente",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/cliente/:id",
     // show: false,
     component: <Cliente />,
+  },
+  {
+    type: "divider",
   },
   {
     type: "collapse",

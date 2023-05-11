@@ -43,11 +43,16 @@ const DataService = (() => {
     ]
   }
 
+  const fetchJobData = async (id) => {
+    return {}
+  }
+
   return {
     fetchPendingJobs: () => fetchPendingJobs(),
     fetchUsers: () => fetchUsers(),
     fetchUserData: (id) => fetchUserData(id),
-    fetchUserJobs: (id) => fetchUserJobs(id)
+    fetchUserJobs: (id) => fetchUserJobs(id),
+    fetchJobData: (id) => fetchJobData(id),
   }
 })();
 
