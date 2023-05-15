@@ -1,26 +1,35 @@
 const DataService = (() => {
   // const BASE_URL = process.env.REACT_APP_API_ROOT;
-  // const BASE_URL = 'http://localhost:3001';
+  const BASE_URL = 'http://localhost:3001';
 
-  const RowInfo = [
-    { cuit: '123', email: 'nico@pick.com', fantasy_name: 'Persiana', first_name: 'Nico', last_name: 'Pick', phone: '264444544' },
-    { cuit: '1234', email: 'nico@pepe.com', fantasy_name: 'Carteles Nico', first_name: 'Nico', last_name: 'Pick', phone: '264444544' },
-    { cuit: '12345678', email: 'nico@pepepepe.com', fantasy_name: 'Impresiones Impresionantes', first_name: 'Nico', last_name: 'Pick', phone: '264444544' },
-    { cuit: '123456', email: 'lalalal@lalala.com', fantasy_name: 'Impresionantes', first_name: 'Nico', last_name: 'Pick', phone: '264444544' }
-  ]
+  const requestHeaders = (token) => ({ headers: {'Authorization': 'Bearer '+ token, 'Content-Type': 'application/json' } });
 
   const fetchUsers = async () => {
-    return RowInfo
+    const url = `${BASE_URL}/users/allUsers`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.users, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
-  const PendingJobsInfo = [
-    { first_name: 'Nico', last_name: 'Pick', price_cents: 20000 , status: "Pendiente" },
-    { first_name: 'Juan', last_name: 'Pick', price_cents: 30000 , status: "Terminado" },
-    { first_name: 'Jorge', last_name: 'Pick', price_cents: 40050 , status: "Demorado" },
-    { first_name: 'Anders', last_name: 'Pick', price_cents: 20010 , status: "Pendiente" },
-  ]
   const fetchPendingJobs = async () => {
-    return PendingJobsInfo
+    const url = `${BASE_URL}/jobs/allJobs`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
   const fetchUserData = async (id) => {

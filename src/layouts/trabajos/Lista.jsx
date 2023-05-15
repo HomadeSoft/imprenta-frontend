@@ -7,6 +7,7 @@ import DataService from "../../services/DataService";
 import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
 import Wrapper from "../Wrapper";
+import {JobsRowFormatter} from "./utils";
 
 
 const TableColumns = [
@@ -18,24 +19,6 @@ const TableColumns = [
   { Header: "info", accessor: "info", align: "center" },
 ]
 
-const formatPrice = (priceCents) => {
-  try {
-    return (priceCents / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
-  } catch (e){
-    return " - "
-  }
-}
-
-const RowFormatter = (row) => ({
-  cliente: (<MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>{row.first_name} {row.last_name}</MDTypography>),
-  total: (<MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">{formatPrice(row.price_cents)}</MDTypography>),
-  fecha: (<MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">{row.due_date || '-'}</MDTypography>),
-  estado: (<MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">{row.status}</MDTypography>),
-  info: (<MDTypography component="a" href="#" color="text"><InfoIcon>more_vert</InfoIcon></MDTypography>),
-  archivos: (<MDTypography component="a" href="#" color="text"><DownloadIcon /></MDTypography>),
-})
-
-
 function Lista() {
   // ACA HACER EL USEEFFECT
 
@@ -43,9 +26,9 @@ function Lista() {
 
   useEffect(() => {
     const getInfo = async () => {
-      const formattedRows = await DataService.fetchPendingJobs()
-      const lala = formattedRows.map(r => RowFormatter(r))
-      setRows(lala)
+      const {data, error} = await DataService.fetchPendingJobs()
+      const formattedRows = data.map(r => JobsRowFormatter(r))
+      setRows(formattedRows)
     };
 
     getInfo()

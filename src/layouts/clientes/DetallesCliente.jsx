@@ -15,7 +15,7 @@ const jobsTableColumns = [
   { Header: "Info", accessor: "info", align: "center" },
 ]
 
-const Overview = () => {
+const DetallesCliente = () => {
   const { id } = useParams()
   const [user, setUser] = useState(null);
   const [userJobs, setUserJobs] = useState([])
@@ -64,4 +64,4 @@ const Overview = () => {
   );
 }
 
-export default Overview;
+export default DetallesCliente;

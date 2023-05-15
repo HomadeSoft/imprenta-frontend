@@ -43,7 +43,6 @@ import Precios from "layouts/precios";
 import Billing from "layouts/billing";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import Cliente from "layouts/detallesCliente";
 import NuevoTrabajo from "layouts/trabajos/Nuevo";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -51,9 +50,10 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import Clientes from "./layouts/clientes";
+import Clientes from "./layouts/clientes/Clients";
 import Detalle from "./layouts/trabajos/Detalle";
 import Lista from "./layouts/trabajos/Lista";
+import DetallesCliente from "./layouts/clientes/DetallesCliente";
 
 const routes = [
   {
@@ -115,7 +115,7 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/cliente/:id",
     // show: false,
-    component: <Cliente />,
+    component: <DetallesCliente />,
   },
   {
     type: "divider",
