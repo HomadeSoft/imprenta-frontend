@@ -17,8 +17,6 @@ const TableColumns = [
 ]
 
 function Lista() {
-  // ACA HACER EL USEEFFECT
-
   const [rows, setRows] = useState([])
 
   useEffect(() => {

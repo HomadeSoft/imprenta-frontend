@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit"
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PriceTable from "examples/Tables/PriceTable";
 import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Fab, TextField } from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary, Box, Fab} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
@@ -45,26 +45,29 @@ function Precios() {
           row["cantidad"] = (<MDTypography variant="button" color="text" fontWeight="regular">{quantity.min}-{quantity.max}</MDTypography>);
           var optionsIndex = 0;
           quantity.options.forEach(option => {
-            row[option.description] = (editing ? <EditableTableCell value={option.value} onBlur={handleUpdate(categoryIndex, paperIndex, quantityIndex, optionsIndex)} /> : <MDTypography variant="button" color="text" fontWeight="bold">{option.value}</MDTypography>);
+            row[option.description] = (editing ?
+              <EditableTableCell value={option.value} onBlur={handleUpdate(categoryIndex, paperIndex, quantityIndex, optionsIndex)}/> :
+              <MDTypography variant="button" color="text" fontWeight="bold">{option.value}</MDTypography>);
             optionsIndex++;
           });
           quantityIndex++;
           rows.push(row)
         });
         Object.keys(rows[0]).forEach(key => {
-          columns.push({ Header: key, accessor: key, align: "center" });
+          columns.push({Header: key, accessor: key, align: "center"});
         })
 
-        papel.push(<Accordion expanded={expanded === elemento.gramaje + categoria.printSize} onChange={handleChange(elemento.gramaje + categoria.printSize)}>
+        papel.push(<Accordion expanded={expanded === elemento.gramaje + categoria.printSize}
+                              onChange={handleChange(elemento.gramaje + categoria.printSize)}>
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={<ExpandMoreIcon/>}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
           >
-            <MDTypography sx={{ width: '33%', flexShrink: 0 }}>
+            <MDTypography sx={{width: '33%', flexShrink: 0}}>
               {elemento.gramaje === null ? "sin papel" : (elemento.gramaje)}
             </MDTypography>
-            <MDTypography sx={{ width: '33%', flexShrink: 0 }} fontWeight={"light"} color={"secondary"}>
+            <MDTypography sx={{width: '33%', flexShrink: 0}} fontWeight={"light"} color={"secondary"}>
               {
                 elemento.caracteristicas.map((caracteristica) => "[" + caracteristica + "] ")
               }
@@ -72,7 +75,7 @@ function Precios() {
           </AccordionSummary>
           <AccordionDetails>
             <PriceTable
-              table={{ columns: columns, rows: rows }}
+              table={{columns: columns, rows: rows}}
               isSorted={false}
               entriesPerPage={false}
               showTotalEntries={false}
@@ -86,14 +89,16 @@ function Precios() {
       lista.push(
         <MDBox>
           <MDBox mx={2}
-            mt={3}
-            py={3}
-            px={2}>
+                 mt={3}
+                 py={3}
+                 px={2}>
             <MDTypography variant="h6">
               {title}
             </MDTypography>
             {
-              papel.map((gramaje) => { return gramaje })
+              papel.map((gramaje) => {
+                return gramaje
+              })
             }
           </MDBox>
         </MDBox>
@@ -105,15 +110,11 @@ function Precios() {
 
   return (
     <div>
-
       <Wrapper title="Lista de Precios">
-        {
-          lista
-        }
-
+        {lista}
       </Wrapper>
       <Box sx={{
-        '& > :not(style)': { m: 1 },
+        '& > :not(style)': {m: 1},
         position: 'fixed',
         bottom: 16,
         right: 16,
@@ -124,14 +125,14 @@ function Precios() {
           }
           setEditing(!editing);
         }}>
-          {editing ? <SaveIcon /> : <EditIcon />}
+          {editing ? <SaveIcon/> : <EditIcon/>}
         </Fab>
       </Box>
-    </div >
+    </div>
 
 
   );
 }
 
 
-export default Precios;
+export default React.memo(Precios);

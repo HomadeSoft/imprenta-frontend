@@ -27,7 +27,7 @@ const Detalle = () => {
     }
 
     fetchUserData();
-  }, [])
+  }, [id])
 
   return(
     <Wrapper title={"Detalle del trabajo"}>

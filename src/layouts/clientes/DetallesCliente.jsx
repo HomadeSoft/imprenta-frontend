@@ -39,7 +39,7 @@ const DetallesCliente = () => {
 
     fetchUserData();
     fetchData();
-  }, [])
+  }, [id])
 
   return (
     <Wrapper title={"Info Cliente"}>
