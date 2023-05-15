@@ -2,10 +2,11 @@ import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import MDBox from "components/MDBox";
 
 import DataTable from "examples/Tables/DataTable";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
+import {JobsRowFormatter} from "../trabajos/utils";
 
 const jobsTableColumns = [
   { Header: "Fecha", accessor: "fecha", align: "center" },
@@ -16,19 +17,24 @@ const jobsTableColumns = [
 ]
 
 const DetallesCliente = () => {
-  const { id } = useParams()
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [userJobs, setUserJobs] = useState([])
 
   useEffect(() => {
+    if(!id || id === ":id") { navigate('/') }
+
     const fetchUserData = async () => {
-      const userData = await DataService.fetchUserData(1)
-      setUser(userData)
+      const {data, error} = await DataService.fetchUserData(id)
+      setUser(data)
     }
 
     const fetchData = async () => {
-      const userJobs = await DataService.fetchUserJobs(1)
-      setUserJobs(userJobs)
+      const {data, error} = await DataService.fetchUserJobs(id)
+      const formattedRows = data.map(r => JobsRowFormatter(r))
+      setUserJobs(formattedRows)
     }
 
     fetchUserData();

@@ -33,27 +33,45 @@ const DataService = (() => {
   }
 
   const fetchUserData = async (id) => {
-    return {
-      first_name: "Juan Cruz",
-      last_name: "Pick",
-      email: "alecthompson@mail.com",
-      fantasy_name: "Homadessss",
-      cuit: "20383242135",
-      phone: "990999090"
-    }
+    const url = `${BASE_URL}/users/user?userId=${id}`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
   const fetchUserJobs = async (id) => {
-    return [
-      {total: "0", fecha: "12/12/12", estado: "Terminado", info: "info", archivos: "Link"},
-      {total: "0", fecha: "12/12/12", estado: "Terminado", info: "info", archivos: "Link"},
-      {total: "0", fecha: "12/12/12", estado: "Terminado", info: "info", archivos: "Link"},
-      {total: "0", fecha: "12/12/12", estado: "Terminado", info: "info", archivos: "Link"},
-    ]
+    const url = `${BASE_URL}/jobs/userJobs?userId=${id}`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
   const fetchJobData = async (id) => {
-    return {}
+    const url = `${BASE_URL}/jobs/job?id=${id}`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
   return {

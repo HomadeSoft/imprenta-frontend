@@ -9,7 +9,7 @@ const ClientsRowFormatter = (row) => (
     fantasy_name: (<MDTypography  variant="button" color="text" fontWeight="medium">{row.fantasy_name}</MDTypography>),
     name: (<MDTypography  variant="button" color="text" fontWeight="medium">{row.first_name} {row.last_name}</MDTypography>),
     phone: (<MDTypography variant="button" color="text" fontWeight="medium">{row.phone}</MDTypography>),
-    view: (<Link to={'/cliente/123123'}><MDButton color={"dark"}>Ver</MDButton>
+    view: (<Link to={`/cliente/${row.id}`}><MDButton color={"dark"}>Ver</MDButton>
     </Link>)
   }
 )

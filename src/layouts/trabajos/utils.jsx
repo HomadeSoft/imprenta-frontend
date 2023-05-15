@@ -4,12 +4,12 @@ import DownloadIcon from "@mui/icons-material/Download";
 
 const JobsRowFormatter = (row) => {
   return {
-    cliente: (<MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>{row.user.first_name} {row.user.last_name}</MDTypography>),
+    cliente: (<MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
     fecha: (<MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">{formatDate(row.due_date)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
-    info: (<MDTypography component="a" href="#" color="text"><InfoIcon>more_vert</InfoIcon></MDTypography>),
-    archivos: (<MDTypography component="a" href="#" color="text"><DownloadIcon /></MDTypography>),
+    archivos: (<MDTypography component="a"  color="text"><DownloadIcon /></MDTypography>),
+    info: (<MDTypography component="a" href={`/trabajo/${row.id}`} color="text"><InfoIcon>more_vert</InfoIcon></MDTypography>),
   }
 }
 
@@ -42,5 +42,7 @@ const formatStatus = (status) => {
 
 export {
   JobsRowFormatter,
-  formatPrice
+  formatPrice,
+  formatDate,
+  formatStatus
 }
