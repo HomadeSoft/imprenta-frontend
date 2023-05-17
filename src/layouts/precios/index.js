@@ -1,37 +1,48 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit"
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PriceTable from "examples/Tables/PriceTable";
-import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import {Accordion, AccordionDetails, AccordionSummary, Box, Fab} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
+import DataService from "../../services/DataService";
 
 function Precios() {
-  let initialState = bajadasSinPapel();
+  
   const [expanded, setExpanded] = useState("");
-  const [categorias, setCategorias] = useState(initialState);
+  const [categorias, setCategorias] = useState([]);
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {data, error} = await DataService.fetchPrices()
+      setCategorias(data)
+    }
+
+    fetchData();
+  }, [])
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  const handleUpdate =
-    (categoryIndex, paperIndex, quantityIndex, optionsIndex) =>
-      (event) => {
+  const handleUpdate = (categoryIndex, paperIndex, quantityIndex, optionsIndex) => (event) => {
         let categoriasNew = [...categorias];
         categoriasNew[categoryIndex].papel[paperIndex].quantities[quantityIndex].options[optionsIndex].value = event.target.value;
         setCategorias([...categorias]);
       };
 
+  const savePrices = async () => {
+    const {data, error} = await DataService.savePrices(categorias)
+  }
+
   var lista = [];
   var categoryIndex = 0;
 
-  if (categorias) {
-
+  if (categorias.length) {
     categorias.forEach(categoria => {
       const title = <MDTypography>{categoria.printSize}</MDTypography>;
       var papel = [];
@@ -69,7 +80,7 @@ function Precios() {
             </MDTypography>
             <MDTypography sx={{width: '33%', flexShrink: 0}} fontWeight={"light"} color={"secondary"}>
               {
-                elemento.caracteristicas.map((caracteristica) => "[" + caracteristica + "] ")
+                elemento.caracteristicas.map((caracteristica) => " | " + caracteristica.charAt(0).toUpperCase() + caracteristica.slice(1))
               }
             </MDTypography>
           </AccordionSummary>
@@ -83,30 +94,19 @@ function Precios() {
             />
           </AccordionDetails>
         </Accordion>);
-
         paperIndex++;
       });
       lista.push(
         <MDBox>
-          <MDBox mx={2}
-                 mt={3}
-                 py={3}
-                 px={2}>
-            <MDTypography variant="h6">
-              {title}
-            </MDTypography>
-            {
-              papel.map((gramaje) => {
-                return gramaje
-              })
-            }
+          <MDBox mx={2} mt={3} py={3} px={2}>
+            <MDTypography variant="h6">{title}</MDTypography>
+            {papel}
           </MDBox>
         </MDBox>
       );
       categoryIndex++;
     });
   }
-
 
   return (
     <div>
@@ -120,12 +120,11 @@ function Precios() {
         right: 16,
       }}>
         <Fab color="primary" aria-label="add" onClick={() => {
-          if (editing) {
-            //invoke save
-          }
+          if (editing){ savePrices() }
+
           setEditing(!editing);
         }}>
-          {editing ? <SaveIcon/> : <EditIcon/>}
+          {editing ? <SaveIcon fontSize={"large"}/> : <EditIcon fontSize={"large"}/> }
         </Fab>
       </Box>
     </div>

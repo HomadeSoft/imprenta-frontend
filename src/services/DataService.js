@@ -3,7 +3,7 @@ const DataService = (() => {
   const BASE_URL = 'http://localhost:3001';
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
-  const requestHeaders2 = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
+  const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
   const fetchUsers = async () => {
     const url = `${BASE_URL}/users/allUsers`;
@@ -81,7 +81,7 @@ const DataService = (() => {
 
     return fetch(url,{
       method: 'POST',
-      headers: requestHeaders2(token),
+      headers: requestPostHeaders(token),
       body: JSON.stringify(job)
     })
       .then((response) => response.json())
@@ -93,6 +93,39 @@ const DataService = (() => {
       })
   }
 
+  const savePrices = async (prices) => {
+    const url = `${BASE_URL}/json_prices/save`;
+    const token = "2";
+
+    return fetch(url,{
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ prices: prices })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.prices.data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const fetchPrices = async () => {
+    const url = `${BASE_URL}/json_prices`;
+    const token = "2"
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.prices.data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+
   return {
     fetchPendingJobs: () => fetchPendingJobs(),
     fetchUsers: () => fetchUsers(),
@@ -100,6 +133,9 @@ const DataService = (() => {
     fetchUserJobs: (id) => fetchUserJobs(id),
     fetchJobData: (id) => fetchJobData(id),
     submitJob: (job) => submitJob(job),
+    savePrices: (prices) => savePrices(prices),
+    fetchPrices: () => fetchPrices(),
+
   }
 })();
 
