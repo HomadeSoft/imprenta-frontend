@@ -3,6 +3,7 @@ const DataService = (() => {
   const BASE_URL = 'http://localhost:3001';
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
+  const requestHeaders2 = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
   const fetchUsers = async () => {
     const url = `${BASE_URL}/users/allUsers`;
@@ -78,10 +79,10 @@ const DataService = (() => {
     const url = `${BASE_URL}/jobs/create`;
     const token = "2";
 
-    return fetch(url, {
-      method: "POST",
-      body: JSON.stringify(job),
-      headers: requestHeaders(token),
+    return fetch(url,{
+      method: 'POST',
+      headers: requestHeaders2(token),
+      body: JSON.stringify(job)
     })
       .then((response) => response.json())
       .then((data) => {

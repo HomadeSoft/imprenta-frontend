@@ -82,14 +82,9 @@ const Nuevo = () => {
         "due_date": fechaHasta,
         "gramaje_laminado": papel.gramaje + " " + opcion,
         "paper_type": categoria.printSize,
-
         "status": "pending",
-        "created_at": Date.now(),
-        "updated_at": Date.now(),
+        "total_price_cents": precio,
         "user_id": 1,
-        "user": {
-          id: 1
-        },
       }
       DataService.submitJob(trabajo);
     }
