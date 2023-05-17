@@ -2,7 +2,7 @@ const DataService = (() => {
   // const BASE_URL = process.env.REACT_APP_API_ROOT;
   const BASE_URL = 'http://localhost:3001';
 
-  const requestHeaders = (token) => ({ headers: {'Authorization': 'Bearer '+ token, 'Content-Type': 'application/json' } });
+  const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
 
   const fetchUsers = async () => {
     const url = `${BASE_URL}/users/allUsers`;
@@ -74,12 +74,31 @@ const DataService = (() => {
       })
   }
 
+  const submitJob = async (job) => {
+    const url = `${BASE_URL}/jobs/create`;
+    const token = "2";
+
+    return fetch(url, {
+      method: "POST",
+      body: JSON.stringify(job),
+      headers: requestHeaders(token),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   return {
     fetchPendingJobs: () => fetchPendingJobs(),
     fetchUsers: () => fetchUsers(),
     fetchUserData: (id) => fetchUserData(id),
     fetchUserJobs: (id) => fetchUserJobs(id),
     fetchJobData: (id) => fetchJobData(id),
+    submitJob: (job) => submitJob(job),
   }
 })();
 

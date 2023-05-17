@@ -24,6 +24,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Wrapper from "../Wrapper";
 import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
+import DataService from "services/DataService";
 
 const Nuevo = () => {
   const { id } = useParams()
@@ -39,6 +40,7 @@ const Nuevo = () => {
   const [dobleFazEnabled, setDobleFazEnabled] = React.useState(false);
   const [cantidad, setCantidad] = React.useState(0);
   const [precio, setPrecio] = React.useState(0);
+  const [fechaHasta, setFechaHasta] = React.useState(null);
   const [archivos, setArchivos] = React.useState(null);
   const handleChange = (event) => {
     setPapel(event.target.value);
@@ -74,6 +76,22 @@ const Nuevo = () => {
   const crearTrabajo = () => {
     if (cantidad && opcion) {
       //TODO: Submit work
+      const trabajo = {
+        "copies_quantity": cantidad,
+        "doble_faz": dobleFaz,
+        "due_date": fechaHasta,
+        "gramaje_laminado": papel.gramaje + " " + opcion,
+        "paper_type": categoria.printSize,
+
+        "status": "pending",
+        "created_at": Date.now(),
+        "updated_at": Date.now(),
+        "user_id": 1,
+        "user": {
+          id: 1
+        },
+      }
+      DataService.submitJob(trabajo);
     }
   }
   return (
@@ -142,7 +160,7 @@ const Nuevo = () => {
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={1}>
                   <FormLabel>Fecha limite de entrega:</FormLabel>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker />
+                    <DatePicker onChange={() => { setFechaHasta() }} />
                   </LocalizationProvider>
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={1}>
