@@ -255,34 +255,6 @@ const Nuevo = () => {
                   <FormLabel style={{flex: 1, textAlign: "start"}}>${precio}</FormLabel>
                 </MDBox>
                 <MDBox>
-                  {/*<MDButton*/}
-                  {/*  color={"primary"}*/}
-                  {/*  style={{ width: "20%", margin: "0 auto", maxWidth: 350 }}*/}
-                  {/*  variant="contained"*/}
-                  {/*  component="label"*/}
-
-                  {/*>*/}
-                  {/*  Subir Archivo*/}
-                  {/*  <input type="file" onChange={handleFileChange} hidden multiple />*/}
-                  {/*</MDButton>*/}
-                  {/*<MDBox>*/}
-                  {/*  {*/}
-                  {/*    Array.from(archivos).map(file => {*/}
-
-                  {/*      return (*/}
-                  {/*        <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: 10}}>*/}
-                  {/*          <div>{file.name}</div>*/}
-                  {/*          <div style={{cursor: "pointer"}}*/}
-                  {/*               onClick={() => { removeFileFromFileList(file.name)}}>*/}
-                  {/*            X*/}
-                  {/*          </div>*/}
-                  {/*        </div>*/}
-
-                  {/*      )*/}
-                  {/*    })*/}
-                  {/*  }*/}
-                  {/*</MDBox>*/}
-
                   <section className="container" style={{ padding: 20, border: '1px dotted'}}>
                     <div {...getRootProps({ className: "dropzone" })}>
                       <input {...getInputProps()} />
