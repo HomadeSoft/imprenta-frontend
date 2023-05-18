@@ -1,7 +1,7 @@
 import MDBox from "components/MDBox";
 
 import { useParams } from "react-router-dom";
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MDTypography from "../../components/MDTypography";
 import {
   CardActions,
@@ -25,8 +25,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Wrapper from "../Wrapper";
 import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import DataService from "services/DataService";
+import DeleteIcon from '@mui/icons-material/Delete';
 
-import Dropzone, {useDropzone} from 'react-dropzone'
+import Dropzone, { useDropzone } from 'react-dropzone'
 
 const Nuevo = () => {
   const { id } = useParams()
@@ -104,7 +105,7 @@ const Nuevo = () => {
   const files = myFiles.map(file => (
     <li key={file.path}>
       {file.path} - {file.size} bytes{" "}
-      <button onClick={removeFile(file)}>Borrar archivo</button>
+      <MDButton onClick={removeFile(file)} size="medium" iconOnly><DeleteIcon /></MDButton>
     </li>
   ))
 
@@ -124,7 +125,7 @@ const Nuevo = () => {
         "gramaje_laminado": papel.gramaje + " " + opcion,
         "paper_type": categoria.printSize,
         "status": "pending",
-        "total_price_cents": precio,
+        "total_price_cents": precio * 100,
         "user_id": 1,
       }
       DataService.submitJob(trabajo);
@@ -142,10 +143,10 @@ const Nuevo = () => {
   }
 
   const handleDetailsStyles = () => {
-    if(categoria) {
-      return ({ opacity: 1})
+    if (categoria) {
+      return ({ opacity: 1 })
     } else {
-      return ({ opacity: 0.3, pointerEvents: 'none'})
+      return ({ opacity: 0.3, pointerEvents: 'none' })
     }
   }
 
@@ -162,7 +163,7 @@ const Nuevo = () => {
             <Grid container spacing={1}>
               <Grid item xs={12} md={6} xl={4} spacing={1}>
                 <MDBox mb={2}>
-                  <FormLabel id="tipo-papel-label">1. Tipo de Papel</FormLabel>
+                  <FormLabel id="tipo-papel-label">Tipo de Papel</FormLabel>
                   <RadioGroup aria-labelledby="tipo-papel-label" name="tipo-papel">
                     {
                       categorias.map((categoria) => (
@@ -184,22 +185,22 @@ const Nuevo = () => {
 
               <Grid item xs={20} md={6} xl={8} mb={2} style={handleDetailsStyles()}>
                 <MDBox display={"flex"} alignItems={"center"} gap={2} mb={2}>
-                  <FormLabel style={{flex: 0.7, textAlign: "end"}}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>
                     Copias:
                   </FormLabel>
                   <MDInput type="number"
-                           placeholder="Cantidad de Copias"
-                           disabled={categoria === null}
-                           value={cantidad}
-                           onChange={(event) => {
-                             setCantidad(event.target.value);
-                           }}
-                           style={{flex: 1}}
+                    placeholder="Cantidad de Copias"
+                    disabled={categoria === null}
+                    value={cantidad}
+                    onChange={(event) => {
+                      setCantidad(event.target.value);
+                    }}
+                    style={{ flex: 1 }}
                   />
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{flex: 0.7, textAlign: "end"}}>Gramaje:</FormLabel>
-                  <FormControl sx={{ minWidth: 200 }} style={{flex: 1}}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Gramaje:</FormLabel>
+                  <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
@@ -213,8 +214,8 @@ const Nuevo = () => {
                   </FormControl>
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{flex: 0.7, textAlign: "end"}}>Opcion de impresion:</FormLabel>
-                  <FormControl sx={{ minWidth: 200 }} style={{flex: 1}}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Opcion de impresion:</FormLabel>
+                  <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
@@ -228,31 +229,31 @@ const Nuevo = () => {
                   </FormControl>
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{flex: 0.7, textAlign: "end"}}>Fecha limite de entrega (opcional):</FormLabel>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Fecha limite de entrega (opcional):</FormLabel>
                   <LocalizationProvider dateAdapter={AdapterDayjs}
-                                        style={{flex: 1}} >
-                    <DatePicker onChange={() => { setFechaHasta() }} sx={{ flex: 1 }} style={{flex: 1}}/>
+                    style={{ flex: 1 }} >
+                    <DatePicker onChange={() => { setFechaHasta() }} sx={{ flex: 1 }} style={{ flex: 1 }} />
                   </LocalizationProvider>
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{flex: 0.7, textAlign: "end"}}>Doble faz:</FormLabel>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Doble faz:</FormLabel>
                   <FormControlLabel
                     control={
                       dobleFazEnabled ?
                         <Switch disabled={true} checked={false} /> :
                         <Switch checked={dobleFaz} onChange={switchDobleFaz} />}
-                    style={{flex: 1}}
+                    style={{ flex: 1 }}
                   />
                 </MDBox>
-                <br/>
+                <br />
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
                   <MDButton color={"primary"}
-                            onClick={() => { updatePrice() }}
-                            style={{ flex: 0.6 }}
+                    onClick={() => { updatePrice() }}
+                    style={{ flex: 0.6 }}
                   >
                     Calcular Total:
                   </MDButton>
-                  <FormLabel style={{flex: 1, textAlign: "start"}}>${precio}</FormLabel>
+                  <FormLabel style={{ flex: 1, textAlign: "start" }}>${precio}</FormLabel>
                 </MDBox>
                 <MDBox>
                   <section className="container" style={{ padding: 20, border: '1px dotted'}}>
@@ -261,10 +262,10 @@ const Nuevo = () => {
                       <p>Arrastrá o hace click para subir archivos</p>
                     </div>
                     <aside>
-                      <h4>Files</h4>
+                      <h4>Archivos</h4>
                       <ul>{files}</ul>
                     </aside>
-                    {files.length > 0 && <button onClick={removeAll}>Borrar todos</button>}
+                    {files.length > 0 && <MDButton onClick={removeAll} color="error"><DeleteIcon /> Borrar todos</MDButton>}
                   </section>
                 </MDBox>
               </Grid>
