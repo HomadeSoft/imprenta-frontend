@@ -1,7 +1,7 @@
 import MDBox from "components/MDBox";
 
 import { useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import MDTypography from "../../components/MDTypography";
 import {
   CardActions,
@@ -25,6 +25,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Wrapper from "../Wrapper";
 import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import DataService from "services/DataService";
+
+import Dropzone, {useDropzone} from 'react-dropzone'
 
 const Nuevo = () => {
   const { id } = useParams()
@@ -73,24 +75,45 @@ const Nuevo = () => {
     setArchivos(e.target.files);
   };
 
-  const removeFileFromFileList = (fileName) => {
-    debugger
-    const dt = new DataTransfer()
-    debugger
-    const { files } = archivos
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      debugger
-      if (fileName !== file.name){
-        dt.items.add(file) // here you exclude the file. thus removing it.
-      }
+  ////////////////// START OF FILE MANAGER //////////////////
+  ////////////////// START OF FILE MANAGER //////////////////
+  ////////////////// START OF FILE MANAGER //////////////////
+  ////////////////// START OF FILE MANAGER //////////////////
+  ////////////////// START OF FILE MANAGER //////////////////
 
-    }
-    debugger
-    setArchivos(dt)
+  const [myFiles, setMyFiles] = useState([])
 
-    // input.files = dt.files // Assign the updates list
+  const onDrop = useCallback(acceptedFiles => {
+    setMyFiles([...myFiles, ...acceptedFiles])
+  }, [myFiles])
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+  })
+
+  const removeFile = file => () => {
+    const newFiles = [...myFiles]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    setMyFiles(newFiles)
   }
+
+  const removeAll = () => {
+    setMyFiles([])
+  }
+
+  const files = myFiles.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes{" "}
+      <button onClick={removeFile(file)}>Borrar archivo</button>
+    </li>
+  ))
+
+  ////////////////// END OF FILE MANAGER //////////////////
+  ////////////////// END OF FILE MANAGER //////////////////
+  ////////////////// END OF FILE MANAGER //////////////////
+  ////////////////// END OF FILE MANAGER //////////////////
+  ////////////////// END OF FILE MANAGER //////////////////
+
 
   const crearTrabajo = () => {
     if (cantidad && opcion) {
@@ -232,33 +255,45 @@ const Nuevo = () => {
                   <FormLabel style={{flex: 1, textAlign: "start"}}>${precio}</FormLabel>
                 </MDBox>
                 <MDBox>
-                  <MDButton
-                    color={"primary"}
-                    style={{ width: "20%", margin: "0 auto", maxWidth: 350 }}
-                    variant="contained"
-                    component="label"
+                  {/*<MDButton*/}
+                  {/*  color={"primary"}*/}
+                  {/*  style={{ width: "20%", margin: "0 auto", maxWidth: 350 }}*/}
+                  {/*  variant="contained"*/}
+                  {/*  component="label"*/}
 
-                  >
-                    Subir Archivo
-                    <input type="file" onChange={handleFileChange} hidden multiple />
-                  </MDButton>
-                  <MDBox>
-                    {
-                      Array.from(archivos).map(file => {
+                  {/*>*/}
+                  {/*  Subir Archivo*/}
+                  {/*  <input type="file" onChange={handleFileChange} hidden multiple />*/}
+                  {/*</MDButton>*/}
+                  {/*<MDBox>*/}
+                  {/*  {*/}
+                  {/*    Array.from(archivos).map(file => {*/}
 
-                        return (
-                          <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: 10}}>
-                            <div>{file.name}</div>
-                            <div style={{cursor: "pointer"}}
-                                 onClick={() => { removeFileFromFileList(file.name)}}>
-                              X
-                            </div>
-                          </div>
+                  {/*      return (*/}
+                  {/*        <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 15, marginTop: 10}}>*/}
+                  {/*          <div>{file.name}</div>*/}
+                  {/*          <div style={{cursor: "pointer"}}*/}
+                  {/*               onClick={() => { removeFileFromFileList(file.name)}}>*/}
+                  {/*            X*/}
+                  {/*          </div>*/}
+                  {/*        </div>*/}
 
-                        )
-                      })
-                    }
-                  </MDBox>
+                  {/*      )*/}
+                  {/*    })*/}
+                  {/*  }*/}
+                  {/*</MDBox>*/}
+
+                  <section className="container" style={{ padding: 20, border: '1px dotted'}}>
+                    <div {...getRootProps({ className: "dropzone" })}>
+                      <input {...getInputProps()} />
+                      <p>Arrastrá o hace click para subir archivos</p>
+                    </div>
+                    <aside>
+                      <h4>Files</h4>
+                      <ul>{files}</ul>
+                    </aside>
+                    {files.length > 0 && <button onClick={removeAll}>Borrar todos</button>}
+                  </section>
                 </MDBox>
               </Grid>
             </Grid>
