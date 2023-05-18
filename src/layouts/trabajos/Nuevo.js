@@ -27,7 +27,7 @@ import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import DataService from "services/DataService";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import Dropzone, { useDropzone } from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 
 const Nuevo = () => {
   const { id } = useParams()

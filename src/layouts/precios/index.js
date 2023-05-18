@@ -9,19 +9,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
 import DataService from "../../services/DataService";
-import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
+// import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 
 function Precios() {
-  const [categorias, setCategorias] = useState(bajadasSinPapel());
-
-  // const [categorias, setCategorias] = useState([]);
+  // const [categorias, setCategorias] = useState(bajadasSinPapel());
+  const [categorias, setCategorias] = useState([]);
   const [expanded, setExpanded] = useState("");
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const {data, error} = await DataService.fetchPrices()
-      // setCategorias(data)
+      setCategorias(data)
     }
 
     fetchData();
@@ -44,7 +43,7 @@ function Precios() {
   var lista = [];
   var categoryIndex = 0;
 
-  if (categorias) {
+  if (categorias?.length) {
     categorias.forEach(categoria => {
       const title = <MDTypography>{categoria.printSize}</MDTypography>;
       var papel = [];
