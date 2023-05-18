@@ -1,6 +1,6 @@
 const DataService = (() => {
-  // const BASE_URL = process.env.REACT_APP_API_ROOT;
-  const BASE_URL = 'http://localhost:3001';
+  const BASE_URL = process.env.REACT_APP_API_ROOT;
+  //const BASE_URL = 'http://localhost:3001';
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
@@ -79,7 +79,7 @@ const DataService = (() => {
     const url = `${BASE_URL}/jobs/create`;
     const token = "2";
 
-    return fetch(url,{
+    return fetch(url, {
       method: 'POST',
       headers: requestPostHeaders(token),
       body: JSON.stringify(job)
@@ -97,7 +97,7 @@ const DataService = (() => {
     const url = `${BASE_URL}/json_prices/save`;
     const token = "2";
 
-    return fetch(url,{
+    return fetch(url, {
       method: 'POST',
       headers: requestPostHeaders(token),
       body: JSON.stringify({ prices: prices })
