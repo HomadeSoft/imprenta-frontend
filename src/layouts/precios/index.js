@@ -11,7 +11,7 @@ import EditableTableCell from "components/EditableTableCell";
 import DataService from "../../services/DataService";
 
 function Precios() {
-  
+
   const [expanded, setExpanded] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [editing, setEditing] = useState(false);
