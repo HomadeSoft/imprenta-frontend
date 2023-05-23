@@ -6,11 +6,14 @@ import MDTypography from "../../components/MDTypography";
 import {
   CardActions,
   CardContent,
+  CircularProgress,
+  Fade,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormLabel,
   Grid,
+  LinearProgress,
   MenuItem,
   Radio,
   RadioGroup,
@@ -33,11 +36,16 @@ const Nuevo = () => {
   const { id } = useParams()
   const [user, setUser] = useState(null);
   const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await DataService.fetchPrices()
-      setCategorias(data)
+    const fetchData = () => {
+      DataService.fetchPrices().then(
+        (response) => {
+          setCategorias(response.data);
+          setLoading(false);
+        }
+      );
     }
 
     fetchData();
@@ -52,6 +60,7 @@ const Nuevo = () => {
   const [precio, setPrecio] = React.useState(0);
   const [fechaHasta, setFechaHasta] = React.useState(null);
   const [archivos, setArchivos] = React.useState([]);
+
   const handleChange = (event) => {
     setPapel(event.target.value);
   };
@@ -158,14 +167,14 @@ const Nuevo = () => {
   }
 
   return (
-    <Wrapper title="Trabajo Nuevo">
+    <Wrapper title="Trabajo Nuevo" loading={loading}>
       <>
+
         <CardContent>
           {/*<MDBox mb={2} style={{ display: "flex", flexDirection: 'row', gap: 5 }}>*/}
           {/*  <MDTypography variant="h6" component="div">Usuario:</MDTypography>*/}
           {/*  <MDTypography variant="body2">Juan Cruz</MDTypography>*/}
           {/*</MDBox>*/}
-
           <FormGroup>
             <Grid container spacing={1}>
               <Grid item xs={12} md={6} xl={4} spacing={1}>

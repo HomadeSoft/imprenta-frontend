@@ -16,11 +16,17 @@ function Precios() {
   const [categorias, setCategorias] = useState([]);
   const [expanded, setExpanded] = useState("");
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await DataService.fetchPrices()
-      setCategorias(data)
+    const fetchData = () => {
+      DataService.fetchPrices().then(
+        (response) => {
+          setCategorias(response.data);
+          setLoading(false);
+        }
+      );
     }
 
     fetchData();
@@ -111,7 +117,7 @@ function Precios() {
 
   return (
     <div>
-      <Wrapper title="Lista de Precios">
+      <Wrapper title="Lista de Precios" loading={loading}>
         {lista}
       </Wrapper>
       <Box sx={{

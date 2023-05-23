@@ -4,9 +4,10 @@ import MDBox from "../components/MDBox";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDTypography from "../components/MDTypography";
+import { Fade, LinearProgress } from "@mui/material";
 
 
-const Wrapper = ({children, title}) => {
+const Wrapper = ({children, title, loading}) => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -27,6 +28,17 @@ const Wrapper = ({children, title}) => {
                 <MDTypography variant="h6" color="white">
                   {title}
                 </MDTypography>
+              </MDBox>
+              <MDBox>
+                <Fade
+                  in={loading}
+                  style={{
+                    transitionDelay: loading ? '800ms' : '0ms',
+                  }}
+                  unmountOnExit
+                >
+                  <LinearProgress />
+                </Fade>
               </MDBox>
               <MDBox pt={3}>
                 {children}
