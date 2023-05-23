@@ -1,5 +1,5 @@
 const DataService = (() => {
-  const BASE_URL = process.env.REACT_APP_API_ROOT;
+  const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });

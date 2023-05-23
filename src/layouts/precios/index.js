@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit"
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import PriceTable from "examples/Tables/PriceTable";
-import {Accordion, AccordionDetails, AccordionSummary, Box, Fab} from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Fab } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
@@ -19,7 +19,7 @@ function Precios() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const {data, error} = await DataService.fetchPrices()
+      const { data, error } = await DataService.fetchPrices()
       setCategorias(data)
     }
 
@@ -31,13 +31,13 @@ function Precios() {
   };
 
   const handleUpdate = (categoryIndex, paperIndex, quantityIndex, optionsIndex) => (event) => {
-        let categoriasNew = [...categorias];
-        categoriasNew[categoryIndex].papel[paperIndex].quantities[quantityIndex].options[optionsIndex].value = event.target.value;
-        setCategorias([...categorias]);
-      };
+    let categoriasNew = [...categorias];
+    categoriasNew[categoryIndex].papel[paperIndex].quantities[quantityIndex].options[optionsIndex].value = event.target.value;
+    setCategorias([...categorias]);
+  };
 
   const savePrices = async () => {
-    const {data, error} = await DataService.savePrices(categorias)
+    const { data, error } = await DataService.savePrices(categorias)
   }
 
   var lista = [];
@@ -58,7 +58,7 @@ function Precios() {
           var optionsIndex = 0;
           quantity.options.forEach(option => {
             row[option.description] = (editing ?
-              <EditableTableCell value={option.value} onBlur={handleUpdate(categoryIndex, paperIndex, quantityIndex, optionsIndex)}/> :
+              <EditableTableCell value={option.value} onBlur={handleUpdate(categoryIndex, paperIndex, quantityIndex, optionsIndex)} /> :
               <MDTypography variant="button" color="text" fontWeight="bold">{option.value}</MDTypography>);
             optionsIndex++;
           });
@@ -66,20 +66,20 @@ function Precios() {
           rows.push(row)
         });
         Object.keys(rows[0]).forEach(key => {
-          columns.push({Header: key, accessor: key, align: "center"});
+          columns.push({ Header: key, accessor: key, align: "center" });
         })
 
         papel.push(<Accordion expanded={expanded === elemento.gramaje + categoria.printSize}
-                              onChange={handleChange(elemento.gramaje + categoria.printSize)}>
+          onChange={handleChange(elemento.gramaje + categoria.printSize)}>
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon/>}
+            expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
           >
-            <MDTypography sx={{width: '33%', flexShrink: 0}}>
+            <MDTypography sx={{ width: '33%', flexShrink: 0 }}>
               {elemento.gramaje === null ? "sin papel" : (elemento.gramaje)}
             </MDTypography>
-            <MDTypography sx={{width: '33%', flexShrink: 0}} fontWeight={"light"} color={"secondary"}>
+            <MDTypography sx={{ width: '33%', flexShrink: 0 }} fontWeight={"light"} color={"secondary"}>
               {
                 elemento.caracteristicas.map((caracteristica) => " | " + caracteristica.charAt(0).toUpperCase() + caracteristica.slice(1))
               }
@@ -87,7 +87,7 @@ function Precios() {
           </AccordionSummary>
           <AccordionDetails>
             <PriceTable
-              table={{columns: columns, rows: rows}}
+              table={{ columns: columns, rows: rows }}
               isSorted={false}
               entriesPerPage={false}
               showTotalEntries={false}
@@ -115,17 +115,17 @@ function Precios() {
         {lista}
       </Wrapper>
       <Box sx={{
-        '& > :not(style)': {m: 1},
+        '& > :not(style)': { m: 1 },
         position: 'fixed',
         bottom: 16,
         right: 16,
       }}>
         <Fab color="primary" aria-label="add" onClick={() => {
-          if (editing){ savePrices() }
+          if (editing) { savePrices() }
 
           setEditing(!editing);
         }}>
-          {editing ? <SaveIcon fontSize={"large"}/> : <EditIcon fontSize={"large"}/> }
+          {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
         </Fab>
       </Box>
     </div>

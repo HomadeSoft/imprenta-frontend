@@ -32,9 +32,16 @@ import { useDropzone } from 'react-dropzone'
 const Nuevo = () => {
   const { id } = useParams()
   const [user, setUser] = useState(null);
-  const categorias = bajadasSinPapel();
+  const [categorias, setCategorias] = useState([]);
+
   useEffect(() => {
-  }, []);
+    const fetchData = async () => {
+      const { data, error } = await DataService.fetchPrices()
+      setCategorias(data)
+    }
+
+    fetchData();
+  }, [])
 
   const [papel, setPapel] = React.useState('');
   const [opcion, setOpcion] = React.useState('');
@@ -166,7 +173,7 @@ const Nuevo = () => {
                   <FormLabel id="tipo-papel-label">Tipo de Papel</FormLabel>
                   <RadioGroup aria-labelledby="tipo-papel-label" name="tipo-papel">
                     {
-                      categorias.map((categoria) => (
+                      categorias?.map((categoria) => (
                         <FormControlLabel
                           value={categoria.printSize}
                           control={<Radio />}
@@ -256,7 +263,7 @@ const Nuevo = () => {
                   <FormLabel style={{ flex: 1, textAlign: "start" }}>${precio}</FormLabel>
                 </MDBox>
                 <MDBox>
-                  <section className="container" style={{ padding: 20, border: '1px dotted'}}>
+                  <section className="container" style={{ padding: 20, border: '1px dotted' }}>
                     <div {...getRootProps({ className: "dropzone" })}>
                       <input {...getInputProps()} />
                       <p>Arrastrá o hace click para subir archivos</p>
