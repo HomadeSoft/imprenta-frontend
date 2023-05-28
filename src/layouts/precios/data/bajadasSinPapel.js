@@ -190,7 +190,7 @@ function getTablesAPI() {
           ]
         },
         {
-          gramaje: null,
+          gramaje: "Sin Papel",
           caracteristicas: [],
           quantities: [
             { min: 101, max: 250, options: [{ description: "4/0", value: "$62" }, { description: "diseños", value: "2" }] },
