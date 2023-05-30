@@ -20,11 +20,14 @@ import App from "App";
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
+import {GlobalDataContextProvider} from "./context/DataContext";
 
 ReactDOM.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>
-      <App />
+      <GlobalDataContextProvider>
+        <App />
+      </GlobalDataContextProvider>
     </MaterialUIControllerProvider>
   </BrowserRouter>,
   document.getElementById("root")

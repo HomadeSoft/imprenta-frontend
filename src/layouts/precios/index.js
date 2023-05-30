@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
 import DataService from "../../services/DataService";
+import { useGlobalDataContext } from "../../context/DataContext";
 // import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 
 function Precios() {
@@ -18,19 +19,14 @@ function Precios() {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const { prices, setPrices } = useGlobalDataContext()
 
   useEffect(() => {
-    const fetchData = () => {
-      DataService.fetchPrices().then(
-        (response) => {
-          setCategorias(response.data);
-          setLoading(false);
-        }
-      );
+    if (prices.length){
+      setCategorias(prices)
+      setLoading(false);
     }
-
-    fetchData();
-  }, [])
+  }, [prices])
 
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -40,6 +36,7 @@ function Precios() {
     let categoriasNew = [...categorias];
     categoriasNew[categoryIndex].papel[paperIndex].quantities[quantityIndex].options[optionsIndex].value = event.target.value;
     setCategorias([...categorias]);
+    setPrices([...categorias]);
   };
 
   const savePrices = async () => {

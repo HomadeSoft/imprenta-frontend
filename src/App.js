@@ -48,6 +48,8 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import {useGlobalDataContext} from "./context/DataContext";
+import DataService from "./services/DataService";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -63,6 +65,17 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
+
+  const { setPrices } = useGlobalDataContext()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: prices, error} = await DataService.fetchPrices();
+      setPrices(prices);
+    };
+    fetchData();
+  }, []);
+
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
