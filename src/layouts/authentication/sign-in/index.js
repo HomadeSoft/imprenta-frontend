@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import {useState} from "react";
+import { useState } from "react";
 
 // react-router-dom components
 
@@ -26,7 +26,6 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 
 // Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
@@ -36,10 +35,11 @@ import Footer from "../components/Footer";
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
 
+  // eslint-disable-next-line no-unused-vars
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   return (
-    <PageLayout style={{zIndex: 99}}>
+    <PageLayout style={{ zIndex: 99 }}>
       <MDBox
         position="absolute"
         width="100%"

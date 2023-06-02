@@ -2,40 +2,30 @@ import MDBox from "components/MDBox";
 
 import { useParams } from "react-router-dom";
 import React, { useCallback, useEffect, useState } from "react";
-import MDTypography from "../../components/MDTypography";
 import {
-  Box,
   CardActions,
   CardContent,
-  CircularProgress,
-  Fade,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormLabel,
   Grid,
-  LinearProgress,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   Switch
 } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Wrapper from "../Wrapper";
-import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import DataService from "services/DataService";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useDropzone } from 'react-dropzone'
-import { Category } from "@mui/icons-material";
 
 const Nuevo = () => {
+  // eslint-disable-next-line no-unused-vars
   const { id } = useParams()
+  // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,15 +47,11 @@ const Nuevo = () => {
   }, [])
 
   const [papel, setPapel] = React.useState('');
-  const [opcion, setOpcion] = React.useState('');
   const [categoria, setCategoria] = React.useState();
   const [dobleFaz, setDobleFaz] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [dobleFazEnabled, setDobleFazEnabled] = React.useState(false);
   const [cantidad, setCantidad] = React.useState(0);
-  const [precio, setPrecio] = React.useState(0);
-  const [fechaHasta, setFechaHasta] = React.useState(null);
-  const [caracteristica, setCaracteristica] = React.useState(null);
-  const [archivos, setArchivos] = React.useState([]);
   const [tipoPapel, setTipoPapel] = React.useState();
   const [troqueladoEnabled, setTroqueladoEnabled] = React.useState(false);
   const [laminadoEnabled, setLaminadoEnabled] = React.useState(false);
@@ -84,7 +70,7 @@ const Nuevo = () => {
     setTroquelado(event.target.value);
   }
 
-  const switchTroquelado = (event) => {
+  const switchTroquelado = () => {
     setTroqueladoEnabled(troqueladoEnabled ? false : true);
   }
 
@@ -92,7 +78,7 @@ const Nuevo = () => {
     setLaminado(event.target.value);
   }
 
-  const switchLaminado = (event) => {
+  const switchLaminado = () => {
     setLaminadoEnabled(laminadoEnabled ? false : true);
   }
   const handleCategoriaChange = (event) => {
@@ -169,13 +155,6 @@ const Nuevo = () => {
     )
   }
 
-  const handleDetailsStyles = () => {
-    if (categoria) {
-      return ({ opacity: 1 })
-    } else {
-      return ({ opacity: 0.3, pointerEvents: 'none' })
-    }
-  }
 
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
@@ -208,6 +187,7 @@ const Nuevo = () => {
                                 >{categoria.printSize}</MenuItem>
                               )
                             }
+                            // eslint-disable-next-line array-callback-return
                             return;
                           }
                         )

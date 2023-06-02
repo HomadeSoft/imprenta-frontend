@@ -1,11 +1,8 @@
-import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 
 // Dashboard components
 import {useEffect, useState} from "react";
 import DataService from "../../services/DataService";
-import InfoIcon from "@mui/icons-material/Info";
-import DownloadIcon from "@mui/icons-material/Download";
 import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "./utils";
 
@@ -26,6 +23,7 @@ function Pendientes() {
 
   useEffect(() => {
     const getInfo = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchPendingJobs()
       const formattedRows = data.map(r => JobsRowFormatter(r))
       setRows(formattedRows)

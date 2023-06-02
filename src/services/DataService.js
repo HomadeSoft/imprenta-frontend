@@ -1,4 +1,3 @@
-import {formatPrice, formatPriceToCents} from "../layouts/trabajos/utils";
 
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';

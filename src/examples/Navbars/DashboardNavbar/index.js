@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  =========================================================
  * Material Dashboard 2 React - v2.1.0
@@ -13,10 +14,10 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  */
 
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
 // react-router components
-import {useLocation, Link} from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -25,16 +26,12 @@ import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDInput from "components/MDInput";
 
 // Material Dashboard 2 React example components
-import Breadcrumbs from "examples/Breadcrumbs";
-import NotificationItem from "examples/Items/NotificationItem";
 
 // Custom styles for DashboardNavbar
 import {
@@ -53,10 +50,10 @@ import {
   setOpenConfigurator,
 } from "context";
 
-function DashboardNavbar({absolute, light, isMini}) {
+function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const {miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode} = controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -92,7 +89,7 @@ function DashboardNavbar({absolute, light, isMini}) {
   const handleCloseMenu = () => setOpenMenu(false);
 
   // Styles for the navbar icons
-  const iconsStyle = ({palette: {dark, white, text}, functions: {rgba}}) => ({
+  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
     color: () => {
       let colorValue = light || darkMode ? white.main : dark.main;
 

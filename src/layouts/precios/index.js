@@ -22,7 +22,7 @@ function Precios() {
   const { prices, setPrices } = useGlobalDataContext()
 
   useEffect(() => {
-    if (prices.length){
+    if (prices.length) {
       setCategorias(prices)
       setLoading(false);
     }
@@ -40,6 +40,7 @@ function Precios() {
   };
 
   const savePrices = async () => {
+    // eslint-disable-next-line no-unused-vars
     const { data, error } = await DataService.savePrices(categorias)
   }
 

@@ -97,11 +97,13 @@ const Detalle = () => {
   useEffect(() => {
     if(!id || id === ":id") { navigate('/') }
     const fetchUserData = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchJobData(id)
       setJob(data);
     }
 
     fetchUserData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   useEffect(() => {
@@ -136,6 +138,7 @@ const Detalle = () => {
     setLoading(true);
 
     const priceCents = formatPriceToCents(value)
+    // eslint-disable-next-line no-unused-vars
     const {data, error} = await DataService.updateJobPrice(job.id, priceCents)
 
     setLoading(false);
@@ -144,18 +147,21 @@ const Detalle = () => {
 
   const changeStatusInProgress = async () => {
     setLoading(true)
+    // eslint-disable-next-line no-unused-vars
     const {data, error} = await DataService.changeStatusInProgress(job.id)
     setJob(data);
     setLoading(false)
   }
   const changeStatusFinished = async () => {
     setLoading(true)
+    // eslint-disable-next-line no-unused-vars
     const {data, error} = await DataService.changeStatusFinished(job.id)
     setJob(data);
     setLoading(false)
   }
   const changeStatusCanceled = async () => {
     setLoading(true)
+    // eslint-disable-next-line no-unused-vars
     const {data, error} = await DataService.changeStatusCanceled(job.id)
     setJob(data);
     setLoading(false)

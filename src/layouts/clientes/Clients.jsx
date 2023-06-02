@@ -1,8 +1,5 @@
 import DataTable from "../../examples/Tables/DataTable";
 import {useEffect, useState} from "react";
-import MDTypography from "../../components/MDTypography";
-import MDButton from "../../components/MDButton";
-import {Link} from "react-router-dom";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {ClientsRowFormatter} from "./utils";
@@ -22,6 +19,7 @@ const Clientes = () => {
 
   useEffect(() => {
     const getInfo = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchUsers()
       // debugger
       setRows(data.map(r => ClientsRowFormatter(r)))

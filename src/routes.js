@@ -36,7 +36,6 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
 import TrabajosPendientes from "layouts/trabajos/Pendientes";
 import Tables from "layouts/tables";
 import Precios from "layouts/precios";

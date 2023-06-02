@@ -27,11 +27,13 @@ const DetallesCliente = () => {
     if(!id || id === ":id") { navigate('/') }
 
     const fetchUserData = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchUserData(id)
       setUser(data)
     }
 
     const fetchData = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchUserJobs(id)
       const formattedRows = data.map(r => JobsRowFormatter(r))
       setUserJobs(formattedRows)
@@ -39,6 +41,7 @@ const DetallesCliente = () => {
 
     fetchUserData();
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   return (

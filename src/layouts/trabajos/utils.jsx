@@ -34,6 +34,7 @@ const formatDate = (dateToFormat) => {
 }
 
 const formatStatus = (status) => {
+  // eslint-disable-next-line default-case
   switch (status){
     case "pending":
       return "Pendiente";

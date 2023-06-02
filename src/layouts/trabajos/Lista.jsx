@@ -21,6 +21,7 @@ function Lista() {
 
   useEffect(() => {
     const getInfo = async () => {
+      // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchPendingJobs()
       const formattedRows = data.map(r => JobsRowFormatter(r))
       setRows(formattedRows)

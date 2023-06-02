@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /**
 =========================================================
 * Material Dashboard 2 React - v2.1.0
