@@ -14,6 +14,10 @@ const JobsRowFormatter = (row) => {
 }
 
 const formatPrice = (priceCents) => {
+  if(!priceCents){
+    return (0 / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
+  }
+
   try {
     return (priceCents / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
   } catch (e){
@@ -40,9 +44,34 @@ const formatStatus = (status) => {
   }
 }
 
+const formatBoolean = (bool) => {
+  if (bool) {
+    return "Si"
+  } else {
+    return "No"
+  }
+}
+
+const formatPriceToCents = (price) => {
+  if (!price) {
+    return 0;
+  }
+  return Math.round(price * 100)
+}
+
+const formatPriceFromCents = (price) => {
+  if (!price) {
+    return 0;
+  }
+  return (price / 100).toFixed(2)
+}
+
 export {
   JobsRowFormatter,
   formatPrice,
   formatDate,
-  formatStatus
+  formatStatus,
+  formatBoolean,
+  formatPriceToCents,
+  formatPriceFromCents
 }

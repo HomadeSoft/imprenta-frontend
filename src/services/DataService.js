@@ -1,3 +1,5 @@
+import {formatPrice, formatPriceToCents} from "../layouts/trabajos/utils";
+
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
@@ -125,6 +127,41 @@ const DataService = (() => {
       })
   }
 
+  const updateJobPrice = async (id, price) => {
+    const url = `${BASE_URL}/jobs/update`;
+    const token = "2";
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, total_price_cents: price })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const changeStatus = async (id, newStatus) => {
+    const url = `${BASE_URL}/jobs/changeStatus`;
+    const token = "2";
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, new_status: newStatus })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
 
   return {
     fetchPendingJobs: () => fetchPendingJobs(),
@@ -135,7 +172,11 @@ const DataService = (() => {
     submitJob: (job) => submitJob(job),
     savePrices: (prices) => savePrices(prices),
     fetchPrices: () => fetchPrices(),
-
+    updateJobPrice: (id, price) => updateJobPrice(id, price),
+    changeStatusPending: (id) => changeStatus(id, "pending"),
+    changeStatusInProgress: (id) => changeStatus(id, "in_progress"),
+    changeStatusCanceled: (id) => changeStatus(id, "canceled"),
+    changeStatusFinished: (id) => changeStatus(id, "finished"),
   }
 })();
 

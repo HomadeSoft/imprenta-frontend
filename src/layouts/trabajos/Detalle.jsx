@@ -1,51 +1,189 @@
+import React, {useEffect, useState} from "react";
 import Wrapper from "../Wrapper";
-import {useParams, useNavigate, Link} from "react-router-dom";
-
-import {useEffect, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import DataService from "../../services/DataService";
 import ProfileInfoCard from "../../examples/Cards/InfoCards/ProfileInfoCard";
-import {formatDate, formatPrice, formatStatus} from "./utils";
-import InfoIcon from "@mui/icons-material/Info";
-import MDTypography from "../../components/MDTypography";
+import {formatBoolean, formatDate, formatPrice, formatPriceFromCents, formatPriceToCents, formatStatus} from "./utils";
 import IconButton from "@mui/material/IconButton";
-import {navbarIconButton} from "../../examples/Navbars/DashboardNavbar/styles";
 import Icon from "@mui/material/Icon";
 import MDButton from "../../components/MDButton";
 import Divider from "@mui/material/Divider";
+import {Dialog, DialogTitle, TextField} from "@mui/material";
+
+function PriceDialog(props) {
+  const { onClose, selectedValue, open } = props;
+  const [newPrice, setNewPrice] = useState("0")
+
+  const handleCancel = () => onClose(selectedValue);
+  const handleSave = () => onClose(newPrice);
+  const handleInputChange = (event) => setNewPrice(event.target.value);
+
+  useEffect(() => {
+    setNewPrice(formatPriceFromCents(selectedValue))
+  }, [selectedValue])
+
+  return (
+    <Dialog onClose={handleCancel} open={open}>
+      <DialogTitle style={{margin: "25px"}}>Determinar el precio del trabajo</DialogTitle>
+      <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
+        <div>$</div>
+        <TextField value={newPrice} onChange={handleInputChange} type={"number"}/>
+      </div>
+      <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
+        <MDButton color={"dark"} onClick={handleSave}>
+          Guardar
+        </MDButton>
+      </div>
+    </Dialog>
+  );
+}
+
+const CambiarAProcesandoButton = ({ job, onClick }) => {
+  if (!job || job?.status !== 'pending') {
+    return false
+  }
+
+  return (
+    <MDButton color={"dark"} onClick={onClick}>
+      Cambiar estado a "Procesando"
+    </MDButton>
+  )
+}
+
+const RehazarButton = ({ job, onClick }) => {
+
+  if (!job || job?.status !== 'pending') {
+    return false
+  }
+
+  return (
+    <MDButton color={"dark"} onClick={onClick}>
+      Rechazar trabajo
+    </MDButton>
+  )
+}
+
+const FinalizarButton = ({ job, onClick }) => {
+  if (!job || job?.status !== 'in_progress') {
+    return false
+  }
+
+  return (
+    <MDButton color={"dark"} onClick={onClick}>
+      Finalizar trabajo
+    </MDButton>
+  )
+}
+
+const ModificarPrecioButton = ({job, handleClickOpen}) => {
+  if (job?.status !== "pending") {
+    return false;
+  }
+
+  return (
+    <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
+      <MDButton color={"dark"} onClick={handleClickOpen} >Modificar precio</MDButton>
+    </div>
+  )
+}
 
 const Detalle = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
   const [job, setJob] = useState(null)
+  const [jobInfo, setJobInfo] = useState({})
 
   useEffect(() => {
     if(!id || id === ":id") { navigate('/') }
     const fetchUserData = async () => {
       const {data, error} = await DataService.fetchJobData(id)
-      setJob(data)
+      setJob(data);
     }
 
     fetchUserData();
   }, [id])
 
+  useEffect(() => {
+    const info = {
+      "Tipo de papel": job?.paper_type,
+      "Tamaño de papel": job?.paper_size,
+      "Cantidad de Copias": job?.copies_quantity,
+      "Doble Faz?": formatBoolean(job?.doble_faz),
+      "Tipo de Laminado": job?.laminado,
+      "Notas": job?.notes,
+      "Estado": formatStatus(job?.status),
+      "Precio": formatPrice(job?.total_price_cents),
+      "Tipo Troquelado": job?.troquelado,
+      "Fecha límite de entrega": formatDate(job?.due_date),
+    }
+    const cleanData = Object.entries(info).filter(([key, value]) => value !== undefined && value !== null )
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+    setJobInfo(cleanData)
+  }, [job])
+
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handlePriceUpdate = async (value) => {
+    setOpen(false);
+    setLoading(true);
+
+    const priceCents = formatPriceToCents(value)
+    const {data, error} = await DataService.updateJobPrice(job.id, priceCents)
+
+    setLoading(false);
+    setJob(data);
+  };
+
+  const changeStatusInProgress = async () => {
+    setLoading(true)
+    const {data, error} = await DataService.changeStatusInProgress(job.id)
+    setJob(data);
+    setLoading(false)
+  }
+  const changeStatusFinished = async () => {
+    setLoading(true)
+    const {data, error} = await DataService.changeStatusFinished(job.id)
+    setJob(data);
+    setLoading(false)
+  }
+  const changeStatusCanceled = async () => {
+    setLoading(true)
+    const {data, error} = await DataService.changeStatusCanceled(job.id)
+    setJob(data);
+    setLoading(false)
+  }
+
   return(
-    <Wrapper title={"Detalle del trabajo"}>
+    <Wrapper title={"Detalle del trabajo"} loading={loading}>
       <ProfileInfoCard
-        info={{
-          "Tipo de papel": job?.gramaje_laminado,
-          "Tamaño de papel": job?.paperSize,
-          "Doble Faz?": job?.doble_faz ? "Si" : "No",
-          "Cantidad de Copias": job?.copies_quantity,
-          "Estado": formatStatus(job?.status),
-          "Precio": formatPrice(job?.total_price_cents),
-          "Fecha de Limite": formatDate(job?.due_date),
-        }}
+        info={jobInfo}
         shadow={false}
       />
 
-
       <Divider />
+
+      <ModificarPrecioButton job={job} handleClickOpen={handleClickOpen}/>
+
+      <PriceDialog
+        selectedValue={job?.total_price_cents}
+        open={open}
+        onClose={handlePriceUpdate}
+      />
+
+      <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
+        <CambiarAProcesandoButton job={job} onClick={changeStatusInProgress}/>
+        <RehazarButton job={job} onClick={changeStatusCanceled} />
+        <FinalizarButton job={job} onClick={changeStatusFinished}/>
+      </div>
+
       <div style={{display: "flex", flexDirection: 'row', margin: 10, gap: 10, fontSize: 14, alignItems: 'center'}}>
         <div>
           Ver usuario:
