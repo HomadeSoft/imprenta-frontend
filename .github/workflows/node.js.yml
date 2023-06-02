@@ -30,12 +30,10 @@ jobs:
     - run: npm install
     - run: npm run build --if-present
     - name: SCP Files
-      uses: marcodallasanta/ssh-scp-deploy@acf9c1fefcda34c0b8b0cb0c0c1b521bf130d8b6
+      uses: cross-the-world/scp-pipeline@b4d86397129250eb940fabdc3f7a435436d2503a
       with:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        pass: ${{ secrets.PASSWORD }}
         local: "build/"
-        remote: "/root/imprenta-frontend/"
-        scp_options: -v
-      
+        remote: "/root/imprenta-frontend/"      
