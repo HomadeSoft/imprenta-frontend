@@ -36,6 +36,6 @@ jobs:
         user: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         local: "build/"
-        target: "/root/imprenta-frontend/"
+        remote: "/root/imprenta-frontend/"
         scp_options: -v
       
