@@ -36,4 +36,4 @@ jobs:
         user: ${{ secrets.USERNAME }}
         pass: ${{ secrets.PASSWORD }}
         local: "build/"
-        remote: "/root/imprenta-frontend/"      
+        remote: "/usr/local/lsws/grafica-publicar/html/imprenta-frontend"      
