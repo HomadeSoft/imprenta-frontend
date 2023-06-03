@@ -28,7 +28,7 @@ jobs:
         #cache: 'npm'
         #cache-dependency-path: './package-lock.json'
     - run: npm install
-    - run:  REACT_APP_API_ROOT='http://pedidos.graficapublicar.com.ar/api' npm run build --if-present
+    - run:  REACT_APP_API_ROOT='http://api.graficapublicar.com.ar' npm run build --if-present
     - name: SCP Files
       uses: cross-the-world/scp-pipeline@b4d86397129250eb940fabdc3f7a435436d2503a
       with:
