@@ -17,18 +17,27 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
+import { Auth0Provider } from '@auth0/auth0-react';
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
-import {GlobalDataContextProvider} from "./context/DataContext";
+import { GlobalDataContextProvider } from "./context/DataContext";
 
 ReactDOM.render(
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <GlobalDataContextProvider>
-        <App />
-      </GlobalDataContextProvider>
-    </MaterialUIControllerProvider>
-  </BrowserRouter>,
+  <Auth0Provider
+    domain="dev-ig4v3eio87y70n0r.us.auth0.com"
+    clientId="VF1MRW24zgNOk61tAqU9ZKXlCrDwo4Ks"
+    authorizationParams={{
+      redirect_uri: window.location.origin
+    }}
+  >
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <GlobalDataContextProvider>
+          <App />
+        </GlobalDataContextProvider>
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </Auth0Provider>,
   document.getElementById("root")
 );
