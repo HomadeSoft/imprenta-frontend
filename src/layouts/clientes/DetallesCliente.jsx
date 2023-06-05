@@ -35,7 +35,7 @@ const DetallesCliente = () => {
     const fetchData = async () => {
       // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchUserJobs(id)
-      const formattedRows = data.map(r => JobsRowFormatter(r))
+      const formattedRows = data?.map(r => JobsRowFormatter(r))
       setUserJobs(formattedRows)
     }
 

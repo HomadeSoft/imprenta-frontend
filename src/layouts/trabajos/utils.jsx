@@ -3,6 +3,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
 
 const JobsRowFormatter = (row) => {
+  if(!row) { return {} }
+
   return {
     cliente: (<MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="text" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),

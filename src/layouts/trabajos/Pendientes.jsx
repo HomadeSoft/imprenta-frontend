@@ -25,7 +25,7 @@ function Pendientes() {
     const getInfo = async () => {
       // eslint-disable-next-line no-unused-vars
       const {data, error} = await DataService.fetchPendingJobs()
-      const formattedRows = data.map(r => JobsRowFormatter(r))
+      const formattedRows = data?.map(r => JobsRowFormatter(r))
       setRows(formattedRows)
     };
 

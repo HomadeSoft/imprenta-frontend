@@ -1,50 +1,18 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
-
-// react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
-// @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-
-// Material Dashboard 2 React components
-
-// Material Dashboard 2 React example components
 import Sidenav from "examples/Sidenav";
-
-// Material Dashboard 2 React themes
 import theme from "assets/theme";
-
-// Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-
-
-// Material Dashboard 2 React routes
 import routes from "routes";
-
-// Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav } from "context";
-
-// Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import { useGlobalDataContext } from "./context/DataContext";
 import DataService from "./services/DataService";
+import { ProtectedRoute } from "./authContexts/ProtectedRoute";
+import { useAuthListener } from "./authContexts/useAuthListener";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -67,7 +35,7 @@ export default function App() {
       setPrices(prices);
     };
     fetchData();
-  });
+  }, []);
 
 
   // Open sidenav when mouse enter on mini sidenav
@@ -100,8 +68,16 @@ export default function App() {
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
+      // if (route.collapse) {
+      //   return getRoutes(route.collapse);
+      // }
+
+      if (route.protected) {
+        return (
+          <Route exact path={route.route} key={route.key} element={<ProtectedRoute />}>
+            <Route exact path={route.route} element={route.component}/>
+          </Route>
+        )
       }
 
       if (route.route) {
@@ -111,44 +87,22 @@ export default function App() {
       return null;
     });
 
-
-  // return (
-  //   <ThemeProvider theme={darkMode ? themeDark : theme}>
-  //     <CssBaseline />
-  //     {layout === "dashboard" && (
-  //       <>
-  //         <Sidenav
-  //           color={sidenavColor}
-  //           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-  //           brandName="Material Dashboard 2"
-  //           routes={routes}
-  //           onMouseEnter={handleOnMouseEnter}
-  //           onMouseLeave={handleOnMouseLeave}
-  //         />
-  //         <Configurator />
-  //         {configsButton}
-  //       </>
-  //     )}
-  //     {layout === "vr" && <Configurator />}
-  //
-  //     <Routes>
-  //       {getRoutes(routes)}
-  //       <Route path="*" element={<Navigate to="/dashboard" />} />
-  //     </Routes>
-  //   </ThemeProvider>
-  // );
+  const { loggedIn } = useAuthListener()
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      <Sidenav
-        color={sidenavColor}
-        brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-        brandName="Grafica Publicar"
-        routes={routes}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-      />
+      {
+        loggedIn &&
+        <Sidenav
+          color={sidenavColor}
+          brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+          brandName="Grafica Publicar"
+          routes={routes}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+        />
+      }
       <Routes>
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/" />} />
