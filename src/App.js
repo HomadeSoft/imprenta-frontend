@@ -35,6 +35,7 @@ export default function App() {
       setPrices(prices);
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -75,7 +76,7 @@ export default function App() {
       if (route.protected) {
         return (
           <Route exact path={route.route} key={route.key} element={<ProtectedRoute />}>
-            <Route exact path={route.route} element={route.component}/>
+            <Route exact path={route.route} element={route.component} />
           </Route>
         )
       }
