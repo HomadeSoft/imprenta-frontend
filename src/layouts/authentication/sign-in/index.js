@@ -1,23 +1,29 @@
-import { useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import {useAuth0} from "@auth0/auth0-react";
+import {Navigate} from "react-router-dom";
+import Button from "@mui/material/Button";
 
 function Basic() {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
-  const navigate = useNavigate()
+  const { loginWithRedirect, logout, isLoading, isAuthenticated } = useAuth0();
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        return navigate('/')
-      } else {
-        return loginWithRedirect()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated])
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
 
-  return (<></>);
+  if (isAuthenticated) {
+    return <Navigate to={'/'} />
+  }
+
+  return (
+    <>
+      <Button onClick={() => loginWithRedirect() }>
+        Log In
+      </Button>
+      <Button onClick={()=> logout()}>
+        Log Out
+      </Button>
+    </>
+  );
 }
 
 export default Basic;

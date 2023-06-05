@@ -1,26 +1,16 @@
 import MDBox from "components/MDBox";
 
-import { useParams } from "react-router-dom";
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  CardActions,
-  CardContent,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Grid,
-  MenuItem,
-  Select,
-  Switch
-} from "@mui/material";
+import {Navigate, useParams} from "react-router-dom";
+import React, {useCallback, useEffect, useState} from "react";
+import {CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch} from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Wrapper from "../Wrapper";
 import DataService from "services/DataService";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { useDropzone } from 'react-dropzone'
+import {useDropzone} from 'react-dropzone'
+import {useAuth0} from "@auth0/auth0-react";
 
 const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
@@ -155,6 +145,10 @@ const Nuevo = () => {
     )
   }
 
+  const { isAuthenticated } = useAuth0();
+  if(!isAuthenticated){
+    return <Navigate to={'/login'} />
+  }
 
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
@@ -163,8 +157,6 @@ const Nuevo = () => {
         <CardContent >
           <FormGroup >
             <Grid container display={"flex"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
-
-
               <Grid item xs={20} md={6} xl={8} mb={2}>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2} >
                   <FormLabel style={{ flex: 0.7, textAlign: "end" }} id="tipo-papel-label">Medida Papel:</FormLabel>

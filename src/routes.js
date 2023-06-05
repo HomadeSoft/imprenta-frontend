@@ -26,7 +26,6 @@ import Precios from "layouts/precios";
 import NuevoTrabajo from "layouts/trabajos/Nuevo";
 import SignIn from "layouts/authentication/sign-in";
 import LogOut from "layouts/authentication/log-out";
-import SignUp from "layouts/authentication/sign-up";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 // @mui icons
@@ -43,7 +42,7 @@ const routes = [
     key: "pendientes-trabajos",
     icon: <AccessTimeIcon fontSize="small" />,
     route: "/",
-    protected: true,
+    protected: false,
     component: <TrabajosPendientes />,
   },
   {
@@ -102,10 +101,18 @@ const routes = [
     protected: true,
     component: <DetallesCliente />,
   },
-
-
   {
     type: "divider",
+  },
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/login",
+    show: false,
+    protected: false,
+    component: <SignIn />,
   },
   {
     type: "collapse",
@@ -116,25 +123,7 @@ const routes = [
     show: true,
     protected: true,
     component: <LogOut />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/login",
-    show: false,
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    show: false,
-    component: <SignUp />,
-  },
+  }
 ];
 
 export default routes;

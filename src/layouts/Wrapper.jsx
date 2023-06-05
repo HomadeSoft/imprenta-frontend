@@ -4,23 +4,19 @@ import MDBox from "../components/MDBox";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDTypography from "../components/MDTypography";
-import { Fade, LinearProgress } from "@mui/material";
-import { useAuthListener } from "../authContexts/useAuthListener";
+import {Fade, LinearProgress} from "@mui/material";
 
 
 const Wrapper = ({ children, title, loading }) => {
-  const { loggedIn } = useAuthListener()
-
-  if (!loggedIn) {
-    return false
-  }
+  // const { isAuthenticated } = useAuth0();
+  //
+  // if(!isAuthenticated){
+  //   return <Navigate to={'/login'} />
+  // }
 
   return (
     <DashboardLayout>
-      {
-        loggedIn &&
-        <DashboardNavbar />
-      }
+      <DashboardNavbar />
       <MDBox>
         <MDBox mt={4.5}>
           <Grid item xs={12}>

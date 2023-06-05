@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
+import {useEffect, useState} from "react";
+import {Route, Routes, useLocation} from "react-router-dom";
+import {ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "examples/Sidenav";
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
 import routes from "routes";
-import { useMaterialUIController, setMiniSidenav } from "context";
+import {setMiniSidenav, useMaterialUIController} from "context";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
-import { useGlobalDataContext } from "./context/DataContext";
+import {useGlobalDataContext} from "./context/DataContext";
 import DataService from "./services/DataService";
-import { ProtectedRoute } from "./authContexts/ProtectedRoute";
-import { useAuthListener } from "./authContexts/useAuthListener";
+import ProtectedRoute from "./authContexts/ProtectedRoute";
+import {useAuth0} from "@auth0/auth0-react";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -28,6 +28,8 @@ export default function App() {
   const { pathname } = useLocation();
 
   const { setPrices } = useGlobalDataContext()
+
+  /// TODO - NICO EVITAR FETCH SI NO ESTA AUTHENTICATED
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,13 +90,24 @@ export default function App() {
       return null;
     });
 
-  const { loggedIn } = useAuthListener()
+  const { isLoading, isAuthenticated, error, loginWithRedirect } = useAuth0();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
+
+  if(!isAuthenticated) {
+    return loginWithRedirect()
+  }
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
       {
-        loggedIn &&
+        isAuthenticated &&
         <Sidenav
           color={sidenavColor}
           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
@@ -106,7 +119,7 @@ export default function App() {
       }
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/*<Route path="*" element={<Navigate to="/" />} />*/}
       </Routes>
     </ThemeProvider>
   );

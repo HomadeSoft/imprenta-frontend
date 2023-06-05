@@ -1,18 +1,21 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuthListener } from "./useAuthListener";
+import {Navigate, Outlet} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
 
-export const ProtectedRoute = () => {
-  const { loggedIn, checkingStatus } = useAuthListener();
+const ProtectedRoute = () => {
+  const { isAuthenticated } = useAuth0();
+
+  console.log("isAuthenticated")
+  console.log(isAuthenticated)
   return (
     <>
       {
-        checkingStatus
-          ? <div>LOADING </div>
-          : ( loggedIn
-            ? <Outlet />
-            : <Navigate to="/login" />)
+        isAuthenticated
+          ? <Outlet />
+          : <Navigate to="/login" />
       }
     </>
   );
 };
+
+export default ProtectedRoute;
