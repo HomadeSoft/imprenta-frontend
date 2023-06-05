@@ -25,6 +25,7 @@ import TrabajosPendientes from "layouts/trabajos/Pendientes";
 import Precios from "layouts/precios";
 import NuevoTrabajo from "layouts/trabajos/Nuevo";
 import SignIn from "layouts/authentication/sign-in";
+import LogOut from "layouts/authentication/log-out";
 import SignUp from "layouts/authentication/sign-up";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
@@ -111,9 +112,10 @@ const routes = [
     name: "Cerrar Sesión",
     key: "sign-in",
     icon: <Icon fontSize="small">logout</Icon>,
-    route: "/login",
-    show: false,
-    component: <SignIn />,
+    route: "/logout",
+    show: true,
+    protected: true,
+    component: <LogOut />,
   },
   {
     type: "collapse",

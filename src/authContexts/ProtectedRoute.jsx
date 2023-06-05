@@ -3,13 +3,15 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthListener } from "./useAuthListener";
 
 export const ProtectedRoute = () => {
-  const { loggedIn } = useAuthListener();
+  const { loggedIn, checkingStatus } = useAuthListener();
   return (
     <>
       {
-        loggedIn
-          ? <Outlet />
-          : <Navigate to="/login" />
+        checkingStatus
+          ? <div>LOADING </div>
+          : ( loggedIn
+            ? <Outlet />
+            : <Navigate to="/login" />)
       }
     </>
   );
