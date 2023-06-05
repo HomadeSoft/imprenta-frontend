@@ -46,6 +46,7 @@ import {
   setWhiteSidenav,
 } from "context";
 import LoginButton from "components/LoginButton";
+import LogoutButton from "components/LogoutButton";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -189,6 +190,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       />
       <List>{renderRoutes}</List>
       <LoginButton />
+      <LogoutButton />
     </SidenavRoot>
   );
 }

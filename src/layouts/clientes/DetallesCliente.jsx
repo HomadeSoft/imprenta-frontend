@@ -8,6 +8,10 @@ import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "../trabajos/utils";
 
+//Auth0 user info
+import { useAuth0 } from "@auth0/auth0-react";
+
+
 const jobsTableColumns = [
   { Header: "Fecha", accessor: "fecha", align: "center" },
   { Header: "Estado", accessor: "estado", align: "center" },
@@ -22,6 +26,8 @@ const DetallesCliente = () => {
 
   const [user, setUser] = useState(null);
   const [userJobs, setUserJobs] = useState([])
+//  const { user, isAuthenticated, isLoading } = useAuth0();
+
 
   useEffect(() => {
     if(!id || id === ":id") { navigate('/') }
@@ -49,7 +55,9 @@ const DetallesCliente = () => {
       <>
         <ProfileInfoCard
           info={{
+            //empresa: user?.nickname,
             empresa: user?.fantasy_name,
+            //nombre: `${user?.given_name} ${user?.family_name}`,
             nombre: `${user?.first_name} ${user?.last_name}`,
             CUIT: user?.cuit,
             teléfono: user?.phone,

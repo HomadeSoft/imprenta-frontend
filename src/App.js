@@ -67,7 +67,8 @@ export default function App() {
       setPrices(prices);
     };
     fetchData();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   // Open sidenav when mouse enter on mini sidenav
