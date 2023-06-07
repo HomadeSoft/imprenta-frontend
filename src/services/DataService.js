@@ -164,7 +164,7 @@ const DataService = (() => {
     formData.append('folder', folder);
 
     try {
-      await axios.post('http://localhost:3002/upload', formData);
+      await axios.post(`${BASE_URL}/upload`, formData);
       alert('El trabajo se subio exitosamente');
     } catch (error) {
       alert('Ups, algo salio mal');
@@ -187,6 +187,7 @@ const DataService = (() => {
     changeStatusInProgress: (token, id) => changeStatus(token, id, "in_progress"),
     changeStatusCanceled: (token, id) => changeStatus(token, id, "canceled"),
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
+    uploadToServer: (file, folder) => uploadToServer(file, folder),
   }
 })();
 
