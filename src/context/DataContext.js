@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from "react";
 
 const GlobalDataContext = React.createContext({});
 
@@ -6,7 +6,7 @@ const GlobalDataContextProvider = ({ children }) => {
   const [prices, setPrices] = useState([]);
 
   return (
-    <GlobalDataContext.Provider value={{prices, setPrices}}>
+    <GlobalDataContext.Provider value={{ prices, setPrices }}>
       {children}
     </GlobalDataContext.Provider>
   );
