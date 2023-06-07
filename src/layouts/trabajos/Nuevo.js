@@ -1,17 +1,16 @@
 import MDBox from "components/MDBox";
 
 import { Navigate, useParams } from "react-router-dom";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Wrapper from "../Wrapper";
 import DataService from "services/DataService";
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 
-import axios from 'axios';
 
-import { useDropzone } from 'react-dropzone'
+// import { useDropzone } from 'react-dropzone'
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 
@@ -40,6 +39,7 @@ const Nuevo = () => {
     }
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [papel, setPapel] = React.useState('');
@@ -95,33 +95,33 @@ const Nuevo = () => {
   ////////////////// START OF FILE MANAGER //////////////////
   ////////////////// START OF FILE MANAGER //////////////////
 
-  const [myFiles, setMyFiles] = useState([])
+  // const [myFiles, setMyFiles] = useState([])
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const onDrop = useCallback(acceptedFiles => {
-    setMyFiles([...myFiles, ...acceptedFiles])
-  }, [myFiles])
+  // const onDrop = useCallback(acceptedFiles => {
+  //   setMyFiles([...myFiles, ...acceptedFiles])
+  // }, [myFiles])
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  })
+  // const { getRootProps, getInputProps } = useDropzone({
+  //   onDrop,
+  // })
 
-  const removeFile = file => () => {
-    const newFiles = [...myFiles]
-    newFiles.splice(newFiles.indexOf(file), 1)
-    setMyFiles(newFiles)
-  }
+  // const removeFile = file => () => {
+  //   const newFiles = [...myFiles]
+  //   newFiles.splice(newFiles.indexOf(file), 1)
+  //   setMyFiles(newFiles)
+  // }
 
-  const removeAll = () => {
-    setMyFiles([])
-  }
+  // const removeAll = () => {
+  //   setMyFiles([])
+  // }
 
-  const files = myFiles.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes{" "}
-      <MDButton onClick={removeFile(file)} size="medium" iconOnly><DeleteIcon /></MDButton>
-    </li>
-  ))
+  // const files = myFiles.map(file => (
+  //   <li key={file.path}>
+  //     {file.path} - {file.size} bytes{" "}
+  //     <MDButton onClick={removeFile(file)} size="medium" iconOnly><DeleteIcon /></MDButton>
+  //   </li>
+  // ))
 
   ////////////////// END OF FILE MANAGER //////////////////
   ////////////////// END OF FILE MANAGER //////////////////
