@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {ClientsRowFormatter} from "./utils";
+import {useAuth0} from "@auth0/auth0-react";
 
 
 const TableColumns = [
@@ -16,11 +17,12 @@ const TableColumns = [
 
 const Clientes = () => {
   const [rows, setRows] = useState([])
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const getInfo = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const {data, error} = await DataService.fetchUsers()
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchUsers(token)
       // debugger
       setRows(data.map(r => ClientsRowFormatter(r)))
     };

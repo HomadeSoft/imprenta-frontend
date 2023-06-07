@@ -20,10 +20,13 @@ const Nuevo = () => {
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [listaTroquelados, setlistaTroquelados] = useState({});
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
-    const fetchData = () => {
-      DataService.fetchPrices().then(
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently();
+
+      DataService.fetchPrices(token).then(
         (response) => {
           setCategorias(response.data);
           setLoading(false);
@@ -123,7 +126,7 @@ const Nuevo = () => {
   ////////////////// END OF FILE MANAGER //////////////////
 
 
-  const crearTrabajo = () => {
+  const crearTrabajo = async () => {
     if (cantidad && tipoPapel) {
       const trabajo = {
         "copies_quantity": cantidad,
@@ -133,7 +136,8 @@ const Nuevo = () => {
         "status": "pending",
         "user_id": 1,
       }
-      DataService.submitJob(trabajo);
+      const token = await getAccessTokenSilently();
+      DataService.submitJob(token, trabajo);
     }
   }
 

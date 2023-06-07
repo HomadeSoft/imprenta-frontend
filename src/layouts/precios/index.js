@@ -10,6 +10,7 @@ import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
 import DataService from "../../services/DataService";
 import { useGlobalDataContext } from "../../context/DataContext";
+import {useAuth0} from "@auth0/auth0-react";
 // import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 
 function Precios() {
@@ -20,6 +21,7 @@ function Precios() {
   const [loading, setLoading] = useState(true);
 
   const { prices, setPrices } = useGlobalDataContext()
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     if (prices.length) {
@@ -40,8 +42,8 @@ function Precios() {
   };
 
   const savePrices = async () => {
-    // eslint-disable-next-line no-unused-vars
-    const { data, error } = await DataService.savePrices(categorias)
+    const token = await getAccessTokenSilently();
+    DataService.savePrices(token, categorias)
   }
 
   var lista = [];

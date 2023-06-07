@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "../trabajos/utils";
+import {useAuth0} from "@auth0/auth0-react";
 
 const jobsTableColumns = [
   { Header: "Fecha", accessor: "fecha", align: "center" },
@@ -22,19 +23,20 @@ const DetallesCliente = () => {
 
   const [user, setUser] = useState(null);
   const [userJobs, setUserJobs] = useState([])
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     if(!id || id === ":id") { navigate('/') }
 
     const fetchUserData = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const {data, error} = await DataService.fetchUserData(id)
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchUserData(token, id)
       setUser(data)
     }
 
     const fetchData = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const {data, error} = await DataService.fetchUserJobs(id)
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchUserJobs(token, id)
       const formattedRows = data?.map(r => JobsRowFormatter(r))
       setUserJobs(formattedRows)
     }

@@ -28,12 +28,14 @@ export default function App() {
   const { pathname } = useLocation();
 
   const { setPrices } = useGlobalDataContext()
+  const { getAccessTokenSilently } = useAuth0();
 
   /// TODO - NICO EVITAR FETCH SI NO ESTA AUTHENTICATED
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: prices } = await DataService.fetchPrices();
+      const token = await getAccessTokenSilently();
+      const { data: prices } = await DataService.fetchPrices(token);
       setPrices(prices);
     };
     fetchData();

@@ -9,6 +9,7 @@ import Icon from "@mui/material/Icon";
 import MDButton from "../../components/MDButton";
 import Divider from "@mui/material/Divider";
 import {Dialog, DialogTitle, TextField} from "@mui/material";
+import {useAuth0} from "@auth0/auth0-react";
 
 function PriceDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -93,12 +94,14 @@ const Detalle = () => {
 
   const [job, setJob] = useState(null)
   const [jobInfo, setJobInfo] = useState({})
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     if(!id || id === ":id") { navigate('/') }
+
     const fetchUserData = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const {data, error} = await DataService.fetchJobData(id)
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchJobData(token, id)
       setJob(data);
     }
 
@@ -138,8 +141,9 @@ const Detalle = () => {
     setLoading(true);
 
     const priceCents = formatPriceToCents(value)
-    // eslint-disable-next-line no-unused-vars
-    const {data, error} = await DataService.updateJobPrice(job.id, priceCents)
+
+    const token = await getAccessTokenSilently();
+    const { data } = await DataService.updateJobPrice(token, job.id, priceCents)
 
     setLoading(false);
     setJob(data);
@@ -147,22 +151,22 @@ const Detalle = () => {
 
   const changeStatusInProgress = async () => {
     setLoading(true)
-    // eslint-disable-next-line no-unused-vars
-    const {data, error} = await DataService.changeStatusInProgress(job.id)
+    const token = await getAccessTokenSilently();
+    const { data } = await DataService.changeStatusInProgress(token, job.id)
     setJob(data);
     setLoading(false)
   }
   const changeStatusFinished = async () => {
     setLoading(true)
-    // eslint-disable-next-line no-unused-vars
-    const {data, error} = await DataService.changeStatusFinished(job.id)
+    const token = await getAccessTokenSilently();
+    const { data } = await DataService.changeStatusFinished(token, job.id)
     setJob(data);
     setLoading(false)
   }
   const changeStatusCanceled = async () => {
     setLoading(true)
-    // eslint-disable-next-line no-unused-vars
-    const {data, error} = await DataService.changeStatusCanceled(job.id)
+    const token = await getAccessTokenSilently();
+    const { data } = await DataService.changeStatusCanceled(token, job.id)
     setJob(data);
     setLoading(false)
   }

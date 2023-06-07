@@ -19,13 +19,13 @@ const TableColumns = [
 ]
 
 function Pendientes() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [rows, setRows] = useState([])
 
   useEffect(() => {
     const getInfo = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const {data, error} = await DataService.fetchPendingJobs()
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchPendingJobs(token);
       const formattedRows = data?.map(r => JobsRowFormatter(r))
       if(formattedRows?.length){
         setRows(formattedRows)

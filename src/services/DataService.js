@@ -6,9 +6,8 @@ const DataService = (() => {
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (token) => {
     const url = `${BASE_URL}/users/allUsers`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -20,9 +19,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchPendingJobs = async () => {
+  const fetchPendingJobs = async (token) => {
     const url = `${BASE_URL}/jobs/allJobs`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -34,9 +32,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchUserData = async (id) => {
+  const fetchUserData = async (token, id) => {
     const url = `${BASE_URL}/users/user?userId=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -48,9 +45,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchUserJobs = async (id) => {
+  const fetchUserJobs = async (token, id) => {
     const url = `${BASE_URL}/jobs/userJobs?userId=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -62,9 +58,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchJobData = async (id) => {
+  const fetchJobData = async (token, id) => {
     const url = `${BASE_URL}/jobs/job?id=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -76,9 +71,8 @@ const DataService = (() => {
       })
   }
 
-  const submitJob = async (job) => {
+  const submitJob = async (token, job) => {
     const url = `${BASE_URL}/jobs/create`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -94,9 +88,8 @@ const DataService = (() => {
       })
   }
 
-  const savePrices = async (prices) => {
+  const savePrices = async (token, prices) => {
     const url = `${BASE_URL}/json_prices/save`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -112,10 +105,12 @@ const DataService = (() => {
       })
   }
 
-  const fetchPrices = async () => {
+  const fetchPrices = async (token) => {
+    console.log(token)
+    debugger
     const url = `${BASE_URL}/json_prices`;
-    const token = "2"
-
+    console.log(requestHeaders(token))
+    // debugger
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
@@ -126,9 +121,8 @@ const DataService = (() => {
       })
   }
 
-  const updateJobPrice = async (id, price) => {
+  const updateJobPrice = async (token, id, price) => {
     const url = `${BASE_URL}/jobs/update`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -144,9 +138,8 @@ const DataService = (() => {
       })
   }
 
-  const changeStatus = async (id, newStatus) => {
+  const changeStatus = async (token, id, newStatus) => {
     const url = `${BASE_URL}/jobs/changeStatus`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -163,19 +156,19 @@ const DataService = (() => {
   }
 
   return {
-    fetchPendingJobs: () => fetchPendingJobs(),
-    fetchUsers: () => fetchUsers(),
-    fetchUserData: (id) => fetchUserData(id),
-    fetchUserJobs: (id) => fetchUserJobs(id),
-    fetchJobData: (id) => fetchJobData(id),
-    submitJob: (job) => submitJob(job),
-    savePrices: (prices) => savePrices(prices),
-    fetchPrices: () => fetchPrices(),
-    updateJobPrice: (id, price) => updateJobPrice(id, price),
-    changeStatusPending: (id) => changeStatus(id, "pending"),
-    changeStatusInProgress: (id) => changeStatus(id, "in_progress"),
-    changeStatusCanceled: (id) => changeStatus(id, "canceled"),
-    changeStatusFinished: (id) => changeStatus(id, "finished"),
+    fetchPendingJobs: (token) => fetchPendingJobs(token),
+    fetchUsers: (token) => fetchUsers(token),
+    fetchUserData: (token, id) => fetchUserData(token, id),
+    fetchUserJobs: (token, id) => fetchUserJobs(token, id),
+    fetchJobData: (token, id) => fetchJobData(token, id),
+    submitJob: (token, job) => submitJob(token, job),
+    savePrices: (token, prices) => savePrices(token, prices),
+    fetchPrices: (token) => fetchPrices(token),
+    updateJobPrice: (token, id, price) => updateJobPrice(token, id, price),
+    changeStatusPending: (token, id) => changeStatus(token, id, "pending"),
+    changeStatusInProgress: (token, id) => changeStatus(token, id, "in_progress"),
+    changeStatusCanceled: (token, id) => changeStatus(token, id, "canceled"),
+    changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
   }
 })();
 
