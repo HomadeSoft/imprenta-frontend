@@ -109,8 +109,8 @@ const DataService = (() => {
   }
 
   const fetchPrices = async (token) => {
-    console.log(token)
-    debugger
+    // console.log(token)
+    // debugger
     const url = `${BASE_URL}/json_prices`;
     console.log(requestHeaders(token))
     // debugger
