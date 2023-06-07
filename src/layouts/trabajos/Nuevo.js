@@ -1,16 +1,19 @@
 import MDBox from "components/MDBox";
 
-import {Navigate, useParams} from "react-router-dom";
-import React, {useCallback, useEffect, useState} from "react";
-import {CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch} from "@mui/material";
+import { Navigate, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Wrapper from "../Wrapper";
 import DataService from "services/DataService";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import {useDropzone} from 'react-dropzone'
-import {useAuth0} from "@auth0/auth0-react";
+import axios from 'axios';
+
+import { useDropzone } from 'react-dropzone'
+import { useAuth0 } from "@auth0/auth0-react";
+import moment from "moment";
 
 const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
@@ -93,6 +96,7 @@ const Nuevo = () => {
   ////////////////// START OF FILE MANAGER //////////////////
 
   const [myFiles, setMyFiles] = useState([])
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const onDrop = useCallback(acceptedFiles => {
     setMyFiles([...myFiles, ...acceptedFiles])
@@ -128,10 +132,13 @@ const Nuevo = () => {
 
   const crearTrabajo = async () => {
     if (cantidad && tipoPapel) {
+      //crear_carpeta_con_fecha
+      const folder = "someUser_" + moment().format('DD-MM-YYYY') + "/";
+      DataService.uploadToServer(selectedFile, folder);
       const trabajo = {
         "copies_quantity": cantidad,
         "doble_faz": dobleFaz,
-        "paper_size": papel.gramaje,
+        "paper_size": papel?.gramaje,
         "paper_type": tipoPapel,
         "status": "pending",
         "user_id": 1,
@@ -150,9 +157,17 @@ const Nuevo = () => {
   }
 
   const { isAuthenticated } = useAuth0();
-  if(!isAuthenticated){
+  if (!isAuthenticated) {
     return <Navigate to={'/login'} />
   }
+
+
+  /** File upload tests */
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
 
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
@@ -319,7 +334,8 @@ const Nuevo = () => {
                 </MDBox>
                 <br />
                 <MDBox>
-                  <section className="container" style={{ padding: 20, border: '1px dotted' }}>
+                  <MDInput type="file" onChange={handleFileChange} />
+                  {/* <section className="container" style={{ padding: 20, border: '1px dotted' }}>
                     <div {...getRootProps({ className: "dropzone" })}>
                       <input {...getInputProps()} />
                       <p>Arrastrá o hace click para subir archivos</p>
@@ -329,7 +345,7 @@ const Nuevo = () => {
                       <ul>{files}</ul>
                     </aside>
                     {files.length > 0 && <MDButton onClick={removeAll} color="error"><DeleteIcon /> Borrar todos</MDButton>}
-                  </section>
+                  </section> */}
                 </MDBox>
               </Grid>
             </Grid>

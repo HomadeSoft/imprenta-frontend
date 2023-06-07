@@ -1,7 +1,10 @@
+import axios from "axios";
 
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
+
+
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
@@ -153,6 +156,21 @@ const DataService = (() => {
       .catch((err) => {
         return { data: null, error: err }
       })
+  }
+
+  const uploadToServer = async (file, folder) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    try {
+      await axios.post('http://localhost:3002/upload', formData);
+      alert('El trabajo se subio exitosamente');
+    } catch (error) {
+      alert('Ups, algo salio mal');
+      console.error(error);
+    }
+
   }
 
   return {
