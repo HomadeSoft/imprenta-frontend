@@ -164,7 +164,7 @@ const DataService = (() => {
     formData.append('folder', folder);
 
     try {
-      await axios.post(`${BASE_URL}/upload`, formData);
+      await axios.post(`${BASE_URL}/upload/`, formData);
       alert('El trabajo se subio exitosamente');
     } catch (error) {
       alert('Ups, algo salio mal');
