@@ -136,16 +136,17 @@ const Nuevo = () => {
     if (cantidad && tipoPapel) {
       //crear_carpeta_con_fecha
 
-      const folder = "" + moment().format('DD-MM-YYYY') + "/";
+      const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
       DataService.uploadToServer(selectedFile, folder);
 
       const trabajo = {
         "copies_quantity": cantidad,
         "doble_faz": dobleFaz,
-        "paper_size": papel?.gramaje,
+        "paper_size": categoria?.printSize,
         "paper_type": tipoPapel,
         "status": "pending",
         "user_id": user.id,
+        "file_names": [folder + selectedFile.name]
       }
       const token = await getAccessTokenSilently();
       DataService.submitJob(token, trabajo);
