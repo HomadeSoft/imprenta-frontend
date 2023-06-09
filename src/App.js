@@ -1,18 +1,18 @@
-import {useEffect, useState} from "react";
-import {Route, Routes, useLocation} from "react-router-dom";
-import {ThemeProvider} from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "examples/Sidenav";
 import theme from "assets/theme";
 import themeDark from "assets/theme-dark";
 import routes from "routes";
-import {setMiniSidenav, useMaterialUIController} from "context";
+import { setMiniSidenav, useMaterialUIController } from "context";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
-import {useGlobalDataContext} from "./context/DataContext";
+import { useGlobalDataContext } from "./context/DataContext";
 import DataService from "./services/DataService";
 import ProtectedRoute from "./authContexts/ProtectedRoute";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -26,8 +26,7 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
-
-  const { setPrices } = useGlobalDataContext()
+  const { setPrices, setUser } = useGlobalDataContext()
   const { getAccessTokenSilently } = useAuth0();
 
   /// TODO - NICO EVITAR FETCH SI NO ESTA AUTHENTICATED
@@ -92,7 +91,20 @@ export default function App() {
       return null;
     });
 
-  const { isLoading, isAuthenticated, error, loginWithRedirect } = useAuth0();
+  const { isLoading, isAuthenticated, error, loginWithRedirect, user } = useAuth0();
+
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+      // const response = await DataService.fetchUserData(1, 1);
+      const token = getAccessTokenSilently();
+      const response = await DataService.fetchUserDataByEmail(token, user.email);
+      setUser(response.data);
+    }
+
+    fetchUserData();
+  }, [getAccessTokenSilently, setUser, user.email]);
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -101,10 +113,9 @@ export default function App() {
     return <div>Oops... {error.message}</div>;
   }
 
-  if(!isAuthenticated) {
+  if (!isAuthenticated) {
     return loginWithRedirect()
   }
-
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />

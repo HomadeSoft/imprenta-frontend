@@ -48,6 +48,20 @@ const DataService = (() => {
       })
   }
 
+  const fetchUserDataByEmail = async (token, email) => {
+    // TODO: Add email parameter on Rails
+    const url = `${BASE_URL}/users/user?email=${email}`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const fetchUserJobs = async (token, id) => {
     const url = `${BASE_URL}/jobs/userJobs?userId=${id}`;
 
@@ -177,6 +191,7 @@ const DataService = (() => {
     fetchPendingJobs: (token) => fetchPendingJobs(token),
     fetchUsers: (token) => fetchUsers(token),
     fetchUserData: (token, id) => fetchUserData(token, id),
+    fetchUserDataByEmail: (token, email) => fetchUserDataByEmail(token, email),
     fetchUserJobs: (token, id) => fetchUserJobs(token, id),
     fetchJobData: (token, id) => fetchJobData(token, id),
     submitJob: (token, job) => submitJob(token, job),

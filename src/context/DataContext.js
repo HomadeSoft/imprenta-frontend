@@ -4,9 +4,10 @@ const GlobalDataContext = React.createContext({});
 
 const GlobalDataContextProvider = ({ children }) => {
   const [prices, setPrices] = useState([]);
+  const [user, setUser] = useState(null);
 
   return (
-    <GlobalDataContext.Provider value={{ prices, setPrices }}>
+    <GlobalDataContext.Provider value={{ prices, setPrices, user, setUser }}>
       {children}
     </GlobalDataContext.Provider>
   );

@@ -13,12 +13,12 @@ import DataService from "services/DataService";
 // import { useDropzone } from 'react-dropzone'
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
+import { useGlobalDataContext } from "context/DataContext";
 
 const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
   const { id } = useParams()
   // eslint-disable-next-line no-unused-vars
-  const [user, setUser] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [listaTroquelados, setlistaTroquelados] = useState({});
@@ -53,6 +53,8 @@ const Nuevo = () => {
   const [laminadoEnabled, setLaminadoEnabled] = React.useState(false);
   const [troquelado, setTroquelado] = React.useState(false);
   const [laminado, setLaminado] = React.useState(false);
+  const { user } = useGlobalDataContext();
+
 
   const handleChange = (event) => {
     setTipoPapel(event.target.value);
@@ -133,15 +135,17 @@ const Nuevo = () => {
   const crearTrabajo = async () => {
     if (cantidad && tipoPapel) {
       //crear_carpeta_con_fecha
-      const folder = "someUser_" + moment().format('DD-MM-YYYY') + "/";
+
+      const folder = "" + moment().format('DD-MM-YYYY') + "/";
       DataService.uploadToServer(selectedFile, folder);
+
       const trabajo = {
         "copies_quantity": cantidad,
         "doble_faz": dobleFaz,
         "paper_size": papel?.gramaje,
         "paper_type": tipoPapel,
         "status": "pending",
-        "user_id": 1,
+        "user_id": user.id,
       }
       const token = await getAccessTokenSilently();
       DataService.submitJob(token, trabajo);
