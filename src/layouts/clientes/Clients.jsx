@@ -5,7 +5,6 @@ import Wrapper from "../Wrapper";
 import {ClientsRowFormatter} from "./utils";
 import {useAuth0} from "@auth0/auth0-react";
 
-
 const TableColumns = [
   { Header: "Nombre y Apellido", accessor: "name", align: "center" },
   { Header: "Email", accessor: "email", align: "center" },
@@ -23,8 +22,10 @@ const Clientes = () => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
       const { data } = await DataService.fetchUsers(token)
-      // debugger
-      setRows(data.map(r => ClientsRowFormatter(r)))
+      const formattedRows = data?.map(r => ClientsRowFormatter(r))
+      if (formattedRows?.length){
+        setRows(formattedRows)
+      }
     };
 
     getInfo()

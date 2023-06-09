@@ -94,12 +94,15 @@ export default function App() {
   const { isLoading, isAuthenticated, error, loginWithRedirect, user } = useAuth0();
 
   useEffect(() => {
-
     const fetchUserData = async () => {
-      // const response = await DataService.fetchUserData(1, 1);
+      if(!user?.email){
+        return
+      }
+
       const token = getAccessTokenSilently();
-      const response = await DataService.fetchUserDataByEmail(token, user.email);
-      setUser(response.data);
+      const { data } = await DataService.fetchUserDataByEmail(token, user?.email);
+
+      setUser(data);
     }
 
     fetchUserData();

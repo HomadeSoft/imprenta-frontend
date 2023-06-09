@@ -20,6 +20,12 @@ Coded by www.creative-tim.com
  */
 
 const colors = {
+  jobRows: {
+    pending: '#eb982d',
+    cancelled: '#f71449',
+    finished: "#A533FF",
+    in_progress: "#3d9435"
+  },
   background: {
     default: "#f0f2f5",
   },
