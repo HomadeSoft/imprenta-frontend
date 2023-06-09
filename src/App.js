@@ -98,7 +98,7 @@ export default function App() {
     const fetchUserData = async () => {
       // const response = await DataService.fetchUserData(1, 1);
       const token = getAccessTokenSilently();
-      const response = await DataService.fetchUserDataByEmail(token, user.email);
+      const response = await DataService.fetchUserDataByEmail(token, user?.email);
       setUser(response.data);
     }
 
