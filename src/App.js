@@ -103,7 +103,7 @@ export default function App() {
     }
 
     fetchUserData();
-  }, [getAccessTokenSilently, setUser, user.email]);
+  }, [getAccessTokenSilently]);
 
 
   if (isLoading) {
