@@ -160,7 +160,7 @@ function DataTable({
       case "Terminado":
         return colors.jobRows.finished;
       default:
-        return colors.jobRows.pending;
+        return "white";
     }
   }
 
