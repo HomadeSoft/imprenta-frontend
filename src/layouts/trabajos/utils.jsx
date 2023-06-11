@@ -1,8 +1,11 @@
 import MDTypography from "../../components/MDTypography";
 import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
+import MDButton from "components/MDButton";
 
 const JobsRowFormatter = (row) => {
+  const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
+
   if(!row) { return {} }
 
   return {
@@ -10,7 +13,7 @@ const JobsRowFormatter = (row) => {
     total: (<MDTypography component="a" href="#" variant="button" color="white" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
     fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDate(row.due_date)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
-    archivos: (<MDTypography component="a" color="white"><DownloadIcon /></MDTypography>),
+    archivos: (<MDButton component="a" color="white" href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}><DownloadIcon /></MDButton>),
     info: (<MDTypography component="a" href={`/trabajo/${row.id}`} color="white"><InfoIcon>more_vert</InfoIcon></MDTypography>),
   }
 }
