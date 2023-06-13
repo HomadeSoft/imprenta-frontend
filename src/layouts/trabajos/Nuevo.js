@@ -34,6 +34,8 @@ const Nuevo = () => {
           setLoading(false);
           const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
           setlistaTroquelados(listaTroquelados);
+          const selectedCategory = response.data.find(c => c.printSize === "A3+")
+          setCategoria(selectedCategory);
         }
       );
     }
@@ -57,7 +59,7 @@ const Nuevo = () => {
   const { user } = useGlobalDataContext();
 
 
-  const handleChange = (event) => {
+  const handleTipoPapelChange = (event) => {
     setTipoPapel(event.target.value);
     setTroquelado(null);
     setTroqueladoEnabled(false);
@@ -81,7 +83,8 @@ const Nuevo = () => {
     setLaminadoEnabled(laminadoEnabled ? false : true);
   }
   const handleCategoriaChange = (event) => {
-    setCategoria(event.target.value);
+    const selectedCategory = categorias.find(c => c.printSize === event.target.value)
+    setCategoria(selectedCategory);
     setPapel(null);
     setTipoPapel(null);
   }
@@ -150,7 +153,8 @@ const Nuevo = () => {
                     <Select
                       labelId="tipo-papel-label"
                       id="tipo-papel-select"
-                      value={categoria}
+                      value={categoria?.printSize}
+                      defaultValue="A3+"
                       sx={{ minHeight: 50 }}
                       label="papel"
                       onChange={handleCategoriaChange}
@@ -161,7 +165,7 @@ const Nuevo = () => {
                             if (categoria.printSize !== "TROQUELADOS") {
                               return (
                                 <MenuItem
-                                  value={categoria}
+                                  value={categoria.printSize}
                                 >{categoria.printSize}</MenuItem>
                               )
                             }
@@ -183,7 +187,7 @@ const Nuevo = () => {
                       value={tipoPapel}
                       sx={{ minHeight: 50 }}
                       label="papel"
-                      onChange={handleChange}
+                      onChange={handleTipoPapelChange}
                     >
                       {categoria ? categoria.papel.map(
                         (papel) =>
