@@ -3,7 +3,7 @@ import Wrapper from "../Wrapper";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import DataService from "../../services/DataService";
 import ProfileInfoCard from "../../examples/Cards/InfoCards/ProfileInfoCard";
-import {formatBoolean, formatDate, formatPrice, formatPriceFromCents, formatPriceToCents, formatStatus} from "./utils";
+import {formatBoolean, formatPrice, formatPriceFromCents, formatPriceToCents, formatStatus} from "./utils";
 import IconButton from "@mui/material/IconButton";
 import Icon from "@mui/material/Icon";
 import MDButton from "../../components/MDButton";
