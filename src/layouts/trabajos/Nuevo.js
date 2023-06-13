@@ -106,12 +106,14 @@ const Nuevo = () => {
 
       const trabajo = {
         "copies_quantity": cantidad,
-        "doble_faz": dobleFaz,
+        "doble_faz": dobleFaz ? "si" : "no",
         "paper_size": categoria?.printSize,
         "paper_type": tipoPapel,
         "status": "pending",
         "user_id": user.id,
-        "file_names": [folder + selectedFile.name]
+        "troquelado": troquelado,
+        "laminado": laminado,
+        "file_names": [folder + selectedFile?.name]
       }
       const token = await getAccessTokenSilently();
       DataService.submitJob(token, trabajo);

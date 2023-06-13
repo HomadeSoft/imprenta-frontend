@@ -120,7 +120,7 @@ const Detalle = () => {
       "Estado": formatStatus(job?.status),
       "Precio": formatPrice(job?.total_price_cents),
       "Tipo Troquelado": job?.troquelado,
-      "Fecha límite de entrega": formatDate(job?.due_date),
+      // "Fecha límite de entrega": formatDate(job?.due_date),
     }
     const cleanData = Object.entries(info).filter(([key, value]) => value !== undefined && value !== null )
       .reduce((obj, [key, value]) => {
