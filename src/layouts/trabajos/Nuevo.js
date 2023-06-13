@@ -92,46 +92,7 @@ const Nuevo = () => {
     setDobleFaz(!dobleFaz);
   }
 
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-
-  // const [myFiles, setMyFiles] = useState([])
   const [selectedFile, setSelectedFile] = useState(null);
-
-  // const onDrop = useCallback(acceptedFiles => {
-  //   setMyFiles([...myFiles, ...acceptedFiles])
-  // }, [myFiles])
-
-  // const { getRootProps, getInputProps } = useDropzone({
-  //   onDrop,
-  // })
-
-  // const removeFile = file => () => {
-  //   const newFiles = [...myFiles]
-  //   newFiles.splice(newFiles.indexOf(file), 1)
-  //   setMyFiles(newFiles)
-  // }
-
-  // const removeAll = () => {
-  //   setMyFiles([])
-  // }
-
-  // const files = myFiles.map(file => (
-  //   <li key={file.path}>
-  //     {file.path} - {file.size} bytes{" "}
-  //     <MDButton onClick={removeFile(file)} size="medium" iconOnly><DeleteIcon /></MDButton>
-  //   </li>
-  // ))
-
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-
 
   const crearTrabajo = async () => {
     if (cantidad && tipoPapel) {
@@ -339,19 +300,11 @@ const Nuevo = () => {
                   />
                 </MDBox>
                 <br />
-                <MDBox>
+                <MDBox style={{
+                  display: "flex",
+                  justifyContent: "center"
+                }}>
                   <MDInput type="file" onChange={handleFileChange} />
-                  {/* <section className="container" style={{ padding: 20, border: '1px dotted' }}>
-                    <div {...getRootProps({ className: "dropzone" })}>
-                      <input {...getInputProps()} />
-                      <p>Arrastrá o hace click para subir archivos</p>
-                    </div>
-                    <aside>
-                      <h4>Archivos</h4>
-                      <ul>{files}</ul>
-                    </aside>
-                    {files.length > 0 && <MDButton onClick={removeAll} color="error"><DeleteIcon /> Borrar todos</MDButton>}
-                  </section> */}
                 </MDBox>
               </Grid>
             </Grid>

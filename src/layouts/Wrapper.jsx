@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDTypography from "../components/MDTypography";
 import {Fade, LinearProgress} from "@mui/material";
+import Footer from "../examples/Footer";
 
 
 const Wrapper = ({ children, title, loading }) => {
@@ -53,6 +54,7 @@ const Wrapper = ({ children, title, loading }) => {
           </Grid>
         </MDBox>
       </MDBox>
+      <Footer />
     </DashboardLayout>
   )
 }

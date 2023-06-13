@@ -23,7 +23,7 @@ const colors = {
   jobRows: {
     pending: '#eb982d',
     cancelled: '#f71449',
-    finished: "#A533FF",
+    finished: "#3C459F",
     in_progress: "#3d9435"
   },
   background: {
