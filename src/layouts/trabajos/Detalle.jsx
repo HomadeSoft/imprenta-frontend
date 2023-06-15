@@ -77,7 +77,7 @@ const FinalizarButton = ({ job, onClick }) => {
 }
 
 const ModificarPrecioButton = ({job, handleClickOpen}) => {
-  if (job?.status !== "pending") {
+  if (job?.status !== "finished") {
     return false;
   }
 
@@ -155,6 +155,7 @@ const Detalle = () => {
     const { data } = await DataService.changeStatusInProgress(token, job.id)
     setJob(data);
     setLoading(false)
+    navigate("/")
   }
   const changeStatusFinished = async () => {
     setLoading(true)
@@ -162,6 +163,7 @@ const Detalle = () => {
     const { data } = await DataService.changeStatusFinished(token, job.id)
     setJob(data);
     setLoading(false)
+    navigate("/")
   }
   const changeStatusCanceled = async () => {
     setLoading(true)
@@ -169,6 +171,7 @@ const Detalle = () => {
     const { data } = await DataService.changeStatusCanceled(token, job.id)
     setJob(data);
     setLoading(false)
+    navigate("/")
   }
 
   return(

@@ -20,7 +20,8 @@ const JobsRowFormatter = (row) => {
 
 const formatPrice = (priceCents) => {
   if(!priceCents){
-    return (0 / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
+    //return (0 / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
+    return " - ";
   }
 
   try {

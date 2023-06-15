@@ -1,6 +1,6 @@
 import MDBox from "components/MDBox";
 
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch } from "@mui/material";
 import MDButton from "components/MDButton";
@@ -23,7 +23,7 @@ const Nuevo = () => {
   const [loading, setLoading] = useState(true);
   const [listaTroquelados, setlistaTroquelados] = useState({});
   const { getAccessTokenSilently } = useAuth0();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
@@ -117,6 +117,7 @@ const Nuevo = () => {
       }
       const token = await getAccessTokenSilently();
       DataService.submitJob(token, trabajo);
+      navigate("/")
     }
   }
 

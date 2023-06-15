@@ -27,8 +27,6 @@ ReactDOM.render(
   <Auth0Provider
     domain="dev-ig4v3eio87y70n0r.us.auth0.com"
     clientId="VF1MRW24zgNOk61tAqU9ZKXlCrDwo4Ks"
-    // audience={"https://graficapublicar/auth"}
-    // scope={"read:current_user update:current_user_metadata read:roles"}
     authorizationParams={{
       redirect_uri: window.location.origin
     }}
