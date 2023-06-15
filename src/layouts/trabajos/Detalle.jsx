@@ -10,6 +10,7 @@ import MDButton from "../../components/MDButton";
 import Divider from "@mui/material/Divider";
 import {Dialog, DialogTitle, TextField} from "@mui/material";
 import {useAuth0} from "@auth0/auth0-react";
+import AdminResource from "authContexts/AdminResource";
 
 function PriceDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -191,11 +192,14 @@ const Detalle = () => {
         onClose={handlePriceUpdate}
       />
 
+      <AdminResource>
+
       <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
         <CambiarAProcesandoButton job={job} onClick={changeStatusInProgress}/>
         <RehazarButton job={job} onClick={changeStatusCanceled} />
         <FinalizarButton job={job} onClick={changeStatusFinished}/>
       </div>
+      </AdminResource>
 
       <div style={{display: "flex", flexDirection: 'row', margin: 10, gap: 10, fontSize: 14, alignItems: 'center'}}>
         <div>

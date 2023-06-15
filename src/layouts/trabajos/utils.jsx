@@ -44,13 +44,13 @@ const formatStatus = (status) => {
   // eslint-disable-next-line default-case
   switch (status){
     case "pending":
-      return "Pendiente";
+      return "En espera";
     case "canceled":
-      return "Cancelado";
+      return "Con problemas";
     case "in_progress":
       return "En proceso"
     case "finished":
-      return "Terminado"
+      return "Finalizado"
   }
 }
 
