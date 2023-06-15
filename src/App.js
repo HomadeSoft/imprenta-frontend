@@ -13,6 +13,7 @@ import { useGlobalDataContext } from "./context/DataContext";
 import DataService from "./services/DataService";
 import ProtectedRoute from "./authContexts/ProtectedRoute";
 import { useAuth0 } from "@auth0/auth0-react";
+import AdminRoute from "authContexts/AdminRoute";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -77,6 +78,11 @@ export default function App() {
       // }
 
       if (route.protected) {
+        if (route.isAdmin) {
+          return <Route exact path={route.route} key={route.key} element={<AdminRoute />}>
+            <Route exact path={route.route} element={route.component} />
+          </Route>
+        }
         return (
           <Route exact path={route.route} key={route.key} element={<ProtectedRoute />}>
             <Route exact path={route.route} element={route.component} />
@@ -95,7 +101,7 @@ export default function App() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if(!user?.email){
+      if (!user?.email) {
         return
       }
 

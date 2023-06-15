@@ -10,7 +10,8 @@ import Wrapper from "layouts/Wrapper";
 import EditableTableCell from "components/EditableTableCell";
 import DataService from "../../services/DataService";
 import { useGlobalDataContext } from "../../context/DataContext";
-import {useAuth0} from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
+import AdminResource from "authContexts/AdminResource";
 // import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 
 function Precios() {
@@ -120,20 +121,23 @@ function Precios() {
       <Wrapper title="Lista de Precios" loading={loading}>
         {lista}
       </Wrapper>
-      <Box sx={{
-        '& > :not(style)': { m: 1 },
-        position: 'fixed',
-        bottom: 16,
-        right: 16,
-      }}>
-        <Fab color="primary" aria-label="add" onClick={() => {
-          if (editing) { savePrices() }
-
-          setEditing(!editing);
+      <AdminResource>
+        <Box sx={{
+          '& > :not(style)': { m: 1 },
+          position: 'fixed',
+          bottom: 16,
+          right: 16,
         }}>
-          {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
-        </Fab>
-      </Box>
+          <Fab color="primary" aria-label="add" onClick={() => {
+            if (editing) { savePrices() }
+
+            setEditing(!editing);
+          }}>
+            {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
+          </Fab>
+        </Box>
+      </AdminResource>
+
     </div>
 
 

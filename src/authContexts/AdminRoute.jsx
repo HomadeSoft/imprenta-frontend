@@ -2,13 +2,13 @@ import React from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 
-const ProtectedRoute = () => {
-  const { isAuthenticated } = useAuth0();
+const AdminRoute = () => {
+  const { isAuthenticated, user } = useAuth0();
 
   return (
     <>
       {
-        isAuthenticated
+        isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com")
           ? <Outlet />
           : <Navigate to="/login" />
       }
@@ -16,4 +16,4 @@ const ProtectedRoute = () => {
   );
 };
 
-export default ProtectedRoute;
+export default AdminRoute;
