@@ -150,14 +150,14 @@ function DataTable({
   const getBackgroundColor = (row) => {
     const label = row?.values?.estado?.props?.children;
 
-    switch (label){
-      case "Pendiente":
+    switch (label) {
+      case "En espera":
         return colors.jobRows.pending;
-      case "Cancelado":
+      case "Con problemas":
         return colors.jobRows.cancelled;
       case "En proceso":
         return colors.jobRows.in_progress;
-      case "Terminado":
+      case "Finalizado":
         return colors.jobRows.finished;
       default:
         return "white";
@@ -224,7 +224,7 @@ function DataTable({
             prepareRow(row);
             const backgroundColor = getBackgroundColor(row);
             return (
-              <TableRow {...row.getRowProps()} style={{backgroundColor: backgroundColor}} id={"TableRow"}>
+              <TableRow {...row.getRowProps()} style={{ backgroundColor: backgroundColor }} id={"TableRow"}>
                 {row.cells.map((cell) => (
                   <DataTableBodyCell
                     id={"DataTableBodyCell"}
