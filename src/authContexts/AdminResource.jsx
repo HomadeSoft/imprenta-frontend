@@ -4,7 +4,7 @@ import {useAuth0} from "@auth0/auth0-react";
 const AdminResource = ({children}) => {
   const { isAuthenticated, user } = useAuth0();
     return <>{
-      isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com")  ?
+      isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com" || user.email === "gpublicar@hotmail.com")  ?
         children :
         null
     }</>

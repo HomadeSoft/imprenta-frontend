@@ -8,7 +8,7 @@ const AdminRoute = () => {
   return (
     <>
       {
-        isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com")
+        isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com" || user.email === "gpublicar@hotmail.com")
           ? <Outlet />
           : <Navigate to="/login" />
       }
