@@ -56,6 +56,7 @@ const Nuevo = () => {
   const [laminadoEnabled, setLaminadoEnabled] = React.useState(false);
   const [troquelado, setTroquelado] = React.useState(false);
   const [laminado, setLaminado] = React.useState(false);
+  const [notas, setNotas] = React.useState();
   const { user } = useGlobalDataContext();
 
 
@@ -113,7 +114,8 @@ const Nuevo = () => {
         "user_id": user.id,
         "troquelado": troquelado,
         "laminado": laminado,
-        "file_names": [folder + selectedFile?.name]
+        "file_names": [folder + selectedFile?.name],
+        "notes": notas
       }
       const token = await getAccessTokenSilently();
       DataService.submitJob(token, trabajo);
@@ -302,6 +304,22 @@ const Nuevo = () => {
                     value={cantidad}
                     onChange={(event) => {
                       setCantidad(event.target.value);
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                </MDBox>
+                <MDBox display={"flex"} alignItems={"center"} gap={2} mb={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>
+                    Notas adicionales:
+                  </FormLabel>
+                  <MDInput type="text"
+                    placeholder="Aclaraciones adicionales"
+                    disabled={categoria === null}
+                    value={notas}
+                    multiline
+                    rows={4}
+                    onChange={(event) => {
+                      setNotas(event.target.value);
                     }}
                     style={{ flex: 1 }}
                   />

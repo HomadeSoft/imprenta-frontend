@@ -11,9 +11,12 @@ import {useAuth0} from "@auth0/auth0-react";
 const TableColumns = [
   { Header: "Cliente", accessor: "cliente", align: "left" },
   { Header: "Fecha", accessor: "fecha", align: "center" },
-  { Header: "Estado", accessor: "estado", align: "center" },
+  { Header: "Estado", accessor: "estado", align: "center", visible:"false"},
   { Header: "Total", accessor: "total", align: "left" },
   { Header: "Archivos", accessor: "archivos", align: "center" },
+  { Header: "Trabajo", accessor: "trabajo", align: "center" },
+  { Header: "Copias", accessor: "copias", align: "center" },
+  { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
   { Header: "Info", accessor: "info", align: "center" },
 ]
 

@@ -14,6 +14,9 @@ const JobsRowFormatter = (row) => {
     fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDate(row.file_names[0])}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
     archivos: (<MDButton component="a" color="white" href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}><DownloadIcon /></MDButton>),
+    trabajo: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatJob(row.paper_size, row.paper_type)}</MDTypography>),
+    copias: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatCopies(row.copies_quantity)}</MDTypography>),
+    doble_faz: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatDobleFaz(row.doble_faz)}</MDTypography>),
     info: (<MDTypography component="a" href={`/trabajo/${row.id}`} color="white"><InfoIcon>more_vert</InfoIcon></MDTypography>),
   }
 }
@@ -29,6 +32,18 @@ const formatPrice = (priceCents) => {
   } catch (e){
     return " - "
   }
+}
+
+const formatJob = (paperSize, paperType) => {
+  return paperSize + " " + paperType;
+}
+
+const formatCopies = (copies) => {
+  return copies;
+}
+
+const formatDobleFaz = (dobleFaz) => {
+  return dobleFaz ? "si" : "no";
 }
 
 const formatDate = (filePath) => {
@@ -83,5 +98,7 @@ export {
   formatStatus,
   formatBoolean,
   formatPriceToCents,
-  formatPriceFromCents
+  formatPriceFromCents,
+  formatJob,
+  formatCopies
 }

@@ -41,7 +41,7 @@ function PriceDialog(props) {
 }
 
 const CambiarAProcesandoButton = ({ job, onClick }) => {
-  if (!job || job?.status !== 'pending') {
+  if (!job || job?.status === 'in_progress') {
     return false
   }
 
@@ -54,19 +54,19 @@ const CambiarAProcesandoButton = ({ job, onClick }) => {
 
 const RehazarButton = ({ job, onClick }) => {
 
-  if (!job || job?.status !== 'pending') {
+  if (!job || job?.status === 'canceled') {
     return false
   }
 
   return (
     <MDButton color={"dark"} onClick={onClick}>
-      Rechazar trabajo
+      Trabajo con Problemas
     </MDButton>
   )
 }
 
 const FinalizarButton = ({ job, onClick }) => {
-  if (!job || job?.status !== 'in_progress') {
+  if (!job || job?.status === 'finished') {
     return false
   }
 
