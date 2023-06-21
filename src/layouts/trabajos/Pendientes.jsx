@@ -15,6 +15,9 @@ const TableColumns = [
   { Header: "estado", accessor: "estado", align: "center" },
   { Header: "total", accessor: "total", align: "left" },
   { Header: "archivos", accessor: "archivos", align: "center" },
+  { Header: "Trabajo", accessor: "trabajo", align: "center" },
+  { Header: "Copias", accessor: "copias", align: "center" },
+  { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
   { Header: "info", accessor: "info", align: "center" },
 ]
 
