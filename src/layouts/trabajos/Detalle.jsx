@@ -11,15 +11,23 @@ import Divider from "@mui/material/Divider";
 import {Dialog, DialogTitle, TextField} from "@mui/material";
 import {useAuth0} from "@auth0/auth0-react";
 import AdminResource from "authContexts/AdminResource";
+import { useGlobalDataContext } from "../../context/DataContext";
+
 
 function PriceDialog(props) {
-  const { onClose, selectedValue, open } = props;
-  const [newPrice, setNewPrice] = useState("0")
+  const { onClose, selectedValue, open, job } = props;
+  const [newPrice, setNewPrice] = useState("0");
+  const {prices} = useGlobalDataContext();
 
   const handleCancel = () => onClose(selectedValue);
   const handleSave = () => onClose(newPrice);
   const handleInputChange = (event) => setNewPrice(event.target.value);
-
+  const precioUnit = prices?.find
+  (priceItem => priceItem.printSize === job?.paper_size)?.papel?.find
+  (paperItem => job?.paper_type.includes(paperItem.gramaje))?.quantities?.find
+  (quantity => quantity.min <= job?.copies_quantity && job?.copies_quantity <= quantity.max).options?.find
+  (price => price.description === (job?.doble_faz ? "4/4" : "4/0")).value;
+  const precioTotal = parseInt(precioUnit?.substring(1)) * job?.copies_quantity;
   useEffect(() => {
     setNewPrice(formatPriceFromCents(selectedValue))
   }, [selectedValue])
@@ -27,6 +35,12 @@ function PriceDialog(props) {
   return (
     <Dialog onClose={handleCancel} open={open}>
       <DialogTitle style={{margin: "25px"}}>Determinar el precio del trabajo</DialogTitle>
+      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+        <div>Precio unitario: {precioUnit ? precioUnit : "$N/A"}</div>
+      </div>
+      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+        <div>Precio sugerido total: ${precioTotal ? precioTotal : "N/A"}</div>
+      </div>
       <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
         <div>$</div>
         <TextField value={newPrice} onChange={handleInputChange} type={"number"}/>
@@ -189,6 +203,7 @@ const Detalle = () => {
       <PriceDialog
         selectedValue={job?.total_price_cents}
         open={open}
+        job={job}
         onClose={handlePriceUpdate}
       />
 
