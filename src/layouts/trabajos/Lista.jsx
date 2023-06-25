@@ -7,7 +7,6 @@ import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "./utils";
 import {useAuth0} from "@auth0/auth0-react";
 
-
 const TableColumns = [
   { Header: "Cliente", accessor: "cliente", align: "left" },
   { Header: "Fecha", accessor: "fecha", align: "center" },
@@ -27,7 +26,7 @@ function Lista() {
   useEffect(() => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
-      const { data } = await DataService.fetchPendingJobs(token)
+      const { data } = await DataService.fetchAllJobs(token)
       const formattedRows = data?.map(r => JobsRowFormatter(r))
       setRows(formattedRows)
     };

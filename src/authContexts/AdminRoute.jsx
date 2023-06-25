@@ -1,6 +1,7 @@
 import React from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
+import AuthService from "./AuthService";
 
 const AdminRoute = () => {
   const { isAuthenticated, user } = useAuth0();
@@ -8,7 +9,7 @@ const AdminRoute = () => {
   return (
     <>
       {
-        isAuthenticated && (user.email === "juancriera94@gmail.com" || user.email === "monipublicar@hotmail.com" || user.email === "gpublicar@hotmail.com")
+        isAuthenticated && AuthService.isAdmin(user.email)
           ? <Outlet />
           : <Navigate to="/login" />
       }

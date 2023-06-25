@@ -23,6 +23,19 @@ const DataService = (() => {
   }
 
   const fetchPendingJobs = async (token) => {
+    const url = `${BASE_URL}/jobs/pendingJobs`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const fetchAllJobs = async (token) => {
     const url = `${BASE_URL}/jobs/allJobs`;
 
     return fetch(url, requestHeaders(token))
@@ -180,11 +193,11 @@ const DataService = (() => {
       alert('Ups, algo salio mal');
       console.error(error);
     }
-
   }
 
   return {
     fetchPendingJobs: (token) => fetchPendingJobs(token),
+    fetchAllJobs: (token) => fetchAllJobs(token),
     fetchUsers: (token) => fetchUsers(token),
     fetchUserData: (token, id) => fetchUserData(token, id),
     fetchUserDataByEmail: (token, email) => fetchUserDataByEmail(token, email),
