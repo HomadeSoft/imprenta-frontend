@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "examples/Sidenav";
@@ -108,13 +108,14 @@ export default function App() {
       const token = getAccessTokenSilently();
       const { data, error } = await DataService.fetchUserDataByEmail(token, user?.email);
 
-      if(error){
+      if (error) {
         navigate('/logout')
       }
       setUser(data);
     }
 
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getAccessTokenSilently, setUser, user?.email]);
 
 
