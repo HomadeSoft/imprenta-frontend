@@ -18,19 +18,29 @@ function PriceDialog(props) {
   const { onClose, selectedValue, open, job } = props;
   const [newPrice, setNewPrice] = useState("0");
   const {prices} = useGlobalDataContext();
+  const [copies, setCopies] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-  const handleCancel = () => onClose(selectedValue);
+  const handleCancel = () => onClose(formatPriceFromCents(selectedValue));
   const handleSave = () => onClose(newPrice);
   const handleInputChange = (event) => setNewPrice(event.target.value);
+  const handleCopiesChange = (event) => {
+    setCopies(event.target.value)
+    setTotalPrice(parseInt(precioUnit?.substring(1)) * event.target.value);
+  };
   const precioUnit = prices?.find
   (priceItem => priceItem.printSize === job?.paper_size)?.papel?.find
   (paperItem => job?.paper_type.includes(paperItem.gramaje))?.quantities?.find
-  (quantity => quantity.min <= job?.copies_quantity && job?.copies_quantity <= quantity.max).options?.find
+  (quantity => quantity.min <= copies && copies <= quantity.max)?.options?.find
   (price => price.description === (job?.doble_faz ? "4/4" : "4/0")).value;
-  const precioTotal = parseInt(precioUnit?.substring(1)) * job?.copies_quantity;
+  // const precioTotal = parseInt(precioUnit?.substring(1)) * job?.copies_quantity;
+
   useEffect(() => {
     setNewPrice(formatPriceFromCents(selectedValue))
-  }, [selectedValue])
+    setCopies(job?.copies_quantity);
+    setTotalPrice(parseInt(precioUnit?.substring(1)) * job?.copies_quantity);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedValue, job])
 
   return (
     <Dialog onClose={handleCancel} open={open}>
@@ -39,7 +49,11 @@ function PriceDialog(props) {
         <div>Precio unitario: {precioUnit ? precioUnit : "$N/A"}</div>
       </div>
       <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
-        <div>Precio sugerido total: ${precioTotal ? precioTotal : "N/A"}</div>
+        <div>Total de copias: </div>
+        <TextField value={copies} onChange={handleCopiesChange} type={"number"}/>
+      </div>
+      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+        <div>Precio total: ${totalPrice ? totalPrice : "N/A"}</div>
       </div>
       <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
         <div>$</div>
