@@ -7,6 +7,7 @@ import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "./utils";
 import {useAuth0} from "@auth0/auth0-react";
+import AuthService from "../../authContexts/AuthService";
 
 
 const TableColumns = [
@@ -22,14 +23,21 @@ const TableColumns = [
 ]
 
 function Pendientes() {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const [rows, setRows] = useState([])
 
   useEffect(() => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
-      const { data } = await DataService.fetchPendingJobs(token);
-      const formattedRows = data?.map(r => JobsRowFormatter(r))
+
+      let response;
+      if(AuthService.isAdmin(user?.email)){
+        response = await DataService.fetchPendingJobs(token);
+      } else {
+        response = await DataService.fetchPendingJobsFromUser(token, user.email);
+      }
+
+      const formattedRows = response?.data?.map(r => JobsRowFormatter(r))
       if(formattedRows?.length){
         setRows(formattedRows)
       }

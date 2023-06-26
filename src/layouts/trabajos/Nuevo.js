@@ -30,12 +30,14 @@ const Nuevo = () => {
 
       DataService.fetchPrices(token).then(
         (response) => {
-          setCategorias(response.data);
+          if(response.data !== '{}'){
+            setCategorias(response.data);
+            const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
+            setlistaTroquelados(listaTroquelados);
+            const selectedCategory = response.data.find(c => c.printSize === "A3+")
+            setCategoria(selectedCategory);
+          }
           setLoading(false);
-          const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
-          setlistaTroquelados(listaTroquelados);
-          const selectedCategory = response.data.find(c => c.printSize === "A3+")
-          setCategoria(selectedCategory);
         }
       );
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Sidenav from "examples/Sidenav";
@@ -29,7 +29,7 @@ export default function App() {
   const { pathname } = useLocation();
   const { setPrices, setUser } = useGlobalDataContext()
   const { getAccessTokenSilently } = useAuth0();
-
+  const navigate = useNavigate();
   /// TODO - NICO EVITAR FETCH SI NO ESTA AUTHENTICATED
 
   useEffect(() => {
@@ -106,8 +106,11 @@ export default function App() {
       }
 
       const token = getAccessTokenSilently();
-      const { data } = await DataService.fetchUserDataByEmail(token, user?.email);
+      const { data, error } = await DataService.fetchUserDataByEmail(token, user?.email);
 
+      if(error){
+        navigate('/logout')
+      }
       setUser(data);
     }
 

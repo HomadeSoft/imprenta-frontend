@@ -35,6 +35,19 @@ const DataService = (() => {
       })
   }
 
+  const fetchPendingJobsFromUser = async (token, userEmail) => {
+    const url = `${BASE_URL}/jobs/userJobsByEmail?userEmail=${userEmail}`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const fetchAllJobs = async (token) => {
     const url = `${BASE_URL}/jobs/allJobs`;
 
@@ -68,6 +81,9 @@ const DataService = (() => {
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
+        if(data?.status === "error"){
+          throw new Error("Usuario inexistente")
+        }
         return { data: data, error: null }
       })
       .catch((err) => {
@@ -197,6 +213,7 @@ const DataService = (() => {
 
   return {
     fetchPendingJobs: (token) => fetchPendingJobs(token),
+    fetchPendingJobsFromUser: (token, userEmail) => fetchPendingJobsFromUser(token, userEmail),
     fetchAllJobs: (token) => fetchAllJobs(token),
     fetchUsers: (token) => fetchUsers(token),
     fetchUserData: (token, id) => fetchUserData(token, id),
