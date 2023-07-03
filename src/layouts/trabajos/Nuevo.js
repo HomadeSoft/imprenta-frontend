@@ -24,13 +24,14 @@ const Nuevo = () => {
   const [listaTroquelados, setlistaTroquelados] = useState({});
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
 
       DataService.fetchPrices(token).then(
         (response) => {
-          if(response.data !== '{}'){
+          if (response.data !== '{}') {
             setCategorias(response.data);
             const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
             setlistaTroquelados(listaTroquelados);
@@ -333,6 +334,14 @@ const Nuevo = () => {
                 }}>
                   <MDInput type="file" onChange={handleFileChange} />
                 </MDBox>
+                <MDButton
+                  style={{
+                    width: "50%", margin: "0 auto", maxWidth: 350, marginBottom: 20, display: "flex", justifyContent: "center"
+                  }}
+                  href={`${BASE_URL}/upload/priceList`}
+                >
+                  Descargar lista de precios
+                </MDButton>
               </Grid>
             </Grid>
           </FormGroup>
