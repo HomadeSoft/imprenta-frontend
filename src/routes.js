@@ -35,6 +35,8 @@ import Detalle from "./layouts/trabajos/Detalle";
 import Lista from "./layouts/trabajos/Lista";
 import DetallesCliente from "./layouts/clientes/DetallesCliente";
 
+const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
+
 const routes = [
   {
     type: "collapse",
@@ -79,6 +81,7 @@ const routes = [
     type: "collapse",
     name: "Precios",
     key: "precios",
+    isAdmin: true,
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/precios",
     protected: true,
@@ -103,6 +106,18 @@ const routes = [
     show: false,
     protected: true,
     component: <DetallesCliente />,
+  },
+  {
+    type: "divider",
+  },
+  {
+    type: "collapse",
+    name: "Descargar lista de precios",
+    key: "preciosList",
+    icon: <Icon fontSize="small">download</Icon>,
+    route: "#",
+    protected: true,
+    href: `${BASE_URL}/upload/priceList`
   },
   {
     type: "divider",
