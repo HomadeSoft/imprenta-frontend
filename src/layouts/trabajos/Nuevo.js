@@ -110,7 +110,7 @@ const Nuevo = () => {
 
       const trabajo = {
         "copies_quantity": cantidad,
-        "doble_faz": dobleFaz ? "si" : "no",
+        "doble_faz": dobleFaz ? true : false,
         "paper_size": categoria?.printSize,
         "paper_type": tipoPapel,
         "status": "pending",
