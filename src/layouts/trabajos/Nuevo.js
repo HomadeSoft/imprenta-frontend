@@ -15,16 +15,40 @@ import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 import { useGlobalDataContext } from "context/DataContext";
 
+const Legend = ({ message, setMessage }) => {
+  if(!message) {
+    return null
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex", flexDirection: 'row', justifyContent: 'space-around',
+        alignItems: 'center', padding: 20,
+        marginBottom: 20, borderRadius: 10,
+        backgroundColor: "#000000", color: "white",
+        cursor: 'pointer'
+    }}
+      onClick={() => setMessage(null)}
+    >
+      <div>{message}</div>
+    </div>
+  )
+};
+
+
 const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
   const { id } = useParams()
   // eslint-disable-next-line no-unused-vars
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);
   const [listaTroquelados, setlistaTroquelados] = useState({});
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
+
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
@@ -93,8 +117,6 @@ const Nuevo = () => {
     setTipoPapel(null);
   }
 
-
-
   const switchDobleFaz = () => {
     setDobleFaz(!dobleFaz);
   }
@@ -106,7 +128,13 @@ const Nuevo = () => {
       //crear_carpeta_con_fecha
 
       const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
-      DataService.uploadToServer(selectedFile, folder);
+      setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
+
+      const { error } = await DataService.uploadToServer(selectedFile, folder);
+      if(error){
+        setMessage(error)
+        return
+      }
 
       const trabajo = {
         "copies_quantity": cantidad,
@@ -120,9 +148,21 @@ const Nuevo = () => {
         "file_names": [folder + selectedFile?.name],
         "notes": notas
       }
+
       const token = await getAccessTokenSilently();
-      DataService.submitJob(token, trabajo);
-      navigate("/")
+      setMessage("Se está procesando el archivo. No cierre esta ventana")
+
+      const { error: jobError } = await DataService.submitJob(token, trabajo);
+      if(jobError){
+        setMessage(jobError)
+        return
+      }
+
+      setMessage("Procesando...")
+      setTimeout(() => {
+        setMessage(null)
+        navigate("/")
+      }, 3000)
     }
   }
 
@@ -150,7 +190,7 @@ const Nuevo = () => {
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
       <>
-
+        <Legend message={message} setMessage={setMessage}/>
         <CardContent >
           <FormGroup >
             <Grid container display={"flex"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
@@ -364,3 +404,9 @@ const Nuevo = () => {
 
 
 export default Nuevo;
+
+// { tamaño: "a4", tipo: "brillante", tipoPapel: "115gr ilus", troqulado: true }
+// { tamaño: "a4", tipo: "brillante", tipoPapel: "115gr ilus", troqulado: false}
+// {tamaño: "a4", tipo: "brillante", tipoPapel: "120gr ilus"}
+// {tamaño: "a4", tipo: "brillante", tipoPapel: "150gr ilus"}
+// {tamaño: "a4", tipo: "brillante", tipoPapel: "200gr ilus"}

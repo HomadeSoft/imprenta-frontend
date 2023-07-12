@@ -11,7 +11,7 @@ const JobsRowFormatter = (row) => {
   return {
     cliente: (<MDTypography display="block" variant="button" color="white" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="white" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
-    fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDate(row.file_names[0])}</MDTypography>),
+    fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDateString(row.created_at)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
     archivos: (<MDButton component="a" color="white" href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}><DownloadIcon /></MDButton>),
     trabajo: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatJob(row.paper_size, row.paper_type)}</MDTypography>),
@@ -50,6 +50,15 @@ const formatDate = (filePath) => {
   try {
     const formattedDate = filePath.match("\\d{2}-\\d{2}-\\d{4}");
     return formattedDate;
+  } catch (err) {
+    return '-'
+  }
+}
+
+const options = { year: 'numeric', month: 'long', day: 'numeric' };
+const formatDateString = (createdAt) => {
+  try {
+    return new Date(createdAt).toLocaleDateString('es-ES', options);
   } catch (err) {
     return '-'
   }

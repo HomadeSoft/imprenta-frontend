@@ -130,7 +130,8 @@ const DataService = (() => {
         return { data: data, error: null }
       })
       .catch((err) => {
-        return { data: null, error: err }
+        console.error(err);
+        return { data: null, error: 'Ups, algo salio mal' }
       })
   }
 
@@ -204,10 +205,10 @@ const DataService = (() => {
 
     try {
       await axios.post(`${BASE_URL}/upload/a`, formData);
-      alert('El trabajo se subio exitosamente');
+      return { data: "", error: null }
     } catch (error) {
-      alert('Ups, algo salio mal');
       console.error(error);
+      return { data: null, error: 'Ups, algo salio mal' }
     }
   }
 
