@@ -212,6 +212,23 @@ const DataService = (() => {
     }
   }
 
+  const saveUser = async (token, user) => {
+    const url = `${BASE_URL}/users/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(user)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.user.data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   return {
     fetchPendingJobs: (token) => fetchPendingJobs(token),
     fetchPendingJobsFromUser: (token, userEmail) => fetchPendingJobsFromUser(token, userEmail),
@@ -230,6 +247,7 @@ const DataService = (() => {
     changeStatusCanceled: (token, id) => changeStatus(token, id, "canceled"),
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
+    saveUser: (token, user) => saveUser(token, user),
   }
 })();
 

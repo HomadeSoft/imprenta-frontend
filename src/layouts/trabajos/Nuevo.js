@@ -404,9 +404,3 @@ const Nuevo = () => {
 
 
 export default Nuevo;
-
-// { tamaño: "a4", tipo: "brillante", tipoPapel: "115gr ilus", troqulado: true }
-// { tamaño: "a4", tipo: "brillante", tipoPapel: "115gr ilus", troqulado: false}
-// {tamaño: "a4", tipo: "brillante", tipoPapel: "120gr ilus"}
-// {tamaño: "a4", tipo: "brillante", tipoPapel: "150gr ilus"}
-// {tamaño: "a4", tipo: "brillante", tipoPapel: "200gr ilus"}

@@ -124,6 +124,15 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Mi Perfil",
+    key: "mi-perfil",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: `/perfil`,
+    protected: true,
+    component: <DetallesCliente />
+  },
+  {
+    type: "collapse",
     name: "Sign In",
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
