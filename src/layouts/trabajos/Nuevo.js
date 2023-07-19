@@ -1,16 +1,13 @@
 import MDBox from "components/MDBox";
 
-import { Navigate, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Wrapper from "../Wrapper";
 import DataService from "services/DataService";
-// import DeleteIcon from '@mui/icons-material/Delete';
 
-
-// import { useDropzone } from 'react-dropzone'
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 import { useGlobalDataContext } from "context/DataContext";
@@ -25,7 +22,7 @@ const Legend = ({ message, setMessage }) => {
       style={{
         display: "flex", flexDirection: 'row', justifyContent: 'space-around',
         alignItems: 'center', padding: 20,
-        marginBottom: 20, borderRadius: 10,
+        borderRadius: 10,
         backgroundColor: "#000000", color: "white",
         cursor: 'pointer'
     }}
@@ -42,7 +39,10 @@ const Nuevo = () => {
   const { id } = useParams()
   // eslint-disable-next-line no-unused-vars
   const [categorias, setCategorias] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
   const [message, setMessage] = useState(null);
   const [listaTroquelados, setlistaTroquelados] = useState({});
   const { getAccessTokenSilently } = useAuth0();
@@ -72,18 +72,20 @@ const Nuevo = () => {
   }, [])
 
   // eslint-disable-next-line no-unused-vars
-  const [papel, setPapel] = React.useState('');
-  const [categoria, setCategoria] = React.useState();
-  const [dobleFaz, setDobleFaz] = React.useState(false);
+  const [papel, setPapel] = useState('');
+  const [categoria, setCategoria] = useState();
+  const [dobleFaz, setDobleFaz] = useState(false);
+
   // eslint-disable-next-line no-unused-vars
-  const [dobleFazEnabled, setDobleFazEnabled] = React.useState(false);
-  const [cantidad, setCantidad] = React.useState(0);
-  const [tipoPapel, setTipoPapel] = React.useState();
-  const [troqueladoEnabled, setTroqueladoEnabled] = React.useState(false);
-  const [laminadoEnabled, setLaminadoEnabled] = React.useState(false);
-  const [troquelado, setTroquelado] = React.useState(false);
-  const [laminado, setLaminado] = React.useState(false);
-  const [notas, setNotas] = React.useState();
+  const [dobleFazEnabled, setDobleFazEnabled] = useState(false);
+  const [cantidad, setCantidad] = useState(0);
+  const [tipoPapel, setTipoPapel] = useState();
+  const [troqueladoEnabled, setTroqueladoEnabled] = useState(false);
+  const [laminadoEnabled, setLaminadoEnabled] = useState(false);
+  const [troquelado, setTroquelado] = useState(false);
+  const [laminado, setLaminado] = useState(false);
+  const [notas, setNotas] = useState();
+
   const { user } = useGlobalDataContext();
 
 
@@ -125,6 +127,8 @@ const Nuevo = () => {
 
   const crearTrabajo = async () => {
     if (cantidad && tipoPapel) {
+      setUploading(true);
+      setLoading(true);
       //crear_carpeta_con_fecha
 
       const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
@@ -133,6 +137,8 @@ const Nuevo = () => {
       const { error } = await DataService.uploadToServer(selectedFile, folder);
       if(error){
         setMessage(error)
+        setUploading(false);
+        setLoading(false);
         return
       }
 
@@ -155,6 +161,8 @@ const Nuevo = () => {
       const { error: jobError } = await DataService.submitJob(token, trabajo);
       if(jobError){
         setMessage(jobError)
+        setUploading(false);
+        setLoading(false);
         return
       }
 
@@ -179,7 +187,6 @@ const Nuevo = () => {
     return <Navigate to={'/login'} />
   }
 
-
   /** File upload tests */
 
   const handleFileChange = (event) => {
@@ -190,7 +197,6 @@ const Nuevo = () => {
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
       <>
-        <Legend message={message} setMessage={setMessage}/>
         <CardContent >
           <FormGroup >
             <Grid container display={"flex"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
@@ -294,8 +300,6 @@ const Nuevo = () => {
                             }
                           </MenuItem>
                         ))
-
-
                       }
                     </Select>
                   </FormControl>
@@ -391,11 +395,12 @@ const Nuevo = () => {
             color={"success"}
             style={{ width: "50%", margin: "0 auto", maxWidth: 350, marginBottom: 30 }}
             onClick={crearTrabajo}
-            disabled={!allPropertiesSelected()}
+            disabled={!allPropertiesSelected() || uploading}
           >
             Crear Trabajo
           </MDButton>
         </CardActions>
+        <Legend message={message} setMessage={setMessage}/>
       </>
     </Wrapper>
   );

@@ -180,8 +180,8 @@ const Detalle = () => {
   const changeStatusInProgress = async () => {
     setLoading(true)
     const token = await getAccessTokenSilently();
-    const { data } = await DataService.changeStatusInProgress(token, job.id)
-    setJob(data);
+    await DataService.changeStatusInProgress(token, job.id)
+
     setLoading(false)
     navigate("/")
   }
@@ -189,15 +189,15 @@ const Detalle = () => {
     setLoading(true)
     const token = await getAccessTokenSilently();
     const { data } = await DataService.changeStatusFinished(token, job.id)
+
     setJob(data);
     setLoading(false)
-    navigate("/")
   }
   const changeStatusCanceled = async () => {
     setLoading(true)
     const token = await getAccessTokenSilently();
-    const { data } = await DataService.changeStatusCanceled(token, job.id)
-    setJob(data);
+    await DataService.changeStatusCanceled(token, job.id)
+
     setLoading(false)
     navigate("/")
   }
@@ -220,7 +220,6 @@ const Detalle = () => {
         job={job}
         onClose={handlePriceUpdate}
       />
-
 
       <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
         <CambiarAProcesandoButton job={job} onClick={changeStatusInProgress}/>
