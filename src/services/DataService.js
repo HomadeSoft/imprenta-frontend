@@ -47,7 +47,24 @@ const DataService = (() => {
       })
   }
 
-  const fetchUserJobs = async (id) => {
+  const fetchUserDataByEmail = async (token, email) => {
+    // TODO: Add email parameter on Rails
+    const url = `${BASE_URL}/users/user?email=${email}`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        if (data?.status === "error") {
+          throw new Error("Usuario inexistente")
+        }
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const fetchUserJobs = async (token, id) => {
     const url = `${BASE_URL}/jobs/userJobs?userId=${id}`;
     const token = "2"
 
@@ -125,17 +142,132 @@ const DataService = (() => {
       })
   }
 
+  const fetchProducts = async (token) => {
+    const url = `${BASE_URL}/productos`;
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.productos, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+  const fetchProductData = async (id) => {
+    const url = `${BASE_URL}/productos/${id}`;
+    return fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const createProduct = async (product) => {
+    const url = `${BASE_URL}/productos`;
+    console.log(JSON.stringify(product));
+    return fetch(url, {
+      method: 'POST',
+      // headers: requestPostHeaders(token),
+      body: JSON.stringify(product)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+  const updateJobPrice = async (token, id, price) => {
+    const url = `${BASE_URL}/jobs/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, total_price_cents: price })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const changeStatus = async (token, id, newStatus) => {
+    const url = `${BASE_URL}/jobs/changeStatus`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, new_status: newStatus })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const uploadToServer = async (file, folder) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    try {
+      await axios.post(`${BASE_URL}/upload/a`, formData);
+      return { data: "", error: null }
+    } catch (error) {
+      console.error(error);
+      return { data: null, error: 'Ups, algo salio mal' }
+    }
+  }
+
+  const saveUser = async (token, user) => {
+    const url = `${BASE_URL}/users/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(user)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.user.data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
 
   return {
-    fetchPendingJobs: () => fetchPendingJobs(),
-    fetchUsers: () => fetchUsers(),
-    fetchUserData: (id) => fetchUserData(id),
-    fetchUserJobs: (id) => fetchUserJobs(id),
-    fetchJobData: (id) => fetchJobData(id),
-    submitJob: (job) => submitJob(job),
-    savePrices: (prices) => savePrices(prices),
-    fetchPrices: () => fetchPrices(),
-
+    fetchPendingJobs: (token) => fetchPendingJobs(token),
+    fetchPendingJobsFromUser: (token, userEmail) => fetchPendingJobsFromUser(token, userEmail),
+    fetchAllJobs: (token) => fetchAllJobs(token),
+    fetchUsers: (token) => fetchUsers(token),
+    fetchUserData: (token, id) => fetchUserData(token, id),
+    fetchUserDataByEmail: (token, email) => fetchUserDataByEmail(token, email),
+    fetchUserJobs: (token, id) => fetchUserJobs(token, id),
+    fetchJobData: (token, id) => fetchJobData(token, id),
+    submitJob: (token, job) => submitJob(token, job),
+    savePrices: (token, prices) => savePrices(token, prices),
+    fetchPrices: (token) => fetchPrices(token),
+    updateJobPrice: (token, id, price) => updateJobPrice(token, id, price),
+    changeStatusPending: (token, id) => changeStatus(token, id, "pending"),
+    changeStatusInProgress: (token, id) => changeStatus(token, id, "in_progress"),
+    changeStatusCanceled: (token, id) => changeStatus(token, id, "canceled"),
+    changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
+    uploadToServer: (file, folder) => uploadToServer(file, folder),
+    saveUser: (token, user) => saveUser(token, user),
+    fetchProducts: (token) => fetchProducts(token),
+    createProduct: (product) => createProduct(product),
+    fetchProductData: (id) => fetchProductData(id),
   }
 })();
 
