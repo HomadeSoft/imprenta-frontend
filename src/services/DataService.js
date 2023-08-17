@@ -1,13 +1,16 @@
+import axios from "axios";
+
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
 
+
+
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (token) => {
     const url = `${BASE_URL}/users/allUsers`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -19,9 +22,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchPendingJobs = async () => {
-    const url = `${BASE_URL}/jobs/allJobs`;
-    const token = "2"
+  const fetchPendingJobs = async (token) => {
+    const url = `${BASE_URL}/jobs/pendingJobs`;
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -33,9 +35,34 @@ const DataService = (() => {
       })
   }
 
-  const fetchUserData = async (id) => {
+  const fetchPendingJobsFromUser = async (token, userEmail) => {
+    const url = `${BASE_URL}/jobs/userJobsByEmail?userEmail=${userEmail}`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const fetchAllJobs = async (token) => {
+    const url = `${BASE_URL}/jobs/allJobs`;
+
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data?.jobs, meta: data?.meta, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const fetchUserData = async (token, id) => {
     const url = `${BASE_URL}/users/user?userId=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -54,7 +81,8 @@ const DataService = (() => {
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
-        if (data?.status === "error") {
+        if(data?.status === "error"){
+
           throw new Error("Usuario inexistente")
         }
         return { data: data, error: null }
@@ -66,7 +94,6 @@ const DataService = (() => {
 
   const fetchUserJobs = async (token, id) => {
     const url = `${BASE_URL}/jobs/userJobs?userId=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -78,9 +105,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchJobData = async (id) => {
+  const fetchJobData = async (token, id) => {
     const url = `${BASE_URL}/jobs/job?id=${id}`;
-    const token = "2"
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -92,9 +118,8 @@ const DataService = (() => {
       })
   }
 
-  const submitJob = async (job) => {
+  const submitJob = async (token, job) => {
     const url = `${BASE_URL}/jobs/create`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -106,13 +131,13 @@ const DataService = (() => {
         return { data: data, error: null }
       })
       .catch((err) => {
-        return { data: null, error: err }
+        console.error(err);
+        return { data: null, error: 'Ups, algo salio mal' }
       })
   }
 
-  const savePrices = async (prices) => {
+  const savePrices = async (token, prices) => {
     const url = `${BASE_URL}/json_prices/save`;
-    const token = "2";
 
     return fetch(url, {
       method: 'POST',
@@ -128,10 +153,8 @@ const DataService = (() => {
       })
   }
 
-  const fetchPrices = async () => {
+  const fetchPrices = async (token) => {
     const url = `${BASE_URL}/json_prices`;
-    const token = "2"
-
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
@@ -141,6 +164,15 @@ const DataService = (() => {
         return { data: null, error: err }
       })
   }
+
+
+  const updateJobPrice = async (token, id, price) => {
+    const url = `${BASE_URL}/jobs/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, total_price_cents: price })
 
   const fetchProducts = async (token) => {
     const url = `${BASE_URL}/productos`;
@@ -172,22 +204,6 @@ const DataService = (() => {
       method: 'POST',
       // headers: requestPostHeaders(token),
       body: JSON.stringify(product)
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return { data: data, error: null }
-      })
-      .catch((err) => {
-        return { data: null, error: err }
-      })
-  }
-  const updateJobPrice = async (token, id, price) => {
-    const url = `${BASE_URL}/jobs/update`;
-
-    return fetch(url, {
-      method: 'POST',
-      headers: requestPostHeaders(token),
-      body: JSON.stringify({ id: id, total_price_cents: price })
     })
       .then((response) => response.json())
       .then((data) => {
@@ -265,6 +281,7 @@ const DataService = (() => {
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
+
     fetchProducts: (token) => fetchProducts(token),
     createProduct: (product) => createProduct(product),
     fetchProductData: (id) => fetchProductData(id),

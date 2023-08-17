@@ -38,6 +38,7 @@ import MDPagination from "components/MDPagination";
 // Material Dashboard 2 React example components
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
+import colors from "../../../assets/theme/base/colors";
 
 function DataTable({
   entriesPerPage,
@@ -81,6 +82,7 @@ function DataTable({
   } = tableInstance;
 
   // Set the default value for the entries per page when component mounts
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
 
   // Set the entries per page value based on the select value
@@ -145,6 +147,23 @@ function DataTable({
     entriesEnd = pageSize * (pageIndex + 1);
   }
 
+  const getBackgroundColor = (row) => {
+    const label = row?.values?.estado?.props?.children;
+
+    switch (label) {
+      case "En espera":
+        return colors.jobRows.pending;
+      case "Con problemas":
+        return colors.jobRows.cancelled;
+      case "En proceso":
+        return colors.jobRows.in_progress;
+      case "Finalizado":
+        return colors.jobRows.finished;
+      default:
+        return "white";
+    }
+  }
+
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
       {entriesPerPage || canSearch ? (
@@ -203,10 +222,12 @@ function DataTable({
         <TableBody {...getTableBodyProps()}>
           {page.map((row, key) => {
             prepareRow(row);
+            const backgroundColor = getBackgroundColor(row);
             return (
-              <TableRow {...row.getRowProps()}>
+              <TableRow {...row.getRowProps()} style={{ backgroundColor: backgroundColor }} id={"TableRow"}>
                 {row.cells.map((cell) => (
                   <DataTableBodyCell
+                    id={"DataTableBodyCell"}
                     noBorder={noEndBorder && rows.length - 1 === key}
                     align={cell.column.align ? cell.column.align : "left"}
                     {...cell.getCellProps()}

@@ -1,12 +1,9 @@
 import DataTable from "../../examples/Tables/DataTable";
 import {useEffect, useState} from "react";
-import MDTypography from "../../components/MDTypography";
-import MDButton from "../../components/MDButton";
-import {Link} from "react-router-dom";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {ClientsRowFormatter} from "./utils";
-
+import {useAuth0} from "@auth0/auth0-react";
 
 const TableColumns = [
   { Header: "Nombre y Apellido", accessor: "name", align: "center" },
@@ -19,15 +16,20 @@ const TableColumns = [
 
 const Clientes = () => {
   const [rows, setRows] = useState([])
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const getInfo = async () => {
-      const {data, error} = await DataService.fetchUsers()
-      // debugger
-      setRows(data.map(r => ClientsRowFormatter(r)))
+      const token = await getAccessTokenSilently();
+      const { data } = await DataService.fetchUsers(token)
+      const formattedRows = data?.map(r => ClientsRowFormatter(r))
+      if (formattedRows?.length){
+        setRows(formattedRows)
+      }
     };
 
     getInfo()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

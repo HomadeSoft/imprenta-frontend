@@ -14,16 +14,12 @@ Coded by www.creative-tim.com
 */
 
 // react-routers components
-import { Link } from "react-router-dom";
 
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Divider from "@mui/material/Divider";
-import Tooltip from "@mui/material/Tooltip";
-import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -53,7 +49,7 @@ function ProfileInfoCard({ title, description, info, action, shadow }) {
   // Render the card info items
   const renderItems = labels.map((label, key) => (
     <MDBox key={label} display="flex" py={1} pr={2}>
-      <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
+      <MDTypography variant="button" fontWeight="bold" textTransform="capitalize" style={{margin: "auto 0"}}>
         {label}: &nbsp;
       </MDTypography>
       <MDTypography variant="button" fontWeight="regular" color="text">

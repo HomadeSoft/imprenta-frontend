@@ -1,255 +1,335 @@
 import MDBox from "components/MDBox";
 
-import { useParams } from "react-router-dom";
-import React, { useCallback, useEffect, useState } from "react";
-import MDTypography from "../../components/MDTypography";
-import {
-  CardActions,
-  CardContent,
-  CircularProgress,
-  Fade,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Grid,
-  LinearProgress,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Switch
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { CardActions, CardContent, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, MenuItem, Select, Switch } from "@mui/material";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Wrapper from "../Wrapper";
-import bajadasSinPapel from "layouts/precios/data/bajadasSinPapel";
 import DataService from "services/DataService";
-import DeleteIcon from '@mui/icons-material/Delete';
 
-import { useDropzone } from 'react-dropzone'
+import { useAuth0 } from "@auth0/auth0-react";
+import moment from "moment";
+import { useGlobalDataContext } from "context/DataContext";
+
+const Legend = ({ message, setMessage }) => {
+  if(!message) {
+    return null
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex", flexDirection: 'row', justifyContent: 'space-around',
+        alignItems: 'center', padding: 20,
+        borderRadius: 10,
+        backgroundColor: "#000000", color: "white",
+        cursor: 'pointer'
+    }}
+      onClick={() => setMessage(null)}
+    >
+      <div>{message}</div>
+    </div>
+  )
+};
+
 
 const Nuevo = () => {
+  // eslint-disable-next-line no-unused-vars
   const { id } = useParams()
-  const [user, setUser] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [categorias, setCategorias] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+
+  const [message, setMessage] = useState(null);
+  const [listaTroquelados, setlistaTroquelados] = useState({});
+  const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
+  const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
   useEffect(() => {
-    const fetchData = () => {
-      DataService.fetchPrices().then(
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently();
+
+      DataService.fetchPrices(token).then(
         (response) => {
-          setCategorias(response.data);
+          if (response.data !== '{}') {
+            setCategorias(response.data);
+            const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
+            setlistaTroquelados(listaTroquelados);
+            const selectedCategory = response.data.find(c => c.printSize === "A3+")
+            setCategoria(selectedCategory);
+          }
           setLoading(false);
         }
       );
     }
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [papel, setPapel] = React.useState('');
-  const [opcion, setOpcion] = React.useState('');
-  const [categoria, setCategoria] = React.useState(null);
-  const [dobleFaz, setDobleFaz] = React.useState(false);
-  const [dobleFazEnabled, setDobleFazEnabled] = React.useState(false);
-  const [cantidad, setCantidad] = React.useState(0);
-  const [precio, setPrecio] = React.useState(0);
-  const [fechaHasta, setFechaHasta] = React.useState(null);
-  const [archivos, setArchivos] = React.useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [papel, setPapel] = useState('');
+  const [categoria, setCategoria] = useState();
+  const [dobleFaz, setDobleFaz] = useState(false);
 
-  const handleChange = (event) => {
-    setPapel(event.target.value);
+  // eslint-disable-next-line no-unused-vars
+  const [dobleFazEnabled, setDobleFazEnabled] = useState(false);
+  const [cantidad, setCantidad] = useState(0);
+  const [tipoPapel, setTipoPapel] = useState();
+  const [troqueladoEnabled, setTroqueladoEnabled] = useState(false);
+  const [laminadoEnabled, setLaminadoEnabled] = useState(false);
+  const [troquelado, setTroquelado] = useState(false);
+  const [laminado, setLaminado] = useState(false);
+  const [notas, setNotas] = useState();
+
+  const { user } = useGlobalDataContext();
+
+
+  const handleTipoPapelChange = (event) => {
+    setTipoPapel(event.target.value);
+    setTroquelado(null);
+    setTroqueladoEnabled(false);
+    setLaminado(null);
+    setLaminadoEnabled(false);
   };
 
+  const handleTroqueladoChange = (event) => {
+    setTroquelado(event.target.value);
+  }
 
+  const switchTroquelado = () => {
+    setTroqueladoEnabled(troqueladoEnabled ? false : true);
+  }
+
+  const handleLaminadoChange = (event) => {
+    setLaminado(event.target.value);
+  }
+
+  const switchLaminado = () => {
+    setLaminadoEnabled(laminadoEnabled ? false : true);
+  }
+  const handleCategoriaChange = (event) => {
+    const selectedCategory = categorias.find(c => c.printSize === event.target.value)
+    setCategoria(selectedCategory);
+    setPapel(null);
+    setTipoPapel(null);
+  }
 
   const switchDobleFaz = () => {
     setDobleFaz(!dobleFaz);
   }
 
-  const updatePrice = () => {
-    if (papel && cantidad && opcion) {
+  const [selectedFile, setSelectedFile] = useState(null);
 
-      let cantidadSeleccionada = papel.quantities.find((quantity) => quantity.min <= cantidad <= quantity.max);
-      let precioUnitario = (!dobleFazEnabled && dobleFaz) ?
-        cantidadSeleccionada.options.find((opcion) => opcion.description === "4/4") :
-        cantidadSeleccionada.options.find(opcion => opcion.description === ("4/0"));
-      setPrecio(parseInt(precioUnitario.value.replace(/[^0-9]/g, "")) * cantidad);
-    }
-  }
-  const handleOptionChange = (event) => {
-    setOpcion(event.target.value);
-    let valorNuevo = papel.quantities[0].options.map(option => (option.description === '4/4')).includes(true);
-    setDobleFaz(false)
-    setDobleFazEnabled(!valorNuevo);
-  };
+  const crearTrabajo = async () => {
+    if (cantidad && tipoPapel) {
+      setUploading(true);
+      setLoading(true);
+      //crear_carpeta_con_fecha
 
-  const handleFileChange = (e) => {
-    setArchivos(e.target.files);
-  };
+      const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
+      setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
 
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
-  ////////////////// START OF FILE MANAGER //////////////////
+      const { error } = await DataService.uploadToServer(selectedFile, folder);
+      if(error){
+        setMessage(error)
+        setUploading(false);
+        setLoading(false);
+        return
+      }
 
-  const [myFiles, setMyFiles] = useState([])
-
-  const onDrop = useCallback(acceptedFiles => {
-    setMyFiles([...myFiles, ...acceptedFiles])
-  }, [myFiles])
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  })
-
-  const removeFile = file => () => {
-    const newFiles = [...myFiles]
-    newFiles.splice(newFiles.indexOf(file), 1)
-    setMyFiles(newFiles)
-  }
-
-  const removeAll = () => {
-    setMyFiles([])
-  }
-
-  const files = myFiles.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes{" "}
-      <MDButton onClick={removeFile(file)} size="medium" iconOnly><DeleteIcon /></MDButton>
-    </li>
-  ))
-
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-  ////////////////// END OF FILE MANAGER //////////////////
-
-
-  const crearTrabajo = () => {
-    if (cantidad && opcion) {
       const trabajo = {
         "copies_quantity": cantidad,
-        "doble_faz": dobleFaz,
-        "due_date": fechaHasta,
-        "gramaje_laminado": papel.gramaje + " " + opcion,
-        "paper_type": categoria.printSize,
+        "doble_faz": dobleFaz ? true : false,
+        "paper_size": categoria?.printSize,
+        "paper_type": tipoPapel,
         "status": "pending",
-        "total_price_cents": precio * 100,
-        "user_id": 1,
+        "user_id": user.id,
+        "troquelado": troquelado,
+        "laminado": laminado,
+        "file_names": [folder + selectedFile?.name],
+        "notes": notas
       }
-      DataService.submitJob(trabajo);
+
+      const token = await getAccessTokenSilently();
+      setMessage("Se está procesando el archivo. No cierre esta ventana")
+
+      const { error: jobError } = await DataService.submitJob(token, trabajo);
+      if(jobError){
+        setMessage(jobError)
+        setUploading(false);
+        setLoading(false);
+        return
+      }
+
+      setMessage("Procesando...")
+      setTimeout(() => {
+        setMessage(null)
+        navigate("/")
+      }, 3000)
     }
   }
 
   const allPropertiesSelected = () => {
     return (
       cantidad &&
-      papel?.gramaje &&
-      opcion &&
-      categoria?.printSize &&
-      precio
+      tipoPapel &&
+      categoria?.printSize
     )
   }
 
-  const handleDetailsStyles = () => {
-    if (categoria) {
-      return ({ opacity: 1 })
-    } else {
-      return ({ opacity: 0.3, pointerEvents: 'none' })
-    }
+  const { isAuthenticated } = useAuth0();
+  if (!isAuthenticated) {
+    return <Navigate to={'/login'} />
   }
+
+  /** File upload tests */
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
 
   return (
     <Wrapper title="Trabajo Nuevo" loading={loading}>
       <>
+        <CardContent >
+          <FormGroup >
+            <Grid container display={"flex"} alignItems={"center"} justifyContent={"center"} width={"100%"}>
+              <Grid item xs={20} md={6} xl={8} mb={2}>
+                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2} >
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }} id="tipo-papel-label">Medida Papel:</FormLabel>
+                  <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
+                    <Select
+                      labelId="tipo-papel-label"
+                      id="tipo-papel-select"
+                      value={categoria?.printSize}
+                      defaultValue="A3+"
+                      sx={{ minHeight: 50 }}
+                      label="papel"
+                      onChange={handleCategoriaChange}
+                    >
+                      {
+                        categorias?.map(
+                          (categoria) => {
+                            if (categoria.printSize !== "TROQUELADOS") {
+                              return (
+                                <MenuItem
+                                  value={categoria.printSize}
+                                >{categoria.printSize}</MenuItem>
+                              )
+                            }
+                            // eslint-disable-next-line array-callback-return
+                            return;
+                          }
+                        )
 
-        <CardContent>
-          {/*<MDBox mb={2} style={{ display: "flex", flexDirection: 'row', gap: 5 }}>*/}
-          {/*  <MDTypography variant="h6" component="div">Usuario:</MDTypography>*/}
-          {/*  <MDTypography variant="body2">Juan Cruz</MDTypography>*/}
-          {/*</MDBox>*/}
-          <FormGroup>
-            <Grid container spacing={1}>
-              <Grid item xs={12} md={6} xl={4} spacing={1}>
-                <MDBox mb={2}>
-                  <FormLabel id="tipo-papel-label">Tipo de Papel</FormLabel>
-                  <RadioGroup aria-labelledby="tipo-papel-label" name="tipo-papel">
-                    {
-                      categorias?.map((categoria) => (
-                        <FormControlLabel
-                          value={categoria.printSize}
-                          control={<Radio />}
-                          label={categoria.printSize}
-                          onClick={() => {
-                            setCategoria(categoria);
-                            setPrecio(0)
-                            setPapel(null);
-                          }}
-                        />
-                      ))
-                    }
-                  </RadioGroup>
+                      }
+                    </Select>
+                  </FormControl>
                 </MDBox>
-              </Grid>
+                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Tipo de Papel:</FormLabel>
+                  <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={tipoPapel}
+                      sx={{ minHeight: 50 }}
+                      label="papel"
+                      onChange={handleTipoPapelChange}
+                    >
+                      {categoria ? categoria.papel.map(
+                        (papel) =>
+                        (
+                          papel.caracteristicas.map(
+                            (caracteristica) => {
+                              var tipoPapel = papel.gramaje + " " + caracteristica;
+                              if (papel.gramaje) {
 
-              <Grid item xs={20} md={6} xl={8} mb={2} style={handleDetailsStyles()}>
-                <MDBox display={"flex"} alignItems={"center"} gap={2} mb={2}>
-                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>
-                    Copias:
-                  </FormLabel>
-                  <MDInput type="number"
-                    placeholder="Cantidad de Copias"
-                    disabled={categoria === null}
-                    value={cantidad}
-                    onChange={(event) => {
-                      setCantidad(event.target.value);
-                    }}
+                                return (
+                                  <MenuItem value={tipoPapel} >
+                                    {
+                                      papel.gramaje + " " + caracteristica
+                                    }
+                                  </MenuItem>
+                                )
+                              } else {
+                                return (<MenuItem value={caracteristica} >
+                                  {
+                                    "Sin Papel"
+                                  }
+                                </MenuItem>);
+                              }
+                            }
+                          )
+                        )
+                      ) : null}
+                    </Select>
+                  </FormControl>
+                </MDBox>
+                <MDBox mb={2} display={{ display: tipoPapel?.includes("Autoadhesivo") || tipoPapel?.includes("OPP") ? "flex" : "none" }} alignItems={"center"} gap={2} >
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Troquelado:</FormLabel>
+                  <FormControlLabel
+                    control={
+                      <Switch checked={troqueladoEnabled} onChange={switchTroquelado} />}
                     style={{ flex: 1 }}
                   />
                 </MDBox>
-                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Gramaje:</FormLabel>
+                <MDBox mb={2} display={{ display: troqueladoEnabled ? "flex" : "none" }} alignItems={"center"} gap={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Troquelado:</FormLabel>
                   <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={papel}
+                      value={troquelado}
                       sx={{ minHeight: 50 }}
                       label="papel"
-                      onChange={handleChange}
+                      onChange={handleTroqueladoChange}
                     >
-                      {categoria ? categoria.papel.map((papel) => (<MenuItem value={papel}>{papel.gramaje ? papel.gramaje : "Sin Papel"}</MenuItem>)) : null}
+                      {
+
+                        listaTroquelados?.papel?.map((papel) => (
+                          <MenuItem value={papel.caracteristicas[0]} >
+                            {
+                              papel.caracteristicas[0]
+                            }
+                          </MenuItem>
+                        ))
+                      }
                     </Select>
                   </FormControl>
                 </MDBox>
-                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Opcion de impresion:</FormLabel>
+                <MDBox mb={2} display={{ display: tipoPapel?.includes("Opalina") || tipoPapel?.includes("Ilustracion") ? "flex" : "none" }} alignItems={"center"} gap={2} >
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Laminado:</FormLabel>
+                  <FormControlLabel
+                    control={
+                      <Switch checked={laminadoEnabled} onChange={switchLaminado} />}
+                    style={{ flex: 1 }}
+                  />
+                </MDBox>
+                <MDBox mb={2} display={{ display: laminadoEnabled ? "flex" : "none" }} alignItems={"center"} gap={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Laminado:</FormLabel>
                   <FormControl sx={{ minWidth: 200 }} style={{ flex: 1 }}>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={opcion}
+                      value={laminado}
                       sx={{ minHeight: 50 }}
-                      label="opcion"
-                      onChange={handleOptionChange}
+                      label="papel"
+                      onChange={handleLaminadoChange}
                     >
-                      {papel && papel.caracteristicas.length > 0 ? papel.caracteristicas.map((caracteristica) => (<MenuItem value={caracteristica}>{caracteristica}</MenuItem>)) : <MenuItem value='NA'>N/A</MenuItem>}
+
+                      <MenuItem value="mate 1/0" >Mate 1/0</MenuItem>
+                      <MenuItem value="mate 1/1" >Mate 1/1</MenuItem>
+                      <MenuItem value="brillante 1/0" >Brillante 1/0</MenuItem>
+                      <MenuItem value="brillante 1/1" >Brillante 1/1</MenuItem>
                     </Select>
                   </FormControl>
-                </MDBox>
-                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Fecha limite de entrega (opcional):</FormLabel>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}
-                    style={{ flex: 1 }} >
-                    <DatePicker onChange={() => { setFechaHasta() }} sx={{ flex: 1 }} style={{ flex: 1 }} />
-                  </LocalizationProvider>
                 </MDBox>
                 <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
                   <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Doble faz:</FormLabel>
@@ -261,29 +341,51 @@ const Nuevo = () => {
                     style={{ flex: 1 }}
                   />
                 </MDBox>
+                <MDBox display={"flex"} alignItems={"center"} gap={2} mb={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>
+                    Cantidad de Copias por Pagina:
+                  </FormLabel>
+                  <MDInput type="number"
+                    placeholder="Cantidad de Copias"
+                    disabled={categoria === null}
+                    value={cantidad}
+                    onChange={(event) => {
+                      setCantidad(event.target.value);
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                </MDBox>
+                <MDBox display={"flex"} alignItems={"center"} gap={2} mb={2}>
+                  <FormLabel style={{ flex: 0.7, textAlign: "end" }}>
+                    Notas adicionales:
+                  </FormLabel>
+                  <MDInput type="text"
+                    placeholder="Aclaraciones adicionales"
+                    disabled={categoria === null}
+                    value={notas}
+                    multiline
+                    rows={4}
+                    onChange={(event) => {
+                      setNotas(event.target.value);
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                </MDBox>
                 <br />
-                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
-                  <MDButton color={"primary"}
-                    onClick={() => { updatePrice() }}
-                    style={{ flex: 0.6 }}
-                  >
-                    Calcular Total:
-                  </MDButton>
-                  <FormLabel style={{ flex: 1, textAlign: "start" }}>${precio}</FormLabel>
+                <MDBox style={{
+                  display: "flex",
+                  justifyContent: "center"
+                }}>
+                  <MDInput type="file" onChange={handleFileChange} />
                 </MDBox>
-                <MDBox>
-                  <section className="container" style={{ padding: 20, border: '1px dotted' }}>
-                    <div {...getRootProps({ className: "dropzone" })}>
-                      <input {...getInputProps()} />
-                      <p>Arrastrá o hace click para subir archivos</p>
-                    </div>
-                    <aside>
-                      <h4>Archivos</h4>
-                      <ul>{files}</ul>
-                    </aside>
-                    {files.length > 0 && <MDButton onClick={removeAll} color="error"><DeleteIcon /> Borrar todos</MDButton>}
-                  </section>
-                </MDBox>
+                <MDButton
+                  style={{
+                    width: "50%", margin: "0 auto", maxWidth: 350, marginBottom: 20, display: "flex", justifyContent: "center"
+                  }}
+                  href={`${BASE_URL}/upload/priceList`}
+                >
+                  Descargar lista de precios
+                </MDButton>
               </Grid>
             </Grid>
           </FormGroup>
@@ -293,11 +395,12 @@ const Nuevo = () => {
             color={"success"}
             style={{ width: "50%", margin: "0 auto", maxWidth: 350, marginBottom: 30 }}
             onClick={crearTrabajo}
-            disabled={!allPropertiesSelected()}
+            disabled={!allPropertiesSelected() || uploading}
           >
             Crear Trabajo
           </MDButton>
         </CardActions>
+        <Legend message={message} setMessage={setMessage}/>
       </>
     </Wrapper>
   );

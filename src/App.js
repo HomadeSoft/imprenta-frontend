@@ -1,61 +1,25 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState, useEffect, useMemo } from "react";
-
-// react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
-// @mui material components
+import { useEffect, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-
-// Material Dashboard 2 React example components
 import Sidenav from "examples/Sidenav";
-import Configurator from "examples/Configurator";
-
-// Material Dashboard 2 React themes
 import theme from "assets/theme";
-
-// Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-
-// Material Dashboard 2 React routes
 import routes from "routes";
-
-// Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-
-// Images
+import { setMiniSidenav, useMaterialUIController } from "context";
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import { useGlobalDataContext } from "./context/DataContext";
+import DataService from "./services/DataService";
+import ProtectedRoute from "./authContexts/ProtectedRoute";
+import { useAuth0 } from "@auth0/auth0-react";
+import AdminRoute from "authContexts/AdminRoute";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
     direction,
-    layout,
-    openConfigurator,
     sidenavColor,
     transparentSidenav,
     whiteSidenav,
@@ -63,6 +27,21 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
+  const { setPrices, setUser } = useGlobalDataContext()
+  const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
+  /// TODO - NICO EVITAR FETCH SI NO ESTA AUTHENTICATED
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently();
+      const { data: prices } = await DataService.fetchPrices(token);
+      setPrices(prices);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -80,8 +59,6 @@ export default function App() {
     }
   };
 
-  // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -96,8 +73,21 @@ export default function App() {
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
+      // if (route.collapse) {
+      //   return getRoutes(route.collapse);
+      // }
+
+      if (route.protected) {
+        if (route.isAdmin) {
+          return <Route exact path={route.route} key={route.key} element={<AdminRoute />}>
+            <Route exact path={route.route} element={route.component} />
+          </Route>
+        }
+        return (
+          <Route exact path={route.route} key={route.key} element={<ProtectedRoute />}>
+            <Route exact path={route.route} element={route.component} />
+          </Route>
+        )
       }
 
       if (route.route) {
@@ -107,70 +97,55 @@ export default function App() {
       return null;
     });
 
-  const configsButton = (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="3.25rem"
-      height="3.25rem"
-      bgColor="white"
-      shadow="sm"
-      borderRadius="50%"
-      position="fixed"
-      right="2rem"
-      bottom="2rem"
-      zIndex={99}
-      color="dark"
-      sx={{ cursor: "pointer" }}
-      onClick={handleConfiguratorOpen}
-    >
-      <Icon fontSize="small" color="inherit">
-        settings
-      </Icon>
-    </MDBox>
-  );
+  const { isLoading, isAuthenticated, error, loginWithRedirect, user } = useAuth0();
 
-  // return (
-  //   <ThemeProvider theme={darkMode ? themeDark : theme}>
-  //     <CssBaseline />
-  //     {layout === "dashboard" && (
-  //       <>
-  //         <Sidenav
-  //           color={sidenavColor}
-  //           brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-  //           brandName="Material Dashboard 2"
-  //           routes={routes}
-  //           onMouseEnter={handleOnMouseEnter}
-  //           onMouseLeave={handleOnMouseLeave}
-  //         />
-  //         <Configurator />
-  //         {configsButton}
-  //       </>
-  //     )}
-  //     {layout === "vr" && <Configurator />}
-  //
-  //     <Routes>
-  //       {getRoutes(routes)}
-  //       <Route path="*" element={<Navigate to="/dashboard" />} />
-  //     </Routes>
-  //   </ThemeProvider>
-  // );
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user?.email) {
+        return
+      }
 
+      const token = getAccessTokenSilently();
+      const { data, error } = await DataService.fetchUserDataByEmail(token, user?.email);
+
+      if (error) {
+        navigate('/logout')
+      }
+      setUser(data);
+    }
+
+    fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getAccessTokenSilently, setUser, user?.email]);
+
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
+
+  if (!isAuthenticated) {
+    return loginWithRedirect()
+  }
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      <Sidenav
-        color={sidenavColor}
-        brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-        brandName="Grafica Publicar"
-        routes={routes}
-        onMouseEnter={handleOnMouseEnter}
-        onMouseLeave={handleOnMouseLeave}
-      />
+      {
+        isAuthenticated &&
+        <Sidenav
+          color={sidenavColor}
+          brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+          brandName="Grafica Publicar"
+          routes={routes}
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
+        />
+      }
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/" />} />
+        {/*<Route path="*" element={<Navigate to="/" />} />*/}
       </Routes>
     </ThemeProvider>
   );
