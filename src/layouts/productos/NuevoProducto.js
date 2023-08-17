@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { CardActions, CardContent, FormControlLabel, FormGroup, FormLabel, Grid, Switch } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -30,9 +31,13 @@ const NuevoProducto = () => {
             medidaPapel.length > 0 && tipoPapel.length > 0
         )
     }
+    const { getAccessTokenSilently } = useAuth0();
+
 
     const crearProducto = async () => {
         //TODO: Invoke async method
+        const token = await getAccessTokenSilently();
+
         const producto = {
             "medida": medidaPapel,
             "doble_faz": dobleFazEnabled,
@@ -41,7 +46,7 @@ const NuevoProducto = () => {
             "tipo_papel": tipoPapel
         }
 
-        await DataService.createProduct(producto);
+        await DataService.createProduct(token, producto);
 
     }
 

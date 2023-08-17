@@ -187,12 +187,12 @@ const DataService = (() => {
       })
   }
 
-  const createProduct = async (product) => {
+  const createProduct = async (token, product) => {
     const url = `${BASE_URL}/productos`;
     console.log(JSON.stringify(product));
     return fetch(url, {
       method: 'POST',
-      // headers: requestPostHeaders(token),
+      headers: requestPostHeaders(token),
       body: JSON.stringify(product)
     })
       .then((response) => response.json())
@@ -219,12 +219,6 @@ const DataService = (() => {
         })
     })
   }
-
-
-
-
-
-
 
   const changeStatus = async (token, id, newStatus) => {
     const url = `${BASE_URL}/jobs/changeStatus`;
@@ -294,7 +288,7 @@ const DataService = (() => {
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
     fetchProducts: (token) => fetchProducts(token),
-    createProduct: (product) => createProduct(product),
+    createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
   }
 })();
