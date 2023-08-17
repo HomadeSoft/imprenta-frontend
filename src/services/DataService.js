@@ -81,8 +81,7 @@ const DataService = (() => {
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
-        if(data?.status === "error"){
-
+        if (data?.status === "error") {
           throw new Error("Usuario inexistente")
         }
         return { data: data, error: null }
@@ -165,15 +164,6 @@ const DataService = (() => {
       })
   }
 
-
-  const updateJobPrice = async (token, id, price) => {
-    const url = `${BASE_URL}/jobs/update`;
-
-    return fetch(url, {
-      method: 'POST',
-      headers: requestPostHeaders(token),
-      body: JSON.stringify({ id: id, total_price_cents: price })
-
   const fetchProducts = async (token) => {
     const url = `${BASE_URL}/productos`;
     return fetch(url, requestHeaders(token))
@@ -213,6 +203,28 @@ const DataService = (() => {
         return { data: null, error: err }
       })
   }
+  const updateJobPrice = async (token, id, price) => {
+    const url = `${BASE_URL}/jobs/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, total_price_cents: price })
+        .then((response) => response.json())
+        .then((data) => {
+          return { data: data.user.data, error: null }
+        })
+        .catch((err) => {
+          return { data: null, error: err }
+        })
+    })
+  }
+
+
+
+
+
+
 
   const changeStatus = async (token, id, newStatus) => {
     const url = `${BASE_URL}/jobs/changeStatus`;
@@ -281,7 +293,6 @@ const DataService = (() => {
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
-
     fetchProducts: (token) => fetchProducts(token),
     createProduct: (product) => createProduct(product),
     fetchProductData: (id) => fetchProductData(id),
