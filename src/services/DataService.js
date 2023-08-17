@@ -82,6 +82,7 @@ const DataService = (() => {
       .then((response) => response.json())
       .then((data) => {
         if(data?.status === "error"){
+
           throw new Error("Usuario inexistente")
         }
         return { data: data, error: null }
@@ -164,6 +165,7 @@ const DataService = (() => {
       })
   }
 
+
   const updateJobPrice = async (token, id, price) => {
     const url = `${BASE_URL}/jobs/update`;
 
@@ -171,6 +173,37 @@ const DataService = (() => {
       method: 'POST',
       headers: requestPostHeaders(token),
       body: JSON.stringify({ id: id, total_price_cents: price })
+
+  const fetchProducts = async (token) => {
+    const url = `${BASE_URL}/productos`;
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.productos, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+  const fetchProductData = async (id) => {
+    const url = `${BASE_URL}/productos/${id}`;
+    return fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const createProduct = async (product) => {
+    const url = `${BASE_URL}/productos`;
+    console.log(JSON.stringify(product));
+    return fetch(url, {
+      method: 'POST',
+      // headers: requestPostHeaders(token),
+      body: JSON.stringify(product)
     })
       .then((response) => response.json())
       .then((data) => {
@@ -248,6 +281,10 @@ const DataService = (() => {
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
+
+    fetchProducts: (token) => fetchProducts(token),
+    createProduct: (product) => createProduct(product),
+    fetchProductData: (id) => fetchProductData(id),
   }
 })();
 

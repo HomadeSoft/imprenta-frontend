@@ -33,7 +33,11 @@ import Icon from "@mui/material/Icon";
 import Clientes from "./layouts/clientes/Clients";
 import Detalle from "./layouts/trabajos/Detalle";
 import Lista from "./layouts/trabajos/Lista";
+import Productos from "layouts/productos";
 import DetallesCliente from "./layouts/clientes/DetallesCliente";
+import NuevoProducto from "layouts/productos/NuevoProducto";
+import DetalleProducto from "layouts/productos/PreciosProducto";
+
 
 const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
@@ -89,6 +93,26 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Productos",
+    key: "productos",
+    isAdmin: true,
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/productos",
+    protected: true,
+    component: <Productos />,
+  },
+  {
+    type: "hidden",
+    name: "Nuevo Producto",
+    key: "nuevoProducto",
+    isAdmin: true,
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/nuevoProducto",
+    protected: true,
+    component: <NuevoProducto />,
+  },
+  {
+    type: "collapse",
     name: "Trabajo",
     key: "trabajo",
     icon: <Icon fontSize="small">person</Icon>,
@@ -106,6 +130,16 @@ const routes = [
     show: false,
     protected: true,
     component: <DetallesCliente />,
+  },
+  {
+    type: "collapse",
+    name: "Producto",
+    key: "producto",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/producto/:id",
+    show: false,
+    protected: true,
+    component: <DetalleProducto />,
   },
   {
     type: "divider",
