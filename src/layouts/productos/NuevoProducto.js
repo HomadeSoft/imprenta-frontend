@@ -1,11 +1,32 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { CardActions, CardContent, FormControlLabel, FormGroup, FormLabel, Grid, Switch } from "@mui/material";
-import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import Wrapper from "layouts/Wrapper";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import DataService from "services/DataService";
+
+const Legend = ({ message, setMessage }) => {
+    if (!message) {
+        return null
+    }
+
+    return (
+        <div
+            style={{
+                display: "flex", flexDirection: 'row', justifyContent: 'space-around',
+                alignItems: 'center', padding: 20,
+                borderRadius: 10,
+                backgroundColor: "#000000", color: "white",
+                cursor: 'pointer'
+            }}
+            onClick={() => setMessage(null)}
+        >
+            <div>{message}</div>
+        </div>
+    )
+};
 
 const NuevoProducto = () => {
 
@@ -14,6 +35,10 @@ const NuevoProducto = () => {
     const [dobleFazEnabled, setDobleFazEnabled] = useState(false);
     const [troqueladoEnabled, setTroqueladoEnabled] = useState(false);
     const [laminadoEnabled, setLaminadoEnabled] = useState(false);
+    const navigate = useNavigate();
+
+
+    const [message, setMessage] = useState(null);
 
     const switchDobleFazEnabled = () => {
         setDobleFazEnabled(!dobleFazEnabled);
@@ -46,7 +71,16 @@ const NuevoProducto = () => {
             "tipo_papel": tipoPapel
         }
 
-        await DataService.createProduct(token, producto);
+        const { error } = await DataService.createProduct(token, producto);
+        if (error) {
+            setMessage(error)
+            return
+        } else {
+            setMessage("producto creado")
+            setTimeout(() => {
+                navigate("/productos")
+            }, 2000)
+        }
 
     }
 
@@ -135,6 +169,7 @@ const NuevoProducto = () => {
                         Crear Producto
                     </MDButton>
                 </CardActions>
+                <Legend message={message} setMessage={setMessage} />
             </>
         </Wrapper>
     )

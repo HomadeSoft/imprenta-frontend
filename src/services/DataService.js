@@ -187,6 +187,24 @@ const DataService = (() => {
       })
   }
 
+  //TODO: Nico >> Invocar el endpoint correcto para actualizar el precio del producto.
+  const updateProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios`;
+
+    return fetch(url, {
+      method: 'PUT',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(price)
+        .then((response) => response.json())
+        .then((data) => {
+          return { data: data.user.data, error: null }
+        })
+        .catch((err) => {
+          return { data: null, error: err }
+        })
+    })
+  }
+
   const createProduct = async (token, product) => {
     const url = `${BASE_URL}/productos`;
     console.log(JSON.stringify(product));
@@ -203,6 +221,7 @@ const DataService = (() => {
         return { data: null, error: err }
       })
   }
+
   const updateJobPrice = async (token, id, price) => {
     const url = `${BASE_URL}/jobs/update`;
 
@@ -290,6 +309,7 @@ const DataService = (() => {
     fetchProducts: (token) => fetchProducts(token),
     createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
+    updateProductPrice: (token, price) => updateProductPrice(token, price),
   }
 })();
 
