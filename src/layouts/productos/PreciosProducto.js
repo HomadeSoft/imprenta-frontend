@@ -20,19 +20,16 @@ import {
 import MDButton from "components/MDButton";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
+import PlusIcon from "@mui/icons-material/Add";
+
 import EditableTableCell from "../../components/EditableTableCell";
 import { useAuth0 } from "@auth0/auth0-react";
 
-//TODO: Nico >> Agregar un precio. Se puede usar el PriceDialog para crearlo.
-//TODO: Nico >> Editar producto. Desde la misma logica que editar un cliente?
 function PriceDialog(props) {
-    const { onClose, open, selectedPrice, onSave } = props;
+    const { onClose, open, selectedPrice, onSave, onCreate } = props;
     const [cantidadMinima, setCantidadMinima] = useState(0);
     const [cantidadMaxima, setCantidadMaxima] = useState(0);
     const [valorCents, setValorCents] = useState(0);
-    const handleClose = () => {
-        onClose();
-    };
 
     const handleMinCantChange = (event) => {
         setCantidadMinima(event.target.value);
@@ -46,10 +43,14 @@ function PriceDialog(props) {
         setValorCents(event.target.value * 100);
     }
 
-    const savePrecio = (event) => {
-        //TODO: Guardar precio por ID
-        onSave({ id: selectedPrice.id, cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
-        handleClose();
+    const savePrecio = () => {
+        if(selectedPrice){
+            onSave({ id: selectedPrice.id, cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
+        } else {
+            onCreate({ cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
+        }
+
+        onClose();
     }
 
     useEffect(() => {
@@ -74,8 +75,9 @@ function PriceDialog(props) {
 
                 <Grid item xs={12} textAlign={"center"}>
                     <TextField label="Valor (precio)" InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>
-                    }} value={valorCents / 100} onChange={handleValorChange} />
+                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        inputMode: 'numeric'
+                    }} value={valorCents / 100 || 0} onChange={handleValorChange} />
                 </Grid>
 
             </Grid>
@@ -86,11 +88,35 @@ function PriceDialog(props) {
     </Dialog>);
 }
 
+const DeletePriceDialog = (props) => {
+    const { onClose, open, selectedPrice, onDelete } = props;
+
+    if(!selectedPrice){
+        return null;
+    }
+
+    return (
+      <Dialog onClose={onClose} open={open} >
+        <DialogTitle>Eliminar Precio?</DialogTitle>
+        <DialogContent>
+            <div style={{ paddingLeft: 30, paddingRight: 30, display: "flex", flexDirection: "column", gap: 10}}>
+                <div>{`Cantidad Minima: ${selectedPrice?.cantidad_maxima}`}</div>
+                <div>{`Cantidad Maxima: ${selectedPrice?.cantidad_minima}`}</div>
+                <div>{`Precio: ${selectedPrice?.valor_cents / 100}`}</div>
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <MDButton onClick={() => onDelete(selectedPrice)}>Eliminar</MDButton>
+        </DialogActions>
+    </Dialog>
+    );
+}
+
 const productPricesTableColumns = [
     { Header: "Cantidad Minima", accessor: "cantidadMinima", align: "center" },
     { Header: "Cantidad Maxima", accessor: "cantidadMaxima", align: "center" },
     { Header: "Precio", accessor: "valor", align: "center" },
-    { Header: "Editar", accessor: "edit", align: "center" },
+    { Header: "Acciones", accessor: "edit", align: "center" },
 ]
 
 const DetalleProducto = () => {
@@ -102,6 +128,7 @@ const DetalleProducto = () => {
 
     const [selectedPrice, setSelectedPrice] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const [editing, setEditing] = useState(false);
     const [, setDobleFazHabilitado] = useState(false);
@@ -117,23 +144,28 @@ const DetalleProducto = () => {
                 setDialogOpen(true);
             }
 
-            return PriceRowFormatter(r, handleEditClick)
+            const handleDeleteClick = () => {
+                setSelectedPrice(r);
+                setDeleteDialogOpen(true);
+            }
+
+            return PriceRowFormatter(r, handleEditClick, handleDeleteClick)
         })
+    }
+    const fetchProductData = async () => {
+        const { data } = await DataService.fetchProductData(id)
+
+        setProduct(data)
+        setProductPrices(data?.precios);
+
+        setDobleFazHabilitado(data?.doble_faz)
+        setTroqueladoHabilitado(data?.troquelado)
+        setLaminadoHabilitado(data?.laminado)
+
+        setRowProductPrices(formatProductPrices(data?.precios))
     }
 
     useEffect(() => {
-        const fetchProductData = async () => {
-            const { data } = await DataService.fetchProductData(id)
-            setProduct(data)
-            setProductPrices(data?.precios);
-
-            setDobleFazHabilitado(data?.doble_faz)
-            setTroqueladoHabilitado(data?.troquelado)
-            setLaminadoHabilitado(data?.laminado)
-
-            setRowProductPrices(formatProductPrices(data?.precios))
-        }
-
         fetchProductData();
     }, [])
 
@@ -147,7 +179,6 @@ const DetalleProducto = () => {
         setProduct(product)
         setter(!key)
     };
-
 
     const showData = {
         medidaDePapel: product?.medida,
@@ -165,11 +196,11 @@ const DetalleProducto = () => {
         laminadoHabilitado: <Switch checked={product?.laminado} onChange={() => handleCheckUpdate('laminado', setLaminadoHabilitado)}/>,
     }
 
-    const savePrecio = async (newPrice) => {
+    const savePrecio = async (updatedPrice) => {
         const token = await getAccessTokenSilently();
-        await DataService.updateProductPrice(token, newPrice);
+        await DataService.updateProductPrice(token, updatedPrice);
 
-        const newProductPrices = productPrices.map(prices => prices.id !== newPrice.id ? prices : newPrice);
+        const newProductPrices = productPrices.map(prices => prices.id !== updatedPrice.id ? prices : updatedPrice);
 
         setProductPrices(newProductPrices);
         setRowProductPrices(formatProductPrices(newProductPrices))
@@ -179,6 +210,21 @@ const DetalleProducto = () => {
     const saveProducto = async () => {
         const token = await getAccessTokenSilently();
         DataService.saveProducto(token, product)
+    }
+
+    const createPrecio = async (newPrice) => {
+        newPrice['producto_id'] = product?.id
+        const token = await getAccessTokenSilently();
+        await DataService.createProductPrice(token, newPrice);
+        fetchProductData();
+    }
+
+    const deletePrice = async (newPrice) => {
+        const token = await getAccessTokenSilently();
+        await DataService.deleteProductPrice(token, newPrice);
+        setDeleteDialogOpen(false)
+        setSelectedPrice(null)
+        fetchProductData();
     }
 
     return (
@@ -208,12 +254,27 @@ const DetalleProducto = () => {
                     showTotalEntries={false}
                     noEndBorder
                 />
+                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16}}>
+                    <Fab color="primary" aria-label="add"
+                         onClick={() => {setDialogOpen(true)}}
+                    >
+                        <PlusIcon fontSize={"large"} />
+                    </Fab>
+                </div>
             </MDBox>
             <PriceDialog
                 open={dialogOpen}
                 selectedPrice={selectedPrice}
                 onClose={() => { setDialogOpen(false) }}
                 onSave={savePrecio}
+                onCreate={createPrecio}
+            />
+
+            <DeletePriceDialog
+              open={deleteDialogOpen}
+              selectedPrice={selectedPrice}
+              onClose={() => { setDeleteDialogOpen(false) }}
+              onDelete={deletePrice}
             />
         </Wrapper>
     )

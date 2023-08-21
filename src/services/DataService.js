@@ -5,8 +5,6 @@ const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
 
-
-
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
@@ -222,6 +220,39 @@ const DataService = (() => {
       })
   }
 
+  const createProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(price)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const deleteProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios/${price.id}`;
+
+    return fetch(url, {
+      method: 'DELETE',
+      headers: requestPostHeaders(token)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const createProduct = async (token, product) => {
     const url = `${BASE_URL}/productos`;
     console.log(JSON.stringify(product));
@@ -328,6 +359,8 @@ const DataService = (() => {
     fetchProductData: (id) => fetchProductData(id),
     saveProducto: (token, producto) => saveProducto(token, producto),
     updateProductPrice: (token, price) => updateProductPrice(token, price),
+    createProductPrice: (token, price) => createProductPrice(token, price),
+    deleteProductPrice: (token, price) => deleteProductPrice(token, price),
   }
 })();
 

@@ -1,9 +1,9 @@
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormLabel, Grid, InputAdornment, TextField } from "@mui/material";
+import { Checkbox } from "@mui/material";
 import MDTypography from "../../components/MDTypography";
 import { Link } from "react-router-dom";
 import MDButton from "components/MDButton";
 import EditIcon from "@mui/icons-material/Edit";
-import MDBox from "components/MDBox";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const ProductsRowFormatter = (row) => {
     if (!row) { return {} }
@@ -17,7 +17,7 @@ const ProductsRowFormatter = (row) => {
     }
 }
 
-const PriceRowFormatter = (row, handleEditClick) => {
+const PriceRowFormatter = (row, handleEditClick, handleDeleteClick) => {
 
     if (!row) { return {} }
     //TODO: Add edit and delete actions
@@ -26,15 +26,18 @@ const PriceRowFormatter = (row, handleEditClick) => {
         cantidadMinima: (<MDTypography variant="caption" color="text">{row.cantidad_minima}</MDTypography>),
         cantidadMaxima: (<MDTypography variant="caption" color="text" fontWeight="medium">{row.cantidad_maxima}</MDTypography>),
         valor: (<MDTypography variant="caption" color="text" fontWeight="medium">${row.valor_cents / 100}</MDTypography>),
-        edit: (<EditPrecioButton handleEditClick={handleEditClick} />),
+        edit: (<EditPrecioButton handleEditClick={handleEditClick} handleDeleteClick={handleDeleteClick} />),
     }
 }
 
-const EditPrecioButton = ({ handleEditClick }) => {
-    return (<MDButton onClick={handleEditClick}><EditIcon /></MDButton>)
+const EditPrecioButton = ({ handleEditClick, handleDeleteClick }) => {
+    return (
+      <>
+          <MDButton onClick={handleEditClick}> <EditIcon /> </MDButton>
+          <MDButton onClick={handleDeleteClick}> <DeleteIcon /> </MDButton>
+      </>
+    )
 }
-
-
 
 export {
     ProductsRowFormatter,
