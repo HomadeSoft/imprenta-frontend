@@ -1,13 +1,27 @@
 import MDBox from "components/MDBox";
 import DataTable from "examples/Tables/DataTable";
 import Wrapper from "layouts/Wrapper";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import DataService from "services/DataService";
 import { useParams } from "react-router-dom";
 import { PriceRowFormatter } from "./utils";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Grid, InputAdornment, Switch, TextField } from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Fab,
+    Grid,
+    InputAdornment,
+    Switch,
+    TextField
+} from "@mui/material";
 import MDButton from "components/MDButton";
+import SaveIcon from "@mui/icons-material/Save";
+import EditIcon from "@mui/icons-material/Edit";
+import EditableTableCell from "../../components/EditableTableCell";
+import { useAuth0 } from "@auth0/auth0-react";
 
 //TODO: Nico >> Agregar un precio. Se puede usar el PriceDialog para crearlo.
 //TODO: Nico >> Editar producto. Desde la misma logica que editar un cliente?
@@ -19,7 +33,6 @@ function PriceDialog(props) {
     const handleClose = () => {
         onClose();
     };
-
 
     const handleMinCantChange = (event) => {
         setCantidadMinima(event.target.value);
@@ -86,27 +99,55 @@ const DetalleProducto = () => {
     const [productPrices, setProductPrices] = useState([]);
     const [rowProductPrices, setRowProductPrices] = useState([]);
     const [product, setProduct] = useState(null);
+
     const [selectedPrice, setSelectedPrice] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+
+    const [editing, setEditing] = useState(false);
+    const [, setDobleFazHabilitado] = useState(false);
+    const [, setTroqueladoHabilitado] = useState(false);
+    const [, setLaminadoHabilitado] = useState(false);
+
+    const { getAccessTokenSilently } = useAuth0();
+
+    const formatProductPrices = (precios) => {
+        return precios.map(r => {
+            const handleEditClick = () => {
+                setSelectedPrice(r);
+                setDialogOpen(true);
+            }
+
+            return PriceRowFormatter(r, handleEditClick)
+        })
+    }
 
     useEffect(() => {
         const fetchProductData = async () => {
             const { data } = await DataService.fetchProductData(id)
             setProduct(data)
             setProductPrices(data?.precios);
-            const formattedRows = data?.precios.map(r => {
-                const handleEditClick = () => {
-                    setSelectedPrice(r);
-                    setDialogOpen(true);
-                }
 
-                return PriceRowFormatter(r, handleEditClick)
-            })
-            setRowProductPrices(formattedRows)
+            setDobleFazHabilitado(data?.doble_faz)
+            setTroqueladoHabilitado(data?.troquelado)
+            setLaminadoHabilitado(data?.laminado)
+
+            setRowProductPrices(formatProductPrices(data?.precios))
         }
 
         fetchProductData();
-    }, [id])
+    }, [])
+
+    const handleUpdate = (attrs, key) => {
+        product[key] = attrs.currentTarget.value
+        setProduct(product)
+    };
+
+    const handleCheckUpdate = (key, setter) => {
+        product[key] = !product[key]
+        setProduct(product)
+        setter(!key)
+    };
+
 
     const showData = {
         medidaDePapel: product?.medida,
@@ -116,19 +157,48 @@ const DetalleProducto = () => {
         laminadoHabilitado: <Switch checked={product?.laminado} disabled />,
     }
 
+    const editData = {
+        medidaDePapel: <EditableTableCell value={product?.medida} onBlur={(event) => handleUpdate(event, 'medida')} />,
+        tipoDePapel: <EditableTableCell value={product?.tipo_papel} onBlur={(event) => handleUpdate(event, "tipo_papel")} />,
+        dobleFazHabilitado: <Switch checked={product?.doble_faz} onChange={() => handleCheckUpdate('doble_faz', setDobleFazHabilitado)}/>,
+        troqueladoHabilitado: <Switch checked={product?.troquelado} onChange={() => handleCheckUpdate('troquelado', setTroqueladoHabilitado)}/>,
+        laminadoHabilitado: <Switch checked={product?.laminado} onChange={() => handleCheckUpdate('laminado', setLaminadoHabilitado)}/>,
+    }
+
     const savePrecio = async (newPrice) => {
-        //TODO: Nico >> Invocar servicio para guardar precio.
-        // const { data } = await DataService.updateProductPrice(newPrice);
+        const token = await getAccessTokenSilently();
+        await DataService.updateProductPrice(token, newPrice);
+
         const newProductPrices = productPrices.map(prices => prices.id !== newPrice.id ? prices : newPrice);
+
         setProductPrices(newProductPrices);
+        setRowProductPrices(formatProductPrices(newProductPrices))
         setDialogOpen(false);
+    }
+
+    const saveProducto = async () => {
+        const token = await getAccessTokenSilently();
+        DataService.saveProducto(token, product)
     }
 
     return (
         <Wrapper title="Detalles del Producto">
-            <ProfileInfoCard
-                info={showData}
-            />
+            <div style={{display: "flex", flexDirection: 'row'}}>
+                <ProfileInfoCard
+                  info={ editing ? editData : showData}
+                  shadow={false}
+                />
+                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16}}>
+                    <Fab color="primary" aria-label="add"
+                         onClick={() => {
+                             if (editing) { saveProducto() }
+                             setEditing(!editing);
+                         }}
+                    >
+                        {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
+                    </Fab>
+                </div>
+            </div>
 
             <MDBox pt={3}>
                 <DataTable

@@ -1,4 +1,5 @@
 import axios from "axios";
+import {accordionSummaryClasses} from "@mui/material";
 
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
@@ -187,22 +188,38 @@ const DataService = (() => {
       })
   }
 
-  //TODO: Nico >> Invocar el endpoint correcto para actualizar el precio del producto.
+  const saveProducto = async (token, producto) => {
+    const url = `${BASE_URL}/productos/${producto.id}`;
+
+    return fetch(url, {
+      method: 'PUT',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(producto)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const updateProductPrice = async (token, price) => {
-    const url = `${BASE_URL}/precios`;
+    const url = `${BASE_URL}/precios/${price.id}`;
 
     return fetch(url, {
       method: 'PUT',
       headers: requestPostHeaders(token),
       body: JSON.stringify(price)
-        .then((response) => response.json())
-        .then((data) => {
-          return { data: data.user.data, error: null }
-        })
-        .catch((err) => {
-          return { data: null, error: err }
-        })
     })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
   }
 
   const createProduct = async (token, product) => {
@@ -309,6 +326,7 @@ const DataService = (() => {
     fetchProducts: (token) => fetchProducts(token),
     createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
+    saveProducto: (token, producto) => saveProducto(token, producto),
     updateProductPrice: (token, price) => updateProductPrice(token, price),
   }
 })();
