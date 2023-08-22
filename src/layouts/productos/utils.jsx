@@ -1,4 +1,3 @@
-import { Checkbox } from "@mui/material";
 import MDTypography from "../../components/MDTypography";
 import { Link } from "react-router-dom";
 import MDButton from "components/MDButton";
