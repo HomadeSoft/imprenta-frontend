@@ -290,14 +290,15 @@ const DataService = (() => {
       method: 'POST',
       headers: requestPostHeaders(token),
       body: JSON.stringify({ id: id, total_price_cents: price })
-        .then((response) => response.json())
-        .then((data) => {
-          return { data: data.user.data, error: null }
-        })
-        .catch((err) => {
-          return { data: null, error: err }
-        })
     })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.user.data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+
   }
 
   const changeStatus = async (token, id, newStatus) => {

@@ -8,11 +8,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const ProductsRowFormatter = (row) => {
     if (!row) { return {} }
     return {
-        medida: (<MDTypography variant="button" color="text">{row.medida}</MDTypography>),
+        medida: (<MDTypography variant="caption" color="text" fontWeight="bold">{row.medida}</MDTypography>),
         tipo_papel: (<MDTypography variant="caption" color="text" fontWeight="medium">{row.tipo_papel}</MDTypography>),
-        doble_faz: (<Checkbox checked={row.doble_faz} disabled />),
-        troquelado: (<Checkbox checked={row.troquelado} disabled />),
-        laminado: (<Checkbox checked={row.laminado} disabled />),
+        doble_faz: (<MDTypography variant="caption" color="text" fontWeight="medium">{row.doble_faz ? "4/4" : "4/0"}</MDTypography>),
+        troquelado: (<MDTypography variant="caption" color="text" fontWeight="regular">{row.troquelado ? "troquelado" : "-"}</MDTypography>),
+        laminado: (<MDTypography variant="caption" color="text" fontWeight="regular">{row.laminado ? "laminado" : "-"}</MDTypography>),
         view: (<Link to={`/producto/${row.id}`}><MDButton color={"dark"}>Ver</MDButton></Link>)
     }
 }
@@ -32,10 +32,10 @@ const PriceRowFormatter = (row, handleEditClick, handleDeleteClick) => {
 
 const EditPrecioButton = ({ handleEditClick, handleDeleteClick }) => {
     return (
-      <>
-          <MDButton onClick={handleEditClick}> <EditIcon /> </MDButton>
-          <MDButton onClick={handleDeleteClick}> <DeleteIcon /> </MDButton>
-      </>
+        <>
+            <MDButton onClick={handleEditClick}> <EditIcon /> </MDButton>
+            <MDButton onClick={handleDeleteClick}> <DeleteIcon /> </MDButton>
+        </>
     )
 }
 

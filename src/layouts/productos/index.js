@@ -12,9 +12,9 @@ import AddIcon from "@mui/icons-material/Add";
 const TableColumns = [
     { Header: "Medida de Papel", accessor: "medida", align: "center" },
     { Header: "Tipo de Papel", accessor: "tipo_papel", align: "center" },
-    { Header: "Doble faz habilitado", accessor: "doble_faz", align: "center" },
+    { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
     { Header: "Se puede Troquelar", accessor: "troquelado", align: "center" },
-    { Header: "Se puede Laminar", accessor: "laminado", align: "left" },
+    { Header: "Se puede Laminar", accessor: "laminado", align: "center" },
     { Header: "", accessor: "view", align: "right" },
 ]
 
