@@ -44,7 +44,7 @@ function PriceDialog(props) {
     }
 
     const savePrecio = () => {
-        if(selectedPrice){
+        if (selectedPrice) {
             onSave({ id: selectedPrice.id, cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
         } else {
             onCreate({ cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
@@ -91,24 +91,24 @@ function PriceDialog(props) {
 const DeletePriceDialog = (props) => {
     const { onClose, open, selectedPrice, onDelete } = props;
 
-    if(!selectedPrice){
+    if (!selectedPrice) {
         return null;
     }
 
     return (
-      <Dialog onClose={onClose} open={open} >
-        <DialogTitle>Eliminar Precio?</DialogTitle>
-        <DialogContent>
-            <div style={{ paddingLeft: 30, paddingRight: 30, display: "flex", flexDirection: "column", gap: 10}}>
-                <div>{`Cantidad Minima: ${selectedPrice?.cantidad_maxima}`}</div>
-                <div>{`Cantidad Maxima: ${selectedPrice?.cantidad_minima}`}</div>
-                <div>{`Precio: ${selectedPrice?.valor_cents / 100}`}</div>
-            </div>
-        </DialogContent>
-        <DialogActions>
-            <MDButton onClick={() => onDelete(selectedPrice)}>Eliminar</MDButton>
-        </DialogActions>
-    </Dialog>
+        <Dialog onClose={onClose} open={open} >
+            <DialogTitle>Eliminar Precio?</DialogTitle>
+            <DialogContent>
+                <div style={{ paddingLeft: 30, paddingRight: 30, display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div>{`Cantidad Minima: ${selectedPrice?.cantidad_maxima}`}</div>
+                    <div>{`Cantidad Maxima: ${selectedPrice?.cantidad_minima}`}</div>
+                    <div>{`Precio: ${selectedPrice?.valor_cents / 100}`}</div>
+                </div>
+            </DialogContent>
+            <DialogActions>
+                <MDButton onClick={() => onDelete(selectedPrice)}>Eliminar</MDButton>
+            </DialogActions>
+        </Dialog>
     );
 }
 
@@ -191,9 +191,9 @@ const DetalleProducto = () => {
     const editData = {
         medidaDePapel: <EditableTableCell value={product?.medida} onBlur={(event) => handleUpdate(event, 'medida')} />,
         tipoDePapel: <EditableTableCell value={product?.tipo_papel} onBlur={(event) => handleUpdate(event, "tipo_papel")} />,
-        dobleFazHabilitado: <Switch checked={product?.doble_faz} onChange={() => handleCheckUpdate('doble_faz', setDobleFazHabilitado)}/>,
-        troqueladoHabilitado: <Switch checked={product?.troquelado} onChange={() => handleCheckUpdate('troquelado', setTroqueladoHabilitado)}/>,
-        laminadoHabilitado: <Switch checked={product?.laminado} onChange={() => handleCheckUpdate('laminado', setLaminadoHabilitado)}/>,
+        dobleFazHabilitado: <Switch checked={product?.doble_faz} onChange={() => handleCheckUpdate('doble_faz', setDobleFazHabilitado)} />,
+        troqueladoHabilitado: <Switch checked={product?.troquelado} onChange={() => handleCheckUpdate('troquelado', setTroqueladoHabilitado)} />,
+        laminadoHabilitado: <Switch checked={product?.laminado} onChange={() => handleCheckUpdate('laminado', setLaminadoHabilitado)} />,
     }
 
     const savePrecio = async (updatedPrice) => {
@@ -229,17 +229,17 @@ const DetalleProducto = () => {
 
     return (
         <Wrapper title="Detalles del Producto">
-            <div style={{display: "flex", flexDirection: 'row'}}>
+            <div style={{ display: "flex", flexDirection: 'row' }}>
                 <ProfileInfoCard
-                  info={ editing ? editData : showData}
-                  shadow={false}
+                    info={editing ? editData : showData}
+                    shadow={false}
                 />
-                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16}}>
+                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16 }}>
                     <Fab color="primary" aria-label="add"
-                         onClick={() => {
-                             if (editing) { saveProducto() }
-                             setEditing(!editing);
-                         }}
+                        onClick={() => {
+                            if (editing) { saveProducto() }
+                            setEditing(!editing);
+                        }}
                     >
                         {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
                     </Fab>
@@ -254,9 +254,9 @@ const DetalleProducto = () => {
                     showTotalEntries={false}
                     noEndBorder
                 />
-                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16}}>
+                <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16 }}>
                     <Fab color="primary" aria-label="add"
-                         onClick={() => {setDialogOpen(true)}}
+                        onClick={() => { setDialogOpen(true) }}
                     >
                         <PlusIcon fontSize={"large"} />
                     </Fab>
@@ -271,10 +271,10 @@ const DetalleProducto = () => {
             />
 
             <DeletePriceDialog
-              open={deleteDialogOpen}
-              selectedPrice={selectedPrice}
-              onClose={() => { setDeleteDialogOpen(false) }}
-              onDelete={deletePrice}
+                open={deleteDialogOpen}
+                selectedPrice={selectedPrice}
+                onClose={() => { setDeleteDialogOpen(false) }}
+                onDelete={deletePrice}
             />
         </Wrapper>
     )

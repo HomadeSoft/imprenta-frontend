@@ -1,64 +1,65 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Wrapper from "../Wrapper";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DataService from "../../services/DataService";
 import ProfileInfoCard from "../../examples/Cards/InfoCards/ProfileInfoCard";
-import {formatBoolean, formatPrice, formatPriceFromCents, formatPriceToCents, formatStatus} from "./utils";
+import { formatBoolean, formatPrice, formatPriceFromCents, formatPriceToCents, formatStatus } from "./utils";
 import IconButton from "@mui/material/IconButton";
 import Icon from "@mui/material/Icon";
 import MDButton from "../../components/MDButton";
 import Divider from "@mui/material/Divider";
-import {Dialog, DialogTitle, TextField} from "@mui/material";
-import {useAuth0} from "@auth0/auth0-react";
+import { Dialog, DialogTitle, TextField } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
 import AdminResource from "authContexts/AdminResource";
-import { useGlobalDataContext } from "../../context/DataContext";
+// import { useGlobalDataContext } from "../../context/DataContext";
 
 
 function PriceDialog(props) {
-  const { onClose, selectedValue, open, job } = props;
+  const { onClose, selectedValue, open, job, precios } = props;
   const [newPrice, setNewPrice] = useState("0");
-  const {prices} = useGlobalDataContext();
-  const [copies, setCopies] = useState(0);
+  // const { prices } = useGlobalDataContext();
+  const [copies, setCopies] = useState(job?.copies_quantity);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const handleCancel = () => onClose(formatPriceFromCents(selectedValue));
   const handleSave = () => onClose(newPrice);
   const handleInputChange = (event) => setNewPrice(event.target.value);
-  const precioUnit = prices?.find
-  (priceItem => priceItem.printSize === job?.paper_size)?.papel?.find
-  (paperItem => job?.paper_type.includes(paperItem.gramaje))?.quantities?.find
-  (quantity => quantity.min <= copies && copies <= quantity.max)?.options?.find
-  (price => price.description === (job?.doble_faz ? "4/4" : "4/0")).value;
+  const precioUnit = precios?.find(precio => precio.cantidad_minima <= copies <= precio.cantidad_maxima)?.valor_cents / 100;
+  // const precioUnit = prices?.find
+  //   (priceItem => priceItem.printSize === job?.paper_size)?.papel?.find
+  //   (paperItem => job?.paper_type.includes(paperItem.gramaje))?.quantities?.find
+  //   (quantity => quantity.min <= copies && copies <= quantity.max)?.options?.find
+  //   (price => price.description === (job?.doble_faz ? "4/4" : "4/0")).value;
   // const precioTotal = parseInt(precioUnit?.substring(1)) * job?.copies_quantity;
   const handleCopiesChange = (event) => {
     setCopies(event.target.value)
-    setTotalPrice(parseInt(precioUnit?.substring(1)) * event.target.value);
+    setTotalPrice(parseInt(precioUnit) * event.target.value);
   };
   useEffect(() => {
     setNewPrice(formatPriceFromCents(selectedValue))
     setCopies(job?.copies_quantity);
-    setTotalPrice(parseInt(precioUnit?.substring(1)) * job?.copies_quantity);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedValue, job])
+    setTotalPrice(parseInt(precioUnit) * job?.copies_quantity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Dialog onClose={handleCancel} open={open}>
-      <DialogTitle style={{margin: "25px"}}>Determinar el precio del trabajo</DialogTitle>
-      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+      <DialogTitle style={{ margin: "25px" }}>Determinar el precio del trabajo</DialogTitle>
+      <div style={{ padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15 }}>
         <div>Precio unitario: {precioUnit ? precioUnit : "$N/A"}</div>
       </div>
-      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+      <div style={{ padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15 }}>
         <div>Total de copias: </div>
-        <TextField value={copies} onChange={handleCopiesChange} type={"number"}/>
+        <TextField value={copies} onChange={handleCopiesChange} type={"number"} />
       </div>
-      <div style={{padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15}}>
+      <div style={{ padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15 }}>
         <div>Precio total: ${totalPrice ? totalPrice : "N/A"}</div>
       </div>
-      <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
+      <div style={{ padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10 }}>
         <div>$</div>
-        <TextField value={newPrice} onChange={handleInputChange} type={"number"}/>
+        <TextField value={newPrice} onChange={handleInputChange} type={"number"} />
       </div>
-      <div style={{padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10}}>
+      <div style={{ padding: 20, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 10 }}>
         <MDButton color={"dark"} onClick={handleSave}>
           Guardar
         </MDButton>
@@ -104,13 +105,13 @@ const FinalizarButton = ({ job, onClick }) => {
   )
 }
 
-const ModificarPrecioButton = ({job, handleClickOpen}) => {
+const ModificarPrecioButton = ({ job, handleClickOpen }) => {
   if (job?.status !== "finished") {
     return false;
   }
 
   return (
-    <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
+    <div style={{ display: 'flex', flexDirection: "row", gap: 30, margin: 30 }}>
       <MDButton color={"dark"} onClick={handleClickOpen} >Modificar precio</MDButton>
     </div>
   )
@@ -123,18 +124,27 @@ const Detalle = () => {
   const [job, setJob] = useState(null)
   const [jobInfo, setJobInfo] = useState({})
   const { getAccessTokenSilently } = useAuth0();
+  const [precios, setPrecios] = useState([])
 
   useEffect(() => {
-    if(!id || id === ":id") { navigate('/') }
-
+    if (!id || id === ":id") { navigate('/') }
     const fetchUserData = async () => {
       const token = await getAccessTokenSilently();
       const { data } = await DataService.fetchJobData(token, id)
       setJob(data);
+      const productos = (await DataService.fetchProducts(token)).data;
+      const producto = productos.find(
+        p => (
+          p.medida === data.paper_size &&
+          p.tipo_papel.includes(data.paper_type) &&
+          p.doble_faz === data.doble_faz
+        ));
+      const precios = (await DataService.fetchProductData(producto?.id)).data.precios;
+      setPrecios(precios);
     }
 
     fetchUserData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   useEffect(() => {
@@ -150,7 +160,7 @@ const Detalle = () => {
       "Tipo Troquelado": job?.troquelado,
       // "Fecha límite de entrega": formatDate(job?.due_date),
     }
-    const cleanData = Object.entries(info).filter(([key, value]) => value !== undefined && value !== null )
+    const cleanData = Object.entries(info).filter(([key, value]) => value !== undefined && value !== null)
       .reduce((obj, [key, value]) => {
         obj[key] = value;
         return obj;
@@ -202,7 +212,7 @@ const Detalle = () => {
     navigate("/")
   }
 
-  return(
+  return (
     <Wrapper title={"Detalle del trabajo"} loading={loading}>
       <ProfileInfoCard
         info={jobInfo}
@@ -212,28 +222,29 @@ const Detalle = () => {
       <Divider />
 
       <AdminResource>
-      <ModificarPrecioButton job={job} handleClickOpen={handleClickOpen}/>
+        <ModificarPrecioButton job={job} handleClickOpen={handleClickOpen} />
 
-      <PriceDialog
-        selectedValue={job?.total_price_cents}
-        open={open}
-        job={job}
-        onClose={handlePriceUpdate}
-      />
+        <PriceDialog
+          selectedValue={job?.total_price_cents}
+          open={open}
+          job={job}
+          onClose={handlePriceUpdate}
+          precios={precios}
+        />
 
-      <div style={{display: 'flex', flexDirection: "row", gap: 30, margin: 30}}>
-        <CambiarAProcesandoButton job={job} onClick={changeStatusInProgress}/>
-        <RehazarButton job={job} onClick={changeStatusCanceled} />
-        <FinalizarButton job={job} onClick={changeStatusFinished}/>
-      </div>
+        <div style={{ display: 'flex', flexDirection: "row", gap: 30, margin: 30 }}>
+          <CambiarAProcesandoButton job={job} onClick={changeStatusInProgress} />
+          <RehazarButton job={job} onClick={changeStatusCanceled} />
+          <FinalizarButton job={job} onClick={changeStatusFinished} />
+        </div>
       </AdminResource>
 
-      <div style={{display: "flex", flexDirection: 'row', margin: 10, gap: 10, fontSize: 14, alignItems: 'center'}}>
+      <div style={{ display: "flex", flexDirection: 'row', margin: 10, gap: 10, fontSize: 14, alignItems: 'center' }}>
         <div>
           Ver usuario:
         </div>
         <div>
-          <Link to={`/cliente/${job?.user?.id}`} style={{color: 'black'}}>
+          <Link to={`/cliente/${job?.user?.id}`} style={{ color: 'black' }}>
             {job?.user?.first_name} {job?.user?.last_name}
             <IconButton size="small" disableRipple>
               <Icon>account_circle</Icon>

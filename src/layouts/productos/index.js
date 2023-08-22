@@ -44,7 +44,7 @@ const Productos = () => {
                 <DataTable
                     table={{ columns: TableColumns, rows: rows }}
                     isSorted={false}
-                    entriesPerPage={false}
+                    entriesPerPage={{ defaultValue: 50 }}
                     showTotalEntries={false}
                     canSearch={true}
                     noEndBorder

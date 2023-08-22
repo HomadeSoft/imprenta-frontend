@@ -1,5 +1,5 @@
 import axios from "axios";
-import {accordionSummaryClasses} from "@mui/material";
+// import { accordionSummaryClasses } from "@mui/material";
 
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
@@ -174,6 +174,19 @@ const DataService = (() => {
         return { data: null, error: err }
       })
   }
+
+  const fetchTroquelados = async (token) => {
+    const url = `${BASE_URL}/troquelados`;
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.troquelados, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const fetchProductData = async (id) => {
     const url = `${BASE_URL}/productos/${id}`;
     return fetch(url)
@@ -357,6 +370,7 @@ const DataService = (() => {
     fetchProducts: (token) => fetchProducts(token),
     createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
+    fetchTroquelados: (id) => fetchTroquelados(id),
     saveProducto: (token, producto) => saveProducto(token, producto),
     updateProductPrice: (token, price) => updateProductPrice(token, price),
     createProductPrice: (token, price) => createProductPrice(token, price),

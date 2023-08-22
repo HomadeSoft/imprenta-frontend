@@ -44,6 +44,7 @@ const Nuevo = () => {
   const [medidas, setMedidas] = useState();
   const [medida, setMedida] = useState();
   const [tipoPapeles, setTipoPapeles] = useState();
+  const [troquelados, setTroquelados] = useState();
 
 
 
@@ -58,7 +59,9 @@ const Nuevo = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
-
+      DataService.fetchTroquelados(token).then((data) => {
+        setTroquelados(data.data)
+      })
       DataService.fetchProducts(token).then(
         (response) => {
           if (response.data !== '{}') {
@@ -66,12 +69,15 @@ const Nuevo = () => {
             setProductos(productos);
             const medidasAux = getUniqueAttributeValues(productos, "medida");
             setMedidas(medidasAux);
-            // const medidasAux = new Set();
-            // productos.foreach(product => {
-            // medidasAux.add(product.medida);
-            // });
-            // setMedidas(medidas);
-            setMedida(medidasAux.find(m => m === "A3"));
+            setMedida(medidasAux.find(m => m === "A3+"));
+            const filteredProducts = productos?.filter(producto => producto.medida === "A3+");
+            const tipoPapelesAux = getUniqueAttributeValues(
+              filteredProducts,
+              "tipo_papel"
+            );
+            setTipoPapeles(
+              tipoPapelesAux
+            );
           }
           setLoading(false);
         }
@@ -96,20 +102,10 @@ const Nuevo = () => {
   const [troqueladoEnabled, setTroqueladoEnabled] = useState(false);
   const [laminadoEnabled, setLaminadoEnabled] = useState(false);
   const [troquelado, setTroquelado] = useState(false);
-  const [displayTroquelado, setDisplayTroquelado] = useState("none");
   const [laminado, setLaminado] = useState(false);
   const [notas, setNotas] = useState();
 
   const { user } = useGlobalDataContext();
-
-
-  // const handleTipoPapelChange = (event) => {
-  //   setTipoPapel(event.target.value);
-  //   setTroquelado(null);
-  //   setTroqueladoEnabled(false);
-  //   setLaminado(null);
-  //   setLaminadoEnabled(false);
-  // };
 
   const handleTroqueladoChange = (event) => {
     setTroquelado(event.target.value);
@@ -144,7 +140,6 @@ const Nuevo = () => {
     setTroqueladoEnabled(false);
     setLaminado(null);
     setLaminadoEnabled(false);
-    setDisplayTroquelado();
     productos?.find(producto => producto.tipoPapel === tipoPapel && producto.medida === medida && producto.doble_faz) ?
       setDobleFazEnabled(true) :
       setDobleFazEnabled(false);
@@ -161,7 +156,6 @@ const Nuevo = () => {
     if (cantidad && tipoPapel) {
       setUploading(true);
       setLoading(true);
-      //crear_carpeta_con_fecha
 
       const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
       setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
@@ -316,17 +310,17 @@ const Nuevo = () => {
                       label="papel"
                       onChange={handleTroqueladoChange}
                     >
-                      <MenuItem value="elemento1">Elemento 1</MenuItem>
-                      {/* {
+                      {/* <MenuItem value="elemento1">Elemento 1</MenuItem> */}
+                      {
 
-                        listaTroquelados?.papel?.map((papel) => (
-                          <MenuItem value={papel.caracteristicas[0]} >
+                        troquelados?.map((troquelado) => (
+                          <MenuItem value={troquelado.descripcion} >
                             {
-                              papel.caracteristicas[0]
+                              troquelado.descripcion
                             }
                           </MenuItem>
                         ))
-                      } */}
+                      }
                     </Select>
                   </FormControl>
                 </MDBox>
