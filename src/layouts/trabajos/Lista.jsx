@@ -1,16 +1,16 @@
 import DataTable from "examples/Tables/DataTable";
 
 // Dashboard components
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
-import {JobsRowFormatter} from "./utils";
-import {useAuth0} from "@auth0/auth0-react";
+import { JobsRowFormatter } from "./utils";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const TableColumns = [
   { Header: "Cliente", accessor: "cliente", align: "left" },
   { Header: "Fecha", accessor: "fecha", align: "center" },
-  { Header: "Estado", accessor: "estado", align: "center", visible:"false"},
+  { Header: "Estado", accessor: "estado", align: "center", visible: "false" },
   { Header: "Total", accessor: "total", align: "left" },
   { Header: "Archivos", accessor: "archivos", align: "center" },
   { Header: "Trabajo", accessor: "trabajo", align: "center" },
@@ -32,7 +32,7 @@ function Lista() {
     };
 
     getInfo()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

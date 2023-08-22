@@ -35,6 +35,10 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
+      // if (!token){
+      //   debugger
+      //   return;
+      // }
       const { data: prices } = await DataService.fetchPrices(token);
       setPrices(prices);
     };

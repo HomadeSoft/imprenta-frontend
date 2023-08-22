@@ -1,10 +1,9 @@
 import axios from "axios";
+// import { accordionSummaryClasses } from "@mui/material";
 
 const DataService = (() => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
   //const BASE_URL = 'http://localhost:3001';
-
-
 
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
@@ -81,8 +80,7 @@ const DataService = (() => {
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
-        if(data?.status === "error"){
-
+        if (data?.status === "error") {
           throw new Error("Usuario inexistente")
         }
         return { data: data, error: null }
@@ -165,15 +163,6 @@ const DataService = (() => {
       })
   }
 
-
-  const updateJobPrice = async (token, id, price) => {
-    const url = `${BASE_URL}/jobs/update`;
-
-    return fetch(url, {
-      method: 'POST',
-      headers: requestPostHeaders(token),
-      body: JSON.stringify({ id: id, total_price_cents: price })
-
   const fetchProducts = async (token) => {
     const url = `${BASE_URL}/productos`;
     return fetch(url, requestHeaders(token))
@@ -185,6 +174,19 @@ const DataService = (() => {
         return { data: null, error: err }
       })
   }
+
+  const fetchTroquelados = async (token) => {
+    const url = `${BASE_URL}/troquelados`;
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.troquelados, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const fetchProductData = async (id) => {
     const url = `${BASE_URL}/productos/${id}`;
     return fetch(url)
@@ -197,12 +199,79 @@ const DataService = (() => {
       })
   }
 
-  const createProduct = async (product) => {
+  const saveProducto = async (token, producto) => {
+    const url = `${BASE_URL}/productos/${producto.id}`;
+
+    return fetch(url, {
+      method: 'PUT',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(producto)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const updateProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios/${price.id}`;
+
+    return fetch(url, {
+      method: 'PUT',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(price)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const createProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify(price)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const deleteProductPrice = async (token, price) => {
+    const url = `${BASE_URL}/precios/${price.id}`;
+
+    return fetch(url, {
+      method: 'DELETE',
+      headers: requestPostHeaders(token)
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
+  const createProduct = async (token, product) => {
     const url = `${BASE_URL}/productos`;
     console.log(JSON.stringify(product));
     return fetch(url, {
       method: 'POST',
-      // headers: requestPostHeaders(token),
+      headers: requestPostHeaders(token),
       body: JSON.stringify(product)
     })
       .then((response) => response.json())
@@ -212,6 +281,23 @@ const DataService = (() => {
       .catch((err) => {
         return { data: null, error: err }
       })
+  }
+
+  const updateJobPrice = async (token, id, price) => {
+    const url = `${BASE_URL}/jobs/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, total_price_cents: price })
+        .then((response) => response.json())
+        .then((data) => {
+          return { data: data.user.data, error: null }
+        })
+        .catch((err) => {
+          return { data: null, error: err }
+        })
+    })
   }
 
   const changeStatus = async (token, id, newStatus) => {
@@ -281,10 +367,14 @@ const DataService = (() => {
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
-
     fetchProducts: (token) => fetchProducts(token),
-    createProduct: (product) => createProduct(product),
+    createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
+    fetchTroquelados: (id) => fetchTroquelados(id),
+    saveProducto: (token, producto) => saveProducto(token, producto),
+    updateProductPrice: (token, price) => updateProductPrice(token, price),
+    createProductPrice: (token, price) => createProductPrice(token, price),
+    deleteProductPrice: (token, price) => deleteProductPrice(token, price),
   }
 })();
 

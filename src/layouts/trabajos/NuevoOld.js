@@ -13,7 +13,7 @@ import moment from "moment";
 import { useGlobalDataContext } from "context/DataContext";
 
 const Legend = ({ message, setMessage }) => {
-  if (!message) {
+  if(!message) {
     return null
   }
 
@@ -25,7 +25,7 @@ const Legend = ({ message, setMessage }) => {
         borderRadius: 10,
         backgroundColor: "#000000", color: "white",
         cursor: 'pointer'
-      }}
+    }}
       onClick={() => setMessage(null)}
     >
       <div>{message}</div>
@@ -38,20 +38,13 @@ const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
   const { id } = useParams()
   // eslint-disable-next-line no-unused-vars
-
-  // NUEVA PARTE
-  const [productos, setProductos] = useState();
-  const [medidas, setMedidas] = useState();
-  const [medida, setMedida] = useState();
-  const [tipoPapeles, setTipoPapeles] = useState();
-  const [troquelados, setTroquelados] = useState();
-
-
+  const [categorias, setCategorias] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
 
   const [message, setMessage] = useState(null);
+  const [listaTroquelados, setlistaTroquelados] = useState({});
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
@@ -59,25 +52,15 @@ const Nuevo = () => {
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
-      DataService.fetchTroquelados(token).then((data) => {
-        setTroquelados(data.data)
-      })
-      DataService.fetchProducts(token).then(
+
+      DataService.fetchPrices(token).then(
         (response) => {
           if (response.data !== '{}') {
-            const productos = response.data;
-            setProductos(productos);
-            const medidasAux = getUniqueAttributeValues(productos, "medida");
-            setMedidas(medidasAux);
-            setMedida(medidasAux.find(m => m === "A3+"));
-            const filteredProducts = productos?.filter(producto => producto.medida === "A3+");
-            const tipoPapelesAux = getUniqueAttributeValues(
-              filteredProducts,
-              "tipo_papel"
-            );
-            setTipoPapeles(
-              tipoPapelesAux
-            );
+            setCategorias(response.data);
+            const listaTroquelados = response.data.find(categoria => categoria.printSize === "TROQUELADOS");
+            setlistaTroquelados(listaTroquelados);
+            const selectedCategory = response.data.find(c => c.printSize === "A3+")
+            setCategoria(selectedCategory);
           }
           setLoading(false);
         }
@@ -88,11 +71,9 @@ const Nuevo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-
-
   // eslint-disable-next-line no-unused-vars
-  // const [papel, setPapel] = useState('');
-  // const [categoria, setCategoria] = useState();
+  const [papel, setPapel] = useState('');
+  const [categoria, setCategoria] = useState();
   const [dobleFaz, setDobleFaz] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
@@ -106,6 +87,15 @@ const Nuevo = () => {
   const [notas, setNotas] = useState();
 
   const { user } = useGlobalDataContext();
+
+
+  const handleTipoPapelChange = (event) => {
+    setTipoPapel(event.target.value);
+    setTroquelado(null);
+    setTroqueladoEnabled(false);
+    setLaminado(null);
+    setLaminadoEnabled(false);
+  };
 
   const handleTroqueladoChange = (event) => {
     setTroquelado(event.target.value);
@@ -122,29 +112,12 @@ const Nuevo = () => {
   const switchLaminado = () => {
     setLaminadoEnabled(laminadoEnabled ? false : true);
   }
-  const handleMedidaChange = (event) => {
-    setMedida(event.target.value);
-    const filteredProducts = productos?.filter(producto => producto.medida === event.target.value);
-    const tipoPapelesAux = getUniqueAttributeValues(
-      filteredProducts,
-      "tipo_papel"
-    );
-    setTipoPapeles(
-      tipoPapelesAux
-    );
+  const handleCategoriaChange = (event) => {
+    const selectedCategory = categorias.find(c => c.printSize === event.target.value)
+    setCategoria(selectedCategory);
+    setPapel(null);
+    setTipoPapel(null);
   }
-
-  const handleTipoPapelChange = (event) => {
-    setTipoPapel(event.target.value);
-    setTroquelado(null);
-    setTroqueladoEnabled(false);
-    setLaminado(null);
-    setLaminadoEnabled(false);
-    productos?.find(producto => producto.tipoPapel === tipoPapel && producto.medida === medida && producto.doble_faz) ?
-      setDobleFazEnabled(true) :
-      setDobleFazEnabled(false);
-
-  };
 
   const switchDobleFaz = () => {
     setDobleFaz(!dobleFaz);
@@ -156,12 +129,13 @@ const Nuevo = () => {
     if (cantidad && tipoPapel) {
       setUploading(true);
       setLoading(true);
+      //crear_carpeta_con_fecha
 
       const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
       setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
 
       const { error } = await DataService.uploadToServer(selectedFile, folder);
-      if (error) {
+      if(error){
         setMessage(error)
         setUploading(false);
         setLoading(false);
@@ -171,8 +145,7 @@ const Nuevo = () => {
       const trabajo = {
         "copies_quantity": cantidad,
         "doble_faz": dobleFaz ? true : false,
-        // "paper_size": categoria?.printSize,
-        "paper_size": medida,
+        "paper_size": categoria?.printSize,
         "paper_type": tipoPapel,
         "status": "pending",
         "user_id": user.id,
@@ -186,7 +159,7 @@ const Nuevo = () => {
       setMessage("Se está procesando el archivo. No cierre esta ventana")
 
       const { error: jobError } = await DataService.submitJob(token, trabajo);
-      if (jobError) {
+      if(jobError){
         setMessage(jobError)
         setUploading(false);
         setLoading(false);
@@ -205,7 +178,7 @@ const Nuevo = () => {
     return (
       cantidad &&
       tipoPapel &&
-      medida
+      categoria?.printSize
     )
   }
 
@@ -219,19 +192,6 @@ const Nuevo = () => {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-  function getUniqueAttributeValues(objects, attributeName) {
-    const uniqueValuesSet = new Set();
-
-    objects.forEach(object => {
-      if (object.hasOwnProperty(attributeName)) {
-        uniqueValuesSet.add(object[attributeName]);
-      }
-    });
-
-    const uniqueValuesArray = Array.from(uniqueValuesSet);
-    return uniqueValuesArray;
-  }
 
 
   return (
@@ -247,20 +207,24 @@ const Nuevo = () => {
                     <Select
                       labelId="tipo-papel-label"
                       id="tipo-papel-select"
-                      value={medida}
+                      value={categoria?.printSize}
                       defaultValue="A3+"
                       sx={{ minHeight: 50 }}
                       label="papel"
-                      onChange={handleMedidaChange}
+                      onChange={handleCategoriaChange}
                     >
                       {
-                        medidas?.map(
-                          (medida) => {
-                            return (
-                              <MenuItem
-                                value={medida}
-                              >{medida}</MenuItem>
-                            )
+                        categorias?.map(
+                          (categoria) => {
+                            if (categoria.printSize !== "TROQUELADOS") {
+                              return (
+                                <MenuItem
+                                  value={categoria.printSize}
+                                >{categoria.printSize}</MenuItem>
+                              )
+                            }
+                            // eslint-disable-next-line array-callback-return
+                            return;
                           }
                         )
 
@@ -279,19 +243,36 @@ const Nuevo = () => {
                       label="papel"
                       onChange={handleTipoPapelChange}
                     >
-                      {
-                        tipoPapeles?.map((tipoPapel) => {
-                          return (<MenuItem value={tipoPapel} >
-                            {
-                              tipoPapel
+                      {categoria ? categoria.papel.map(
+                        (papel) =>
+                        (
+                          papel.caracteristicas.map(
+                            (caracteristica) => {
+                              var tipoPapel = papel.gramaje + " " + caracteristica;
+                              if (papel.gramaje) {
+
+                                return (
+                                  <MenuItem value={tipoPapel} >
+                                    {
+                                      papel.gramaje + " " + caracteristica
+                                    }
+                                  </MenuItem>
+                                )
+                              } else {
+                                return (<MenuItem value={caracteristica} >
+                                  {
+                                    "Sin Papel"
+                                  }
+                                </MenuItem>);
+                              }
                             }
-                          </MenuItem>)
-                        })
-                      }
+                          )
+                        )
+                      ) : null}
                     </Select>
                   </FormControl>
                 </MDBox>
-                <MDBox mb={2} display={{ display: productos?.find(producto => producto.tipo_papel === tipoPapel && producto.medida === medida && producto.troquelado) ? "flex" : "none" }} alignItems={"center"} gap={2} >
+                <MDBox mb={2} display={{ display: tipoPapel?.includes("Autoadhesivo") || tipoPapel?.includes("OPP") ? "flex" : "none" }} alignItems={"center"} gap={2} >
                   <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Troquelado:</FormLabel>
                   <FormControlLabel
                     control={
@@ -310,13 +291,12 @@ const Nuevo = () => {
                       label="papel"
                       onChange={handleTroqueladoChange}
                     >
-                      {/* <MenuItem value="elemento1">Elemento 1</MenuItem> */}
                       {
 
-                        troquelados?.map((troquelado) => (
-                          <MenuItem value={troquelado.descripcion} >
+                        listaTroquelados?.papel?.map((papel) => (
+                          <MenuItem value={papel.caracteristicas[0]} >
                             {
-                              troquelado.descripcion
+                              papel.caracteristicas[0]
                             }
                           </MenuItem>
                         ))
@@ -324,7 +304,7 @@ const Nuevo = () => {
                     </Select>
                   </FormControl>
                 </MDBox>
-                <MDBox mb={2} display={{ display: productos?.find(producto => producto.tipo_papel === tipoPapel && producto.medida === medida && producto.laminado) ? "flex" : "none" }} alignItems={"center"} gap={2} >
+                <MDBox mb={2} display={{ display: tipoPapel?.includes("Opalina") || tipoPapel?.includes("Ilustracion") ? "flex" : "none" }} alignItems={"center"} gap={2} >
                   <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Laminado:</FormLabel>
                   <FormControlLabel
                     control={
@@ -351,12 +331,13 @@ const Nuevo = () => {
                     </Select>
                   </FormControl>
                 </MDBox>
-                <MDBox mb={2} display={{ display: productos?.find(producto => producto.tipo_papel === tipoPapel && producto.medida === medida && producto.doble_faz) ? "flex" : "none" }} alignItems={"center"} gap={2}>
+                <MDBox mb={2} display={"flex"} alignItems={"center"} gap={2}>
                   <FormLabel style={{ flex: 0.7, textAlign: "end" }}>Doble faz:</FormLabel>
                   <FormControlLabel
                     control={
-                      <Switch checked={dobleFaz} onChange={switchDobleFaz} />
-                    }
+                      dobleFazEnabled ?
+                        <Switch disabled={true} checked={false} /> :
+                        <Switch checked={dobleFaz} onChange={switchDobleFaz} />}
                     style={{ flex: 1 }}
                   />
                 </MDBox>
@@ -366,7 +347,7 @@ const Nuevo = () => {
                   </FormLabel>
                   <MDInput type="number"
                     placeholder="Cantidad de Copias"
-                    disabled={medida === null}
+                    disabled={categoria === null}
                     value={cantidad}
                     onChange={(event) => {
                       setCantidad(event.target.value);
@@ -380,7 +361,7 @@ const Nuevo = () => {
                   </FormLabel>
                   <MDInput type="text"
                     placeholder="Aclaraciones adicionales"
-                    disabled={medida === null}
+                    disabled={categoria === null}
                     value={notas}
                     multiline
                     rows={4}
@@ -419,9 +400,9 @@ const Nuevo = () => {
             Crear Trabajo
           </MDButton>
         </CardActions>
-        <Legend message={message} setMessage={setMessage} />
+        <Legend message={message} setMessage={setMessage}/>
       </>
-    </Wrapper >
+    </Wrapper>
   );
 }
 
