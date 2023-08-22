@@ -167,6 +167,7 @@ const DetalleProducto = () => {
 
     useEffect(() => {
         fetchProductData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleUpdate = (attrs, key) => {
