@@ -293,7 +293,7 @@ const DataService = (() => {
     })
       .then((response) => response.json())
       .then((data) => {
-        return { data: data.user.data, error: null }
+        return { data: data, error: null }
       })
       .catch((err) => {
         return { data: null, error: err }
