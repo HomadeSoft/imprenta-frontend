@@ -162,7 +162,7 @@ const DetalleProducto = () => {
         setTroqueladoHabilitado(data?.troquelado)
         setLaminadoHabilitado(data?.laminado)
 
-        setRowProductPrices(formatProductPrices(data?.precios))
+        setRowProductPrices(formatProductPrices(data?.precios.sort((a, b) => { return a.cantidad_minima - b.cantidad_minima })))
     }
 
     useEffect(() => {
@@ -204,7 +204,7 @@ const DetalleProducto = () => {
         const newProductPrices = productPrices.map(prices => prices.id !== updatedPrice.id ? prices : updatedPrice);
 
         setProductPrices(newProductPrices);
-        setRowProductPrices(formatProductPrices(newProductPrices))
+        setRowProductPrices(formatProductPrices(newProductPrices.sort((a, b) => { return a.cantidad_minima - b.cantidad_minima })))
         setDialogOpen(false);
     }
 
