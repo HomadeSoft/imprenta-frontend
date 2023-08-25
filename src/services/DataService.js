@@ -175,6 +175,18 @@ const DataService = (() => {
       })
   }
 
+  const fetchAvailableProducts = async (token) => {
+    const url = `${BASE_URL}/productos?q[enabled_eq]=true`;
+    return fetch(url, requestHeaders(token))
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data.productos, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+  }
+
   const fetchTroquelados = async (token) => {
     const url = `${BASE_URL}/troquelados`;
     return fetch(url, requestHeaders(token))
@@ -369,6 +381,7 @@ const DataService = (() => {
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
     fetchProducts: (token) => fetchProducts(token),
+    fetchAvailableProducts: (token) => fetchAvailableProducts(token),
     createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),
     fetchTroquelados: (id) => fetchTroquelados(id),

@@ -15,6 +15,7 @@ const TableColumns = [
     { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
     { Header: "Se puede Troquelar", accessor: "troquelado", align: "center" },
     { Header: "Se puede Laminar", accessor: "laminado", align: "center" },
+    { Header: "Habilitado", accessor: "habilitado", align: "center" },
     { Header: "", accessor: "view", align: "right" },
 ]
 

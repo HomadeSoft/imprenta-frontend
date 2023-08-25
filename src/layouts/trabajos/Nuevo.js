@@ -62,7 +62,7 @@ const Nuevo = () => {
       DataService.fetchTroquelados(token).then((data) => {
         setTroquelados(data.data)
       })
-      DataService.fetchProducts(token).then(
+      DataService.fetchAvailableProducts(token).then(
         (response) => {
           if (response.data !== '{}') {
             const productos = response.data;

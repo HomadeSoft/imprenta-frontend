@@ -134,6 +134,7 @@ const DetalleProducto = () => {
     const [, setDobleFazHabilitado] = useState(false);
     const [, setTroqueladoHabilitado] = useState(false);
     const [, setLaminadoHabilitado] = useState(false);
+    const [, setProductoHabilitado] = useState(false);
 
     const { getAccessTokenSilently } = useAuth0();
 
@@ -176,9 +177,9 @@ const DetalleProducto = () => {
     };
 
     const handleCheckUpdate = (key, setter) => {
+        setter(!product[key])
         product[key] = !product[key]
         setProduct(product)
-        setter(!key)
     };
 
     const showData = {
@@ -187,6 +188,7 @@ const DetalleProducto = () => {
         dobleFazHabilitado: <Switch checked={product?.doble_faz} disabled />,
         troqueladoHabilitado: <Switch checked={product?.troquelado} disabled />,
         laminadoHabilitado: <Switch checked={product?.laminado} disabled />,
+        productoHabilitado: <Switch checked={product?.enabled} disabled />
     }
 
     const editData = {
@@ -195,6 +197,8 @@ const DetalleProducto = () => {
         dobleFazHabilitado: <Switch checked={product?.doble_faz} onChange={() => handleCheckUpdate('doble_faz', setDobleFazHabilitado)} />,
         troqueladoHabilitado: <Switch checked={product?.troquelado} onChange={() => handleCheckUpdate('troquelado', setTroqueladoHabilitado)} />,
         laminadoHabilitado: <Switch checked={product?.laminado} onChange={() => handleCheckUpdate('laminado', setLaminadoHabilitado)} />,
+        productoHabilitado: <Switch checked={product?.enabled} onChange={() => handleCheckUpdate('enabled', setProductoHabilitado)} />
+
     }
 
     const savePrecio = async (updatedPrice) => {
