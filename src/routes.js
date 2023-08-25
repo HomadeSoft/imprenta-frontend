@@ -148,6 +148,7 @@ const routes = [
     type: "collapse",
     name: "Descargar lista de precios",
     key: "preciosList",
+    show: false,
     icon: <Icon fontSize="small">download</Icon>,
     route: "#",
     protected: true,
