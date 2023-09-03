@@ -1,9 +1,11 @@
-import { Checkbox } from "@mui/material";
 import MDTypography from "../../components/MDTypography";
 import { Link } from "react-router-dom";
 import MDButton from "components/MDButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Checkbox from '@mui/material/Checkbox';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const ProductsRowFormatter = (row) => {
     if (!row) { return {} }
@@ -13,6 +15,12 @@ const ProductsRowFormatter = (row) => {
         doble_faz: (<MDTypography variant="caption" color="text" fontWeight="medium">{row.doble_faz ? "4/4" : "4/0"}</MDTypography>),
         troquelado: (<MDTypography variant="caption" color="text" fontWeight="regular">{row.troquelado ? "troquelado" : "-"}</MDTypography>),
         laminado: (<MDTypography variant="caption" color="text" fontWeight="regular">{row.laminado ? "laminado" : "-"}</MDTypography>),
+        habilitado: (<Checkbox
+            icon={<VisibilityOffIcon />}
+            checkedIcon={<VisibilityIcon />}
+            disabled
+            checked={row.enabled}
+        />),
         view: (<Link to={`/producto/${row.id}`}><MDButton color={"dark"}>Ver</MDButton></Link>)
     }
 }

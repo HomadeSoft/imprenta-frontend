@@ -86,6 +86,7 @@ const routes = [
     name: "Precios",
     key: "precios",
     isAdmin: true,
+    show: false,
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/precios",
     protected: true,

@@ -15,6 +15,7 @@ const TableColumns = [
     { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
     { Header: "Se puede Troquelar", accessor: "troquelado", align: "center" },
     { Header: "Se puede Laminar", accessor: "laminado", align: "center" },
+    { Header: "Habilitado", accessor: "habilitado", align: "center" },
     { Header: "", accessor: "view", align: "right" },
 ]
 
@@ -27,7 +28,7 @@ const Productos = () => {
         const getInfo = async () => {
             const token = await getAccessTokenSilently();
             const { data } = await DataService.fetchProducts(token)
-            const formattedRows = data?.map(r => ProductsRowFormatter(r))
+            const formattedRows = data?.sort((a, b) => { return a.medida + a.tipo_papel + a.doble_faz >= b.medida + b.tipo_papel + b.doble_faz ? 1 : -1 }).map(r => ProductsRowFormatter(r))
             if (formattedRows?.length) {
                 setRows(formattedRows)
             }

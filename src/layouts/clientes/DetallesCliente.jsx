@@ -2,16 +2,16 @@ import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import MDBox from "components/MDBox";
 
 import DataTable from "examples/Tables/DataTable";
-import {useNavigate, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
-import {JobsRowFormatter} from "../trabajos/utils";
-import {useAuth0} from "@auth0/auth0-react";
-import {useGlobalDataContext} from "../../context/DataContext";
+import { JobsRowFormatter } from "../trabajos/utils";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useGlobalDataContext } from "../../context/DataContext";
 import SaveIcon from "@mui/icons-material/Save";
 import EditIcon from "@mui/icons-material/Edit";
-import {Fab} from "@mui/material";
+import { Fab } from "@mui/material";
 import EditableTableCell from "../../components/EditableTableCell";
 
 const jobsTableColumns = [
@@ -33,8 +33,8 @@ const DetallesCliente = () => {
   const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
-    if(!id || id === ":id") {
-      if (globalUser.id){
+    if (!id || id === ":id") {
+      if (globalUser.id) {
         navigate(`/cliente/${globalUser.id}`)
       } else {
         navigate('/')
@@ -56,7 +56,7 @@ const DetallesCliente = () => {
 
     fetchUserData();
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const handleUpdate = (attrs, key) => {
@@ -75,6 +75,8 @@ const DetallesCliente = () => {
     nombre: `${user?.first_name} ${user?.last_name}`,
     CUIT: user?.cuit,
     teléfono: user?.phone,
+    direccion: user?.address,
+    'condicion IVA': user?.cond_iva,
     email: user?.email,
   }
 
@@ -84,25 +86,27 @@ const DetallesCliente = () => {
     apellido: <EditableTableCell value={user?.last_name} onBlur={(event) => handleUpdate(event, "last_name")} />,
     CUIT: <EditableTableCell value={user?.cuit} onBlur={(event) => handleUpdate(event, 'cuit')} />,
     teléfono: <EditableTableCell value={user?.phone} onBlur={(event) => handleUpdate(event, 'phone')} />,
+    direccion: <EditableTableCell value={user?.address} onBlur={(event) => handleUpdate(event, 'address')} />,
+    'condicion IVA': <EditableTableCell value={user?.cond_iva} onBlur={(event) => handleUpdate(event, 'cond_iva')} />,
     email: user?.email,
   }
 
   return (
     <Wrapper title={"Info Cliente"}>
       <>
-        <div style={{display: "flex", flexDirection: 'row'}}>
+        <div style={{ display: "flex", flexDirection: 'row' }}>
           <ProfileInfoCard
-            info={ editing ? editData : showData}
+            info={editing ? editData : showData}
             social={[]}
             action={{ route: "", tooltip: "Editar Perfil" }}
             shadow={false}
           />
-          <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16}}>
+          <div style={{ display: "flex", flex: 1, justifyContent: 'end', alignItems: "end", margin: 16 }}>
             <Fab color="primary" aria-label="add"
-                 onClick={() => {
-                   if (editing) { saveUser() }
-                   setEditing(!editing);
-                 }}
+              onClick={() => {
+                if (editing) { saveUser() }
+                setEditing(!editing);
+              }}
             >
               {editing ? <SaveIcon fontSize={"large"} /> : <EditIcon fontSize={"large"} />}
             </Fab>
