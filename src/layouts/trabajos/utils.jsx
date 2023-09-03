@@ -6,7 +6,7 @@ import MDButton from "components/MDButton";
 const JobsRowFormatter = (row) => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
-  if(!row) { return {} }
+  if (!row) { return {} }
 
   return {
     cliente: (<MDTypography display="block" variant="button" color="white" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
@@ -22,14 +22,14 @@ const JobsRowFormatter = (row) => {
 }
 
 const formatPrice = (priceCents) => {
-  if(!priceCents){
+  if (!priceCents) {
     //return (0 / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
     return " - ";
   }
 
   try {
-    return (priceCents / 100).toLocaleString("es-AR", {style:"currency", currency:"ARS"})
-  } catch (e){
+    return (priceCents / 100).toLocaleString("es-AR", { style: "currency", currency: "ARS" })
+  } catch (e) {
     return " - "
   }
 }
@@ -66,7 +66,7 @@ const formatDateString = (createdAt) => {
 
 const formatStatus = (status) => {
   // eslint-disable-next-line default-case
-  switch (status){
+  switch (status) {
     case "pending":
       return "En espera";
     case "canceled":
