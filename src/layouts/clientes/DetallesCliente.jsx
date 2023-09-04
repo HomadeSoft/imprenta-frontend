@@ -50,7 +50,7 @@ const DetallesCliente = () => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
       const { data } = await DataService.fetchUserJobs(token, id)
-      const formattedRows = data?.map(r => JobsRowFormatter(r))
+      const formattedRows = data?.map(r => JobsRowFormatter(r, token))
       setUserJobs(formattedRows)
     }
 

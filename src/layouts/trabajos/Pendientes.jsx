@@ -16,6 +16,7 @@ const TableColumns = [
   { Header: "estado", accessor: "estado", align: "center" },
   { Header: "total", accessor: "total", align: "left" },
   { Header: "archivos", accessor: "archivos", align: "center" },
+  { Header: "Descargados?", accessor: "archivos_descargados", align: "center" },
   { Header: "Trabajo", accessor: "trabajo", align: "center" },
   { Header: "Copias", accessor: "copias", align: "center" },
   { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
@@ -37,7 +38,7 @@ function Pendientes() {
         response = await DataService.fetchPendingJobsFromUser(token, user.email);
       }
 
-      const formattedRows = response?.data?.map(r => JobsRowFormatter(r))
+      const formattedRows = response?.data?.map(r => JobsRowFormatter(r, token))
       if(formattedRows?.length){
         setRows(formattedRows)
       }

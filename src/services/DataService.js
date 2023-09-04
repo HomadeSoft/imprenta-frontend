@@ -117,15 +117,41 @@ const DataService = (() => {
   }
 
   const deleteJob = async (token, id) => {
-    const url = `${BASE_URL}/jobs/job?id=${id}`;
+    const url = `${BASE_URL}/jobs/delete?id=${id}`;
 
-    return fetch(url, { method: 'DELETE', headers: requestHeaders(token) })
-      .then((response) => response.json())
-      .then((data) => {
-        return { data: data, error: null }
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
       })
       .catch((err) => {
-        return { data: null, error: err }
+        return { success: null, error: err }
+      })
+  }
+
+  const setDownloadedFile = async (token, id) => {
+    const url = `${BASE_URL}/jobs/setDownloaded?id=${id}`;
+
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
+      })
+      .catch((err) => {
+        return { success: null, error: err }
+      })
+  }
+
+  const setNotDownloadedFile = async (token, id) => {
+    const url = `${BASE_URL}/jobs/setNotDownloaded?id=${id}`;
+
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
+      })
+      .catch((err) => {
+        return { success: null, error: err }
       })
   }
 
@@ -403,6 +429,8 @@ const DataService = (() => {
     fetchJobData: (token, id) => fetchJobData(token, id),
     deleteJob: (token, id) => deleteJob(token, id),
     submitJob: (token, job) => submitJob(token, job),
+    setDownloadedFile: (token, id) => setDownloadedFile(token, id),
+    setNotDownloadedFile: (token, id) => setNotDownloadedFile(token, id),
     savePrices: (token, prices) => savePrices(token, prices),
     fetchPrices: (token) => fetchPrices(token),
     updateJobPrice: (token, id, price) => updateJobPrice(token, id, price),

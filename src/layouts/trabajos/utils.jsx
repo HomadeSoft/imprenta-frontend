@@ -2,21 +2,32 @@ import MDTypography from "../../components/MDTypography";
 import InfoIcon from "@mui/icons-material/Info";
 import DownloadIcon from "@mui/icons-material/Download";
 import MDButton from "components/MDButton";
+import DataService from "../../services/DataService";
 
-const JobsRowFormatter = (row) => {
+const setDownloadedFile = (token, id) => () => {
+  DataService.setDownloadedFile(token, id)
+}
+
+const JobsRowFormatter = (row, token) => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
   if (!row) { return {} }
-
+  // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
   return {
     cliente: (<MDTypography display="block" variant="button" color="white" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="white" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
     fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDateString(row.created_at)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
-    archivos: (<MDButton component="a" color="white" href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}><DownloadIcon /></MDButton>),
+    archivos: (<MDButton component="a" color="white"
+                         // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
+                         // onClick={() => setDownloadedFile(token, row.id)}>
+                         onClick={setDownloadedFile(token, row.id)}>
+      <DownloadIcon />
+    </MDButton>),
+    archivos_descargados: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatBoolean(row.archivos_descargados)}</MDTypography>),
     trabajo: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatJob(row.paper_size, row.paper_type)}</MDTypography>),
     copias: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatCopies(row.copies_quantity)}</MDTypography>),
-    doble_faz: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatDobleFaz(row.doble_faz)}</MDTypography>),
+    doble_faz: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatBoolean(row.doble_faz)}</MDTypography>),
     info: (<MDTypography component="a" href={`/trabajo/${row.id}`} color="white"><InfoIcon>more_vert</InfoIcon></MDTypography>),
   }
 }
@@ -42,8 +53,8 @@ const formatCopies = (copies) => {
   return copies;
 }
 
-const formatDobleFaz = (dobleFaz) => {
-  return dobleFaz ? "si" : "no";
+const formatBoolean = (bool) => {
+  return bool ? "Si" : "No";
 }
 
 const formatDate = (filePath) => {
@@ -75,14 +86,6 @@ const formatStatus = (status) => {
       return "En proceso"
     case "finished":
       return "Finalizado"
-  }
-}
-
-const formatBoolean = (bool) => {
-  if (bool) {
-    return "Si"
-  } else {
-    return "No"
   }
 }
 

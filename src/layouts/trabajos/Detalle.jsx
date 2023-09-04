@@ -12,7 +12,7 @@ import { Dialog, DialogContentText, DialogTitle, TextField } from "@mui/material
 import { useAuth0 } from "@auth0/auth0-react";
 import AdminResource from "authContexts/AdminResource";
 import MDInput from "components/MDInput";
-import { token } from "stylis";
+import Legend from "../notifications/Legend";
 // import { useGlobalDataContext } from "../../context/DataContext";
 
 
@@ -190,6 +190,7 @@ const Detalle = () => {
   const [jobInfo, setJobInfo] = useState({})
   const { getAccessTokenSilently } = useAuth0();
   const [precios, setPrecios] = useState([])
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     if (!id || id === ":id") { navigate('/') }
@@ -204,8 +205,11 @@ const Detalle = () => {
           p.tipo_papel.includes(data.paper_type) &&
           p.doble_faz === data.doble_faz
         ));
-      const precios = (await DataService.fetchProductData(producto?.id)).data.precios;
-      setPrecios(precios);
+
+      if (!!producto) {
+        const precios = (await DataService.fetchProductData(producto?.id)).data.precios;
+        setPrecios(precios);
+      }
     }
 
     fetchUserData();
@@ -213,6 +217,11 @@ const Detalle = () => {
   }, [id])
 
   useEffect(() => {
+    let fileNames
+    if (job?.file_names) {
+      fileNames = (job?.file_names?.length > 1) ? job?.file_names.join(' - ') : job?.file_names[0];
+    }
+
     const info = {
       "Tipo de papel": job?.paper_type,
       "Tamaño de papel": job?.paper_size,
@@ -223,6 +232,8 @@ const Detalle = () => {
       "Estado": formatStatus(job?.status),
       "Precio": formatPrice(job?.total_price_cents),
       "Tipo Troquelado": job?.troquelado,
+      "Nombre Archivo": fileNames || "",
+      "Archivo descargado?": formatBoolean(job?.archivos_descargados),
       // "Fecha límite de entrega": formatDate(job?.due_date),
     }
     const cleanData = Object.entries(info).filter(([key, value]) => value !== undefined && value !== null)
@@ -284,12 +295,22 @@ const Detalle = () => {
   const handleEliminarConfirm = async () => {
     setEliminarOpen(false);
     setLoading(true)
+    setMessage("Procesando...")
     const token = await getAccessTokenSilently();
-    await DataService.deleteJob(token, job.id)
-
+    const { success } = await DataService.deleteJob(token, job.id)
 
     setLoading(false)
-    navigate("/")
+
+    if(success) {
+      setMessage("Trabajo Eliminado")
+      setTimeout(() => {
+        setMessage(null)
+        navigate("/")
+      }, 3000)
+    } else {
+      setMessage("Ocurrio un error")
+      console.log("Error")
+    }
   }
 
   const handleClickEliminarOpen = () => {
@@ -301,19 +322,24 @@ const Detalle = () => {
   };
   const onFileDialogConfirmed = async () => {
     setLoading(true);
+    setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
+
     const folder = job?.file_names[0].split('/')[0] + '/';
     const fileNames = [folder + selectedFile.name];
     const token = await getAccessTokenSilently();
     const { error } = await DataService.uploadToServer(selectedFile, folder);
-    setLoading(false);
-    if (error) {
-      console.log(error);
-    } else {
+
+    if (!error) {
+      setMessage("Procesando...")
       const { data } = await DataService.updateJobFile(token, job?.id, fileNames);
+      DataService.setNotDownloadedFile(token, job?.id);
+
       setJob(data);
+      setLoading(false);
+      setFileDialogOpen(false);
+    } else {
+      setMessage("Ocurrio un error")
     }
-    setFileDialogOpen(false);
-    // window.location.reload();
   };
 
   const onFileChanged = (event) => {
@@ -391,6 +417,7 @@ const Detalle = () => {
           </Link>
         </div>
       </div>
+      <Legend message={message} setMessage={setMessage} />
     </Wrapper>
   )
 }
