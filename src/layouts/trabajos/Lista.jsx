@@ -13,6 +13,7 @@ const TableColumns = [
   { Header: "Estado", accessor: "estado", align: "center", visible: "false" },
   { Header: "Total", accessor: "total", align: "left" },
   { Header: "Archivos", accessor: "archivos", align: "center" },
+  { Header: "Descargados?", accessor: "archivos_descargados", align: "center" },
   { Header: "Trabajo", accessor: "trabajo", align: "center" },
   { Header: "Copias", accessor: "copias", align: "center" },
   { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
@@ -27,7 +28,7 @@ function Lista() {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
       const { data } = await DataService.fetchAllJobs(token)
-      const formattedRows = data?.map(r => JobsRowFormatter(r))
+      const formattedRows = data?.map(r => JobsRowFormatter(r, token))
       setRows(formattedRows)
     };
 

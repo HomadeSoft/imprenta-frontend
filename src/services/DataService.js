@@ -116,6 +116,45 @@ const DataService = (() => {
       })
   }
 
+  const deleteJob = async (token, id) => {
+    const url = `${BASE_URL}/jobs/delete?id=${id}`;
+
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
+      })
+      .catch((err) => {
+        return { success: null, error: err }
+      })
+  }
+
+  const setDownloadedFile = async (token, id) => {
+    const url = `${BASE_URL}/jobs/setDownloaded?id=${id}`;
+
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
+      })
+      .catch((err) => {
+        return { success: null, error: err }
+      })
+  }
+
+  const setNotDownloadedFile = async (token, id) => {
+    const url = `${BASE_URL}/jobs/setNotDownloaded?id=${id}`;
+
+    return fetch(url, { method: 'POST', headers: requestHeaders(token) })
+      .then((response) => response.ok)
+      .then((success) => {
+        return { success: success, error: null }
+      })
+      .catch((err) => {
+        return { success: null, error: err }
+      })
+  }
+
   const submitJob = async (token, job) => {
     const url = `${BASE_URL}/jobs/create`;
 
@@ -313,6 +352,24 @@ const DataService = (() => {
 
   }
 
+  const updateJobFile = async (token, id, fileNames) => {
+    const url = `${BASE_URL}/jobs/update`;
+
+    return fetch(url, {
+      method: 'POST',
+      headers: requestPostHeaders(token),
+      body: JSON.stringify({ id: id, file_names: fileNames })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return { data: data, error: null }
+      })
+      .catch((err) => {
+        return { data: null, error: err }
+      })
+
+  }
+
   const changeStatus = async (token, id, newStatus) => {
     const url = `${BASE_URL}/jobs/changeStatus`;
 
@@ -370,10 +427,14 @@ const DataService = (() => {
     fetchUserDataByEmail: (token, email) => fetchUserDataByEmail(token, email),
     fetchUserJobs: (token, id) => fetchUserJobs(token, id),
     fetchJobData: (token, id) => fetchJobData(token, id),
+    deleteJob: (token, id) => deleteJob(token, id),
     submitJob: (token, job) => submitJob(token, job),
+    setDownloadedFile: (token, id) => setDownloadedFile(token, id),
+    setNotDownloadedFile: (token, id) => setNotDownloadedFile(token, id),
     savePrices: (token, prices) => savePrices(token, prices),
     fetchPrices: (token) => fetchPrices(token),
     updateJobPrice: (token, id, price) => updateJobPrice(token, id, price),
+    updateJobFile: (token, id, fileNames) => updateJobFile(token, id, fileNames),
     changeStatusPending: (token, id) => changeStatus(token, id, "pending"),
     changeStatusInProgress: (token, id) => changeStatus(token, id, "in_progress"),
     changeStatusCanceled: (token, id) => changeStatus(token, id, "canceled"),

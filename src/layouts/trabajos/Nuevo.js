@@ -11,28 +11,7 @@ import DataService from "services/DataService";
 import { useAuth0 } from "@auth0/auth0-react";
 import moment from "moment";
 import { useGlobalDataContext } from "context/DataContext";
-
-const Legend = ({ message, setMessage }) => {
-  if (!message) {
-    return null
-  }
-
-  return (
-    <div
-      style={{
-        display: "flex", flexDirection: 'row', justifyContent: 'space-around',
-        alignItems: 'center', padding: 20,
-        borderRadius: 10,
-        backgroundColor: "#000000", color: "white",
-        cursor: 'pointer'
-      }}
-      onClick={() => setMessage(null)}
-    >
-      <div>{message}</div>
-    </div>
-  )
-};
-
+import Legend from "../notifications/Legend";
 
 const Nuevo = () => {
   // eslint-disable-next-line no-unused-vars
