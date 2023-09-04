@@ -301,7 +301,7 @@ const Detalle = () => {
 
     setLoading(false)
 
-    if(success) {
+    if (success) {
       setMessage("Trabajo Eliminado")
       setTimeout(() => {
         setMessage(null)
@@ -335,6 +335,7 @@ const Detalle = () => {
       DataService.setNotDownloadedFile(token, job?.id);
 
       setJob(data);
+      setMessage(null);
       setLoading(false);
       setFileDialogOpen(false);
     } else {
