@@ -9,7 +9,7 @@ const setDownloadedFile = (token, id) => () => {
 }
 
 const JobsRowFormatter = (row, token) => {
-  const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
+  // const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
   if (!row) { return {} }
   // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
@@ -19,9 +19,9 @@ const JobsRowFormatter = (row, token) => {
     fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDateString(row.created_at)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
     archivos: (<MDButton component="a" color="white"
-                         // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
-                         // onClick={() => setDownloadedFile(token, row.id)}>
-                         onClick={setDownloadedFile(token, row.id)}>
+      // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
+      // onClick={() => setDownloadedFile(token, row.id)}>
+      onClick={setDownloadedFile(token, row.id)}>
       <DownloadIcon />
     </MDButton>),
     archivos_descargados: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatBoolean(row.archivos_descargados)}</MDTypography>),
