@@ -32,7 +32,7 @@ function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
   return (
     <MDBox
       component="th"
-      width={width}
+      // width={width}
       py={1.5}
       px={3}
       sx={({ palette: { light }, borders: { borderWidth } }) => ({
