@@ -22,11 +22,11 @@ function PriceDialog(props) {
   // const { prices } = useGlobalDataContext();
   const [copies, setCopies] = useState(job?.copies_quantity);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [precioUnit, setPrecioUnit] = useState(0);
 
   const handleCancel = () => onClose();
   const handleSave = () => onSave(newPrice);
   const handleInputChange = (event) => setNewPrice(event.target.value);
-  const precioUnit = precios?.find(precio => precio.cantidad_minima <= copies <= precio.cantidad_maxima)?.valor_cents / 100;
   // const precioUnit = prices?.find
   //   (priceItem => priceItem.printSize === job?.paper_size)?.papel?.find
   //   (paperItem => job?.paper_type.includes(paperItem.gramaje))?.quantities?.find
@@ -35,12 +35,16 @@ function PriceDialog(props) {
   // const precioTotal = parseInt(precioUnit?.substring(1)) * job?.copies_quantity;
   const handleCopiesChange = (event) => {
     setCopies(event.target.value)
-    setTotalPrice(parseInt(precioUnit) * event.target.value);
+    const precio = precios?.find(precio => (event.target.value <= precio.cantidad_maxima))?.valor_cents / 100;
+    setPrecioUnit(precio);
+    setTotalPrice(parseInt(precio) * event.target.value);
+    setNewPrice(parseInt(precio) * event.target.value);
   };
   useEffect(() => {
     setNewPrice(formatPriceFromCents(selectedValue))
     setCopies(job?.copies_quantity);
     setTotalPrice(parseInt(precioUnit) * job?.copies_quantity);
+    // setPrecioUnit(precios?.find(precio => precio.cantidad_minima <= copies <= precio.cantidad_maxima)?.valor_cents / 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -48,7 +52,7 @@ function PriceDialog(props) {
     <Dialog onClose={handleCancel} open={open}>
       <DialogTitle style={{ margin: "25px" }}>Determinar el precio del trabajo</DialogTitle>
       <div style={{ padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15 }}>
-        <div>Precio unitario: {precioUnit ? precioUnit : "$N/A"}</div>
+        <div>Precio unitario: ${precioUnit ? precioUnit : "$N/A"}</div>
       </div>
       <div style={{ padding: 5, display: "flex", justifyContent: "center", flexDirection: "row", alignItems: "center", gap: 5, fontSize: 15 }}>
         <div>Total de copias: </div>
