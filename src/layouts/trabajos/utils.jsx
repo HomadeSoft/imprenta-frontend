@@ -6,6 +6,7 @@ import DataService from "../../services/DataService";
 
 const setDownloadedFile = (token, id) => () => {
   DataService.setDownloadedFile(token, id)
+  window.location.reload(false);
 }
 
 const JobsRowFormatter = (row, token) => {
@@ -66,10 +67,11 @@ const formatDate = (filePath) => {
   }
 }
 
-const options = { year: 'numeric', month: 'long', day: 'numeric' };
+const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 const formatDateString = (createdAt) => {
   try {
-    return new Date(createdAt).toLocaleDateString('es-ES', options);
+    return new Date(createdAt)
+      .toLocaleDateString('es-ES', options);
   } catch (err) {
     return '-'
   }

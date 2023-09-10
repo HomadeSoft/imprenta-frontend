@@ -16,9 +16,13 @@ import EditableTableCell from "../../components/EditableTableCell";
 
 const jobsTableColumns = [
   { Header: "Fecha", accessor: "fecha", align: "center" },
-  { Header: "Estado", accessor: "estado", align: "center" },
+  { Header: "Estado", accessor: "estado", align: "center", visible: "false" },
   { Header: "Total", accessor: "total", align: "left" },
   { Header: "Archivos", accessor: "archivos", align: "center" },
+  { Header: "Descargados?", accessor: "archivos_descargados", align: "center" },
+  { Header: "Trabajo", accessor: "trabajo", align: "center" },
+  { Header: "Copias", accessor: "copias", align: "center" },
+  { Header: "Doble Faz", accessor: "doble_faz", align: "center" },
   { Header: "Info", accessor: "info", align: "center" },
 ]
 

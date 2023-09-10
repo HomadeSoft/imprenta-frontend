@@ -8,7 +8,7 @@ import { JobsRowFormatter } from "./utils";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const TableColumns = [
-  { Header: "Cliente", accessor: "cliente", align: "left" },
+  { Header: "Cliente", accessor: "cliente", align: "center", width: 700 },
   { Header: "Fecha", accessor: "fecha", align: "center" },
   { Header: "Estado", accessor: "estado", align: "center", visible: "false" },
   { Header: "Total", accessor: "total", align: "left" },
