@@ -219,8 +219,14 @@ const DataService = (() => {
       })
   }
 
-  const fetchProducts = async (token) => {
-    const url = `${BASE_URL}/productos`;
+  const fetchProducts = async (token, searchTerm) => {
+    let queryString = '';
+    if (searchTerm) {
+      queryString = queryString.concat(`q[medida_or_tipo_papel_cont]=${searchTerm}`)
+    }
+
+    const url = `${BASE_URL}/productos?${queryString}`;
+
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
       .then((data) => {
@@ -458,7 +464,7 @@ const DataService = (() => {
     changeStatusFinished: (token, id) => changeStatus(token, id, "finished"),
     uploadToServer: (file, folder) => uploadToServer(file, folder),
     saveUser: (token, user) => saveUser(token, user),
-    fetchProducts: (token) => fetchProducts(token),
+    fetchProducts: (token, searchTerm = null) => fetchProducts(token, searchTerm),
     fetchAvailableProducts: (token) => fetchAvailableProducts(token),
     createProduct: (token, product) => createProduct(token, product),
     fetchProductData: (id) => fetchProductData(id),

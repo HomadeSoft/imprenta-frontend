@@ -8,6 +8,8 @@ import { Box, Fab } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import AddIcon from "@mui/icons-material/Add";
+import SearchBar from "../search/SearchBar";
+import AuthService from "../../authContexts/AuthService";
 
 const TableColumns = [
     { Header: "Medida de Papel", accessor: "medida", align: "center" },
@@ -20,15 +22,18 @@ const TableColumns = [
 ]
 
 const Productos = () => {
-    const [rows, setRows] = useState([])
-    const { getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
+    const { getAccessTokenSilently, user } = useAuth0();
+    const [rows, setRows] = useState([])
+    const isAdmin = AuthService.isAdmin(user?.email)
+
+    const sortFunc = (a, b) => (a.medida + a.tipo_papel + a.doble_faz >= b.medida + b.tipo_papel + b.doble_faz ? 1 : -1)
 
     useEffect(() => {
         const getInfo = async () => {
             const token = await getAccessTokenSilently();
             const { data } = await DataService.fetchProducts(token)
-            const formattedRows = data?.sort((a, b) => { return a.medida + a.tipo_papel + a.doble_faz >= b.medida + b.tipo_papel + b.doble_faz ? 1 : -1 }).map(r => ProductsRowFormatter(r))
+            const formattedRows = data?.sort(sortFunc).map(r => ProductsRowFormatter(r))
             if (formattedRows?.length) {
                 setRows(formattedRows)
             }
@@ -38,16 +43,23 @@ const Productos = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const getData = async (param) => {
+        const token = await getAccessTokenSilently();
+        const { data } = await DataService.fetchProducts(token, param)
+        const formattedRows = data?.sort(sortFunc).map(r => ProductsRowFormatter(r))
+
+        setRows(formattedRows)
+    }
+
     return (
         <div>
-
             <Wrapper title={"Productos"}>
+                { isAdmin && <SearchBar getData={getData} searchAttributes={"Medida o Tipo de Papel"}/> }
                 <DataTable
                     table={{ columns: TableColumns, rows: rows }}
-                    isSorted={false}
+                    isSorted={true}
                     entriesPerPage={{ defaultValue: 50 }}
                     showTotalEntries={false}
-                    canSearch={true}
                     noEndBorder
                 />
             </Wrapper>
@@ -57,10 +69,7 @@ const Productos = () => {
                 bottom: 16,
                 right: 16,
             }}>
-                <Fab color="primary" aria-label="add" onClick={() => {
-
-                    navigate('/nuevoProducto')
-                }}>
+                <Fab color="primary" aria-label="add" onClick={() => { navigate('/nuevoProducto') }}>
                     <AddIcon fontSize={"large"} />
                 </Fab>
             </Box>
