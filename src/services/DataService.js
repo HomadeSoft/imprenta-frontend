@@ -8,8 +8,13 @@ const DataService = (() => {
   const requestHeaders = (token) => ({ headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*" } });
   const requestPostHeaders = (token) => ({ 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' });
 
-  const fetchUsers = async (token) => {
-    const url = `${BASE_URL}/users/allUsers`;
+  const fetchUsers = async (token, searchTerm) => {
+    let queryString = '';
+    if (searchTerm) {
+      queryString = queryString.concat(`q[first_name_or_last_name_or_fantasy_name_or_email_or_cuit_cont]=${searchTerm}`)
+    }
+
+    const url = `${BASE_URL}/users/allUsers?${queryString}`;
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -21,8 +26,15 @@ const DataService = (() => {
       })
   }
 
-  const fetchPendingJobs = async (token) => {
-    const url = `${BASE_URL}/jobs/pendingJobs`;
+  const fetchPendingJobs = async (token, searchTerm) => {
+    let queryString = '';
+    if (searchTerm) {
+      queryString = queryString.concat(`q[user_first_name_or_user_last_name_or_user_fantasy_name_or_user_email_cont]=${searchTerm}`)
+    }
+    // if(pageIndex){
+    //   queryString = queryString.concat(`page=${pageIndex}`)
+    // }
+    const url = `${BASE_URL}/jobs/pendingJobs?${queryString}`;
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -47,8 +59,13 @@ const DataService = (() => {
       })
   }
 
-  const fetchAllJobs = async (token) => {
-    const url = `${BASE_URL}/jobs/allJobs`;
+  const fetchAllJobs = async (token, searchTerm) => {
+    let queryString = '';
+    if (searchTerm) {
+      queryString = queryString.concat(`q[user_first_name_or_user_last_name_or_user_fantasy_name_or_user_email_cont]=${searchTerm}`)
+    }
+
+    const url = `${BASE_URL}/jobs/allJobs?${queryString}`;
 
     return fetch(url, requestHeaders(token))
       .then((response) => response.json())
@@ -419,10 +436,10 @@ const DataService = (() => {
   }
 
   return {
-    fetchPendingJobs: (token) => fetchPendingJobs(token),
+    fetchPendingJobs: (token, searchTerm = null) => fetchPendingJobs(token, searchTerm),
     fetchPendingJobsFromUser: (token, userEmail) => fetchPendingJobsFromUser(token, userEmail),
-    fetchAllJobs: (token) => fetchAllJobs(token),
-    fetchUsers: (token) => fetchUsers(token),
+    fetchAllJobs: (token, searchTerm = null) => fetchAllJobs(token, searchTerm),
+    fetchUsers: (token, searchTerm = null) => fetchUsers(token, searchTerm),
     fetchUserData: (token, id) => fetchUserData(token, id),
     fetchUserDataByEmail: (token, email) => fetchUserDataByEmail(token, email),
     fetchUserJobs: (token, id) => fetchUserJobs(token, id),

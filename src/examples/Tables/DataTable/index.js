@@ -13,13 +13,13 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // react-table components
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
+import { useTable, usePagination, useGlobalFilter, useSortBy } from "react-table";
 
 // @mui material components
 import Table from "@mui/material/Table";
@@ -77,8 +77,7 @@ function DataTable({
     nextPage,
     previousPage,
     setPageSize,
-    setGlobalFilter,
-    state: { pageIndex, pageSize, globalFilter },
+    state: { pageIndex, pageSize },
   } = tableInstance;
 
   // Set the default value for the entries per page when component mounts
@@ -109,14 +108,6 @@ function DataTable({
 
   // Setting value for the pagination input
   const handleInputPaginationValue = ({ target: value }) => gotoPage(Number(value.value - 1));
-
-  // Search input value state
-  const [search, setSearch] = useState(globalFilter);
-
-  // Search input state handle
-  const onSearchChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
-  }, 100);
 
   // A function that sets the sorted value for the table
   const setSortedValue = (column) => {
@@ -184,20 +175,6 @@ function DataTable({
               <MDTypography variant="caption" color="secondary">
                 &nbsp;&nbsp;items por pagina
               </MDTypography>
-            </MDBox>
-          )}
-          {canSearch && (
-            <MDBox width="18rem" ml="auto">
-              <MDInput
-                placeholder="Buscar..."
-                value={search}
-                size="small"
-                fullWidth
-                onChange={({ currentTarget }) => {
-                  setSearch(search);
-                  onSearchChange(currentTarget.value);
-                }}
-              />
             </MDBox>
           )}
         </MDBox>

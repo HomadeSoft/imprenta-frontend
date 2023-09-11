@@ -6,14 +6,13 @@ import DataService from "../../services/DataService";
 
 const setDownloadedFile = (token, id) => () => {
   DataService.setDownloadedFile(token, id)
-  // window.location.reload(false);
 }
 
 const JobsRowFormatter = (row, token) => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
   if (!row) { return {} }
-  // href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
+
   return {
     cliente: (<MDTypography display="block" variant="button" color="white" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="white" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
@@ -21,7 +20,6 @@ const JobsRowFormatter = (row, token) => {
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
     archivos: (<MDButton component="a" color="white"
       href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
-      // onClick={() => setDownloadedFile(token, row.id)}>
       onClick={setDownloadedFile(token, row.id)}>
       <DownloadIcon />
     </MDButton>),
@@ -67,11 +65,10 @@ const formatDate = (filePath) => {
   }
 }
 
-const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+// const options = { year: 'numeric', month: 'long', day: 'numeric' };
 const formatDateString = (createdAt) => {
   try {
-    return new Date(createdAt)
-      .toLocaleDateString('es-ES', options);
+    return new Date(createdAt).toLocaleDateString('es-ES');
   } catch (err) {
     return '-'
   }

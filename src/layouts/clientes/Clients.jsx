@@ -4,6 +4,8 @@ import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {ClientsRowFormatter} from "./utils";
 import {useAuth0} from "@auth0/auth0-react";
+import SearchBar from "../search/SearchBar";
+import AuthService from "../../authContexts/AuthService";
 
 const TableColumns = [
   { Header: "Nombre y Apellido", accessor: "name", align: "center" },
@@ -15,8 +17,9 @@ const TableColumns = [
 ]
 
 const Clientes = () => {
+  const { getAccessTokenSilently, user } = useAuth0();
   const [rows, setRows] = useState([])
-  const { getAccessTokenSilently } = useAuth0();
+  const isAdmin = AuthService.isAdmin(user?.email)
 
   useEffect(() => {
     const getInfo = async () => {
@@ -32,8 +35,17 @@ const Clientes = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const getData = async (param) => {
+    const token = await getAccessTokenSilently();
+    const { data } = await DataService.fetchUsers(token, param)
+    const formattedRows = data?.map(r => ClientsRowFormatter(r))
+
+    setRows(formattedRows)
+  }
+
   return (
     <Wrapper title={"Clientes"}>
+      { isAdmin && <SearchBar getData={getData} searchAttributes={"Nombre, Apellido, Email, Nombre de Fantasia o Cuit"}/> }
       <DataTable
         table={{ columns: TableColumns, rows: rows }}
         isSorted={false}

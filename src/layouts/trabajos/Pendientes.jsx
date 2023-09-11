@@ -8,6 +8,7 @@ import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "./utils";
 import {useAuth0} from "@auth0/auth0-react";
 import AuthService from "../../authContexts/AuthService";
+import SearchBar from "../search/SearchBar";
 
 
 const TableColumns = [
@@ -26,17 +27,20 @@ const TableColumns = [
 function Pendientes() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const [rows, setRows] = useState([])
+  const isAdmin = AuthService.isAdmin(user?.email)
+
+  const performFetchRequest = async ({ isAdmin, token, user, searchTerm }) => {
+    if(isAdmin){
+      return await DataService.fetchPendingJobs(token, searchTerm);
+    } else {
+      return  await DataService.fetchPendingJobsFromUser(token, user.email);
+    }
+  }
 
   useEffect(() => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
-
-      let response;
-      if(AuthService.isAdmin(user?.email)){
-        response = await DataService.fetchPendingJobs(token);
-      } else {
-        response = await DataService.fetchPendingJobsFromUser(token, user.email);
-      }
+      const response = await performFetchRequest({isAdmin, token, user})
 
       const formattedRows = response?.data?.map(r => JobsRowFormatter(r, token))
       if(formattedRows?.length){
@@ -52,14 +56,22 @@ function Pendientes() {
     return <Navigate to={'/login'} />
   }
 
+  const getData = async (param) => {
+    const token = await getAccessTokenSilently();
+
+    const response = await performFetchRequest({ isAdmin, token, user, searchTerm: param })
+    const formattedRows = response?.data?.map(r => JobsRowFormatter(r, token))
+    setRows(formattedRows)
+  }
+
   return (
     <Wrapper title={"Trabajos Pendientes"}>
+      { isAdmin && <SearchBar getData={getData} searchAttributes={"Nombre o Email de Usuario"}/> }
       <DataTable
         table={{ columns: TableColumns, rows: rows }}
-        isSorted={false}
+        isSorted={true}
         entriesPerPage={false}
         showTotalEntries={false}
-        canSearch={true}
         noEndBorder
       />
     </Wrapper>
