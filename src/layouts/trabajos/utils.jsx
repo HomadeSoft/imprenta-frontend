@@ -6,7 +6,7 @@ import DataService from "../../services/DataService";
 
 const setDownloadedFile = (token, id) => () => {
   DataService.setDownloadedFile(token, id)
-  window.location.reload(false);
+  // window.location.reload(false);
 }
 
 const JobsRowFormatter = (row, token) => {
