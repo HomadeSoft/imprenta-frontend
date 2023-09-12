@@ -23,6 +23,16 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { MaterialUIControllerProvider } from "context";
 import { GlobalDataContextProvider } from "./context/DataContext";
 
+import Bugsnag from '@bugsnag/js'
+import BugsnagPluginReact from '@bugsnag/plugin-react'
+
+Bugsnag.start({
+  apiKey: '85df8e88f3d7e6035476d2513418d39b',
+  plugins: [new BugsnagPluginReact()]
+})
+
+const ErrorBoundary = Bugsnag.getPlugin('react').createErrorBoundary(React)
+
 ReactDOM.render(
   <Auth0Provider
     domain="dev-ig4v3eio87y70n0r.us.auth0.com"
@@ -31,13 +41,15 @@ ReactDOM.render(
       redirect_uri: window.location.origin
     }}
   >
-    <BrowserRouter>
-      <MaterialUIControllerProvider>
-        <GlobalDataContextProvider>
-          <App />
-        </GlobalDataContextProvider>
-      </MaterialUIControllerProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <MaterialUIControllerProvider>
+          <GlobalDataContextProvider>
+            <App />
+          </GlobalDataContextProvider>
+        </MaterialUIControllerProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </Auth0Provider>,
   document.getElementById("root")
 );
