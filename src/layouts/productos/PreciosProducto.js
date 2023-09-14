@@ -29,7 +29,7 @@ function PriceDialog(props) {
     const { onClose, open, selectedPrice, onSave, onCreate } = props;
     const [cantidadMinima, setCantidadMinima] = useState(0);
     const [cantidadMaxima, setCantidadMaxima] = useState(0);
-    const [valorCents, setValorCents] = useState(0);
+    const [valorPrecio, setValorPrecio] = useState(0);
 
     const handleMinCantChange = (event) => {
         setCantidadMinima(event.target.value);
@@ -40,14 +40,14 @@ function PriceDialog(props) {
     }
 
     const handleValorChange = (event) => {
-        setValorCents(event.target.value * 100);
+        setValorPrecio(event.target.value);
     }
 
     const savePrecio = () => {
         if (selectedPrice) {
-            onSave({ id: selectedPrice.id, cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
+            onSave({ id: selectedPrice.id, cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorPrecio * 100 });
         } else {
-            onCreate({ cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorCents });
+            onCreate({ cantidad_maxima: cantidadMaxima, cantidad_minima: cantidadMinima, valor_cents: valorPrecio * 100 });
         }
 
         onClose();
@@ -56,7 +56,7 @@ function PriceDialog(props) {
     useEffect(() => {
         setCantidadMinima(selectedPrice?.cantidad_minima);
         setCantidadMaxima(selectedPrice?.cantidad_maxima);
-        setValorCents(selectedPrice?.valor_cents);
+        setValorPrecio(selectedPrice?.valor_cents);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedPrice])
 
@@ -72,14 +72,12 @@ function PriceDialog(props) {
                 <Grid item xs={6}>
                     <TextField label="Cantidad Maxima" value={cantidadMaxima} onChange={handleMaxCantChange} />
                 </Grid>
-
                 <Grid item xs={12} textAlign={"center"}>
                     <TextField label="Valor (precio)" InputProps={{
                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                         inputMode: 'numeric'
-                    }} value={valorCents / 100 || 0} onChange={handleValorChange} />
+                    }} value={valorPrecio} onChange={handleValorChange} />
                 </Grid>
-
             </Grid>
         </DialogContent>
         <DialogActions>
