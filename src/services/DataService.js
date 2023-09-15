@@ -411,8 +411,7 @@ const DataService = (() => {
 
     try {
       let response = await axios.post(`${BASE_URL}/upload/a`, formData);
-      response = response.json()
-      return { data: response, error: null }
+      return { data: response.data, error: null }
     } catch (error) {
       console.error(error);
       return { data: null, error: 'Ups, algo salio mal' }
