@@ -329,9 +329,11 @@ const Detalle = () => {
     setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
 
     const folder = job?.file_names[0].split('/')[0] + '/';
-    const fileNames = [folder + selectedFile.name];
+
     const token = await getAccessTokenSilently();
-    const { error } = await DataService.uploadToServer(selectedFile, folder);
+
+    const { data: serverData, error } = await DataService.uploadToServer(selectedFile, folder);
+    const fileNames = [folder + serverData.fileName];
 
     if (!error) {
       setMessage("Procesando...")

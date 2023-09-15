@@ -134,7 +134,8 @@ const Nuevo = () => {
       const folder = user.id + "_" + user.fantasy_name + "_" + moment().format('DD-MM-YYYY') + "/";
       setMessage("Se está subiendo el archivo adjunto. No cierre esta ventana")
 
-      const { error } = await DataService.uploadToServer(selectedFile, folder);
+      const { data, error } = await DataService.uploadToServer(selectedFile, folder);
+
       if(error){
         setMessage(error)
         setUploading(false);
@@ -151,7 +152,7 @@ const Nuevo = () => {
         "user_id": user.id,
         "troquelado": troquelado,
         "laminado": laminado,
-        "file_names": [folder + selectedFile?.name],
+        "file_names": [folder + data?.fileName],
         "notes": notas
       }
 

@@ -410,8 +410,9 @@ const DataService = (() => {
     formData.append('folder', folder);
 
     try {
-      await axios.post(`${BASE_URL}/upload/a`, formData);
-      return { data: "", error: null }
+      let response = await axios.post(`${BASE_URL}/upload/a`, formData);
+      response = response.json()
+      return { data: response, error: null }
     } catch (error) {
       console.error(error);
       return { data: null, error: 'Ups, algo salio mal' }
