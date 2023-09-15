@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import useDebounce from "../hooks/useDebounce";
 import MDBox from "../../components/MDBox";
 import MDInput from "../../components/MDInput";
@@ -7,6 +7,7 @@ const SearchBar = ({ getData, searchAttributes = '' }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [, setIsSearching] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const refCounter = useRef(0)
 
   useEffect(
     () => {
@@ -15,7 +16,10 @@ const SearchBar = ({ getData, searchAttributes = '' }) => {
         getData(debouncedSearchTerm)
       } else {
         setIsSearching(false);
-        getData()
+        if(refCounter.current > 0) {
+          getData()
+        }
+        refCounter.current = 1
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

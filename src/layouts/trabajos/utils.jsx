@@ -4,23 +4,27 @@ import DownloadIcon from "@mui/icons-material/Download";
 import MDButton from "components/MDButton";
 import DataService from "../../services/DataService";
 
-const setDownloadedFile = (token, id) => () => {
-  DataService.setDownloadedFile(token, id)
+const setDownloadedFile = async (token, id) => {
+  await DataService.setDownloadedFile(token, id)
 }
 
-const JobsRowFormatter = (row, token) => {
+const JobsRowFormatter = (row, token, rowUpdater) => {
   const BASE_URL = process.env.REACT_APP_API_ROOT || 'http://localhost:3001';
 
   if (!row) { return {} }
 
   return {
+    id: row.id,
     cliente: (<MDTypography display="block" variant="button" color="white" fontWeight="medium" ml={1} lineHeight={1}>{row?.user?.first_name} {row?.user?.last_name}</MDTypography>),
     total: (<MDTypography component="a" href="#" variant="button" color="white" fontWeight="medium">{formatPrice(row.total_price_cents)}</MDTypography>),
     fecha: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatDateString(row.created_at)}</MDTypography>),
     estado: (<MDTypography component="a" href="#" variant="caption" color="white" fontWeight="medium">{formatStatus(row.status)}</MDTypography>),
     archivos: (<MDButton component="a" color="white"
       href={`${BASE_URL}/upload/d?file=${row.file_names[0]}`}
-      onClick={setDownloadedFile(token, row.id)}>
+      onClick={async () => {
+        await setDownloadedFile(token, row.id)
+        rowUpdater(row.id)
+      }}>
       <DownloadIcon />
     </MDButton>),
     archivos_descargados: (<MDTypography variant="caption" color="white" fontWeight="medium">{formatBoolean(row.archivos_descargados)}</MDTypography>),

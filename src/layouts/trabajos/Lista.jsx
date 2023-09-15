@@ -1,7 +1,7 @@
 import DataTable from "examples/Tables/DataTable";
 
 // Dashboard components
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import { JobsRowFormatter } from "./utils";
@@ -24,14 +24,30 @@ const TableColumns = [
 
 function Lista() {
   const [rows, setRows] = useState([])
+  const dataRef = useRef()
   const { getAccessTokenSilently, user } = useAuth0();
   const isAdmin = AuthService.isAdmin(user?.email)
+
+  const rowUpdater = async (rowId) => {
+    dataRef.current.forEach(row => {
+      if(row.id === rowId){
+        row.archivos_descargados = true
+      }
+    })
+
+    const token = await getAccessTokenSilently();
+    const formattedRows = dataRef.current?.map(r => JobsRowFormatter(r, token, rowUpdater))
+
+    setRows(formattedRows)
+  }
 
   useEffect(() => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
       const { data } = await DataService.fetchAllJobs(token)
-      const formattedRows = data?.map(r => JobsRowFormatter(r, token))
+      dataRef.current = data
+      const formattedRows = data?.map(r => JobsRowFormatter(r, token, rowUpdater))
+
       setRows(formattedRows)
     };
 
@@ -42,8 +58,9 @@ function Lista() {
   const getData = async (param) => {
     const token = await getAccessTokenSilently();
     const { data } = await DataService.fetchAllJobs(token, param)
-    const formattedRows = data?.map(r => JobsRowFormatter(r, token))
+    dataRef.current = data
 
+    const formattedRows = data?.map(r => JobsRowFormatter(r, token, rowUpdater))
     setRows(formattedRows)
   }
 

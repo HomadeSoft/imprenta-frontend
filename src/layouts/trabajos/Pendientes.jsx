@@ -2,7 +2,7 @@ import DataTable from "examples/Tables/DataTable";
 import {Navigate} from "react-router-dom";
 
 // Dashboard components
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import DataService from "../../services/DataService";
 import Wrapper from "../Wrapper";
 import {JobsRowFormatter} from "./utils";
@@ -27,7 +27,21 @@ const TableColumns = [
 function Pendientes() {
   const { isAuthenticated, getAccessTokenSilently, user } = useAuth0();
   const [rows, setRows] = useState([])
+  const dataRef = useRef()
   const isAdmin = AuthService.isAdmin(user?.email)
+
+  const rowUpdater = async (rowId) => {
+    dataRef.current.forEach(row => {
+      if(row.id === rowId){
+        row.archivos_descargados = true
+      }
+    })
+
+    const token = await getAccessTokenSilently();
+    const formattedRows = dataRef.current?.map(r => JobsRowFormatter(r, token, rowUpdater))
+
+    setRows(formattedRows)
+  }
 
   const performFetchRequest = async ({ isAdmin, token, user, searchTerm }) => {
     if(isAdmin){
@@ -40,9 +54,11 @@ function Pendientes() {
   useEffect(() => {
     const getInfo = async () => {
       const token = await getAccessTokenSilently();
-      const response = await performFetchRequest({isAdmin, token, user})
+      const { data } = await performFetchRequest({isAdmin, token, user})
 
-      const formattedRows = response?.data?.map(r => JobsRowFormatter(r, token))
+      dataRef.current = data
+
+      const formattedRows = data?.map(r => JobsRowFormatter(r, token, rowUpdater))
       if(formattedRows?.length){
         setRows(formattedRows)
       }
@@ -59,8 +75,10 @@ function Pendientes() {
   const getData = async (param) => {
     const token = await getAccessTokenSilently();
 
-    const response = await performFetchRequest({ isAdmin, token, user, searchTerm: param })
-    const formattedRows = response?.data?.map(r => JobsRowFormatter(r, token))
+    const { data } = await performFetchRequest({ isAdmin, token, user, searchTerm: param })
+    dataRef.current = data
+
+    const formattedRows = data?.map(r => JobsRowFormatter(r, token, rowUpdater))
     setRows(formattedRows)
   }
 
